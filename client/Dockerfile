@@ -4,13 +4,13 @@ FROM node:20-alpine AS build
 WORKDIR /usr/src/app
 
 # Copy dependency manifests first for better layer caching
-COPY client/package*.json ./
+COPY package*.json ./
 
 # Install dependencies with lockfile to ensure reproducible builds
 RUN npm ci
 
 # Copy the rest of the frontend sources
-COPY client/ ./
+COPY . ./
 
 # Build the Astro application
 RUN npm run build
@@ -44,3 +44,5 @@ RUN chmod -R 755 /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
+
