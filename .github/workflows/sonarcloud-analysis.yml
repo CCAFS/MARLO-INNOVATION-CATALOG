@@ -39,14 +39,14 @@ jobs:
           node-version: "22"
 
       # Step 8: Install dependencies for NestJS backend
-      #- name: Install NestJS dependencies
-      #  run: npm install
-      #  working-directory: ./server
+      - name: Install NestJS dependencies
+        run: npm install
+        working-directory: ./server
 
       # Step 9: Build the NestJS backend project
-      #- name: Build the NestJS project
-      #  run: npm run build
-      #  working-directory: ./server
+      - name: Build the NestJS project
+        run: npm run build
+        working-directory: ./server
 
       # Step 9: Install frontend dependencies
       - name: Install frontend dependencies
@@ -76,4 +76,3 @@ jobs:
         working-directory: .
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
