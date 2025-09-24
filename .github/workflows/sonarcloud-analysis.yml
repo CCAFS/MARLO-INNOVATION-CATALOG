@@ -70,9 +70,10 @@ jobs:
             -Dsonar.organization=ccafs \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/migrations/**,**/*.spec.ts,**/Dockerfile* \
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/migrations/**,**/*.spec.ts,**/Dockerfile*,.github/workflows/** \
             -Dsonar.coverage.exclusions=** \
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
         working-directory: .
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
