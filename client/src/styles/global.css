@@ -1,1 +1,12 @@
+/* External Imports */
 @import "tailwindcss";
+@import "primeicons/primeicons.css";
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+/* Local Imports */
+@import "./colors.css";
+/* Global Styles */
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
