@@ -1,7 +1,12 @@
 ---
+import InnovationCards from '../components/InnovationCards.astro';
+import OverviewStats from '../components/OverviewStats.astro';
+import ReadinessExplorer from '../components/ReadinessExplorer.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 ---
 
 <MainLayout title="Home">
-  <h1>Home</h1>
+  <OverviewStats />
+  <ReadinessExplorer />
+  <InnovationCards />
 </MainLayout>

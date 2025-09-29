@@ -1,6 +1,6 @@
 ---
 const { title } = Astro.props;
-import Toolbar from '../components/Toolbar.astro';
+import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
 ---
 
@@ -13,7 +13,7 @@ import '../styles/global.css';
     <title>{title}</title>
   </head>
   <body>
-    <Toolbar />
+    <TopBar />
     <slot />
   </body>
 </html>
