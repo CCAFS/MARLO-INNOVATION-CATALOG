@@ -28,17 +28,19 @@ const stats = [
 <div class="flex justify-center items-center gap-4">
   <div>Explore Validated Climate Innovations for Africa</div>
 
-  <div class="flex gap-4 items-center">
+  <div class="flex gap-4 items-center mt-10">
     {
-      stats.map(stat => (
-        <div class="flex items-center gap-4">
-          {<Image height="50" quality={stat.quality} src={stat.imagePath} alt={stat.title} />}
-          <div>
-            <div>{stat.title}</div>
-          <div>{stat.value}</div>
+      stats.map((stat, index) => (
+        <>
+          <div class="flex items-center gap-4">
+            {<Image height="50" quality={stat.quality} src={stat.imagePath} alt={stat.title} />}
+            <div>
+              <div>{stat.title}</div>
+              <div>{stat.value}</div>
+            </div>
           </div>
-        </div>
-        <div class="bg-gray-300 h-15 w-0.5" />
+          {index < stats.length - 1 && <div class="bg-gray-300 h-15 w-0.5" />}
+        </>
       ))
     }
   </div>
