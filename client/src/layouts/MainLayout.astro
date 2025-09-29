@@ -3,6 +3,8 @@ const { title } = Astro.props;
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
+import TopBar from '../components/TopBar.astro';
+import '../styles/global.css';
 ---
 
 <html lang="en">
@@ -15,6 +17,7 @@ import Footer from '~/components/shared/footer/Footer.component.astro';
     <ClientRouter />
   </head>
   <body>
+    <TopBar />
     <slot />
     <Footer />
   </body>

@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import Icon1 from '../images/icon-1.png';
+import Icon2 from '../images/icon-2.png';
+import Icon3 from '../images/icon-3.png';
+const stats = [
+  {
+    title: 'Total innovations',
+    value: 32,
+    imagePath: Icon1,
+    quality: 'low'
+  },
+  {
+    title: 'Countries',
+    value: 25,
+    imagePath: Icon2,
+    quality: 'max'
+  },
+  {
+    title: 'CounAverage scaling readinesstries',
+    value: 7,
+    imagePath: Icon3,
+    quality: 'low'
+  }
+];
+---
+
+<div class="flex justify-center items-center gap-4 text-4xl">
+  <div>Explore Validated Climate Innovations for Africa</div>
+
+  <div class="flex gap-10 items-center mt-10">
+    {
+      stats.map((stat, index) => (
+        <>
+          <div class="flex items-center gap-4">
+            {<Image height="50" quality={stat.quality} src={stat.imagePath} alt={stat.title} />}
+            <div>
+              <div class="text-2xl font-600">{stat.value}</div>
+              <div class="text-sm text-gray-500 font-light">{stat.title}</div>
+            </div>
+          </div>
+          {index < stats.length - 1 && <div class="bg-gray-300 h-15 w-0.5" />}
+        </>
+      ))
+    }
+  </div>
+</div>
