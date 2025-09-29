@@ -1,0 +1,25 @@
+---
+import type { GetStaticPaths } from 'astro';
+import MainLayout from '@layouts/MainLayout.astro';
+import { innovationCatalog } from '~/jsons/innovation-list';
+import type { Innovation } from '~/interfaces/innovation-catalog.interface';
+
+export const getStaticPaths = (() => {
+  return innovationCatalog.scales.flatMap(scale =>
+    scale.innovations.map(innovation => ({
+      params: { id: innovation.id.toString() },
+      props: { innovation }
+    }))
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  innovation: Innovation;
+}
+
+const { innovation } = Astro.props;
+---
+
+<MainLayout title="Innovation Page">
+  <p>{innovation.title}</p>
+</MainLayout>
