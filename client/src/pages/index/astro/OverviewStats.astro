@@ -1,8 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import Icon1 from '../images/icon-1.png';
-import Icon2 from '../images/icon-2.png';
-import Icon3 from '../images/icon-3.png';
+import Icon1 from '../../../images/icon-1.png';
+import Icon2 from '../../../images/icon-2.png';
+import Icon3 from '../../../images/icon-3.png';
+import { texts } from '../../../content/texts';
 const stats = [
   {
     title: 'Total innovations',
@@ -26,7 +27,7 @@ const stats = [
 ---
 
 <div class="flex justify-center items-center gap-4 text-4xl">
-  <div>Explore Validated Climate Innovations for Africa</div>
+  <div>{texts.home.overviewStatsTitle}</div>
 
   <div class="flex gap-10 items-center mt-10">
     {
