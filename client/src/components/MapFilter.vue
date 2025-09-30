@@ -9,7 +9,16 @@
     </g>
     <g filter="url(#filter2_d_532_106)" @click="handleClick(0)">
       <rect id="background-rect" x="300" y="1" width="37" height="37" rx="18.5" fill="#0065BD" shape-rendering="crispEdges"></rect>
-      <rect id="clickable-rect" x="302.5" y="3.5" width="32" height="32" rx="16" stroke="white" stroke-width="5" shape-rendering="crispEdges"></rect>
+      <rect
+        id="clickable-rect"
+        x="302.5"
+        y="3.5"
+        width="32"
+        height="32"
+        rx="16"
+        :stroke="active === 0 ? '#F39619' : 'white'"
+        stroke-width="5"
+        shape-rendering="crispEdges"></rect>
       <path
         d="M318.495 24.12C317.831 24.12 317.231 23.952 316.695 23.616C316.167 23.28 315.751 22.792 315.447 22.152C315.143 21.504 314.991 20.72 314.991 19.8C314.991 18.88 315.143 18.1 315.447 17.46C315.751 16.812 316.167 16.32 316.695 15.984C317.231 15.648 317.831 15.48 318.495 15.48C319.167 15.48 319.767 15.648 320.295 15.984C320.823 16.32 321.239 16.812 321.543 17.46C321.855 18.1 322.011 18.88 322.011 19.8C322.011 20.72 321.855 21.504 321.543 22.152C321.239 22.792 320.823 23.28 320.295 23.616C319.767 23.952 319.167 24.12 318.495 24.12ZM318.495 22.764C318.887 22.764 319.227 22.66 319.515 22.452C319.803 22.236 320.027 21.908 320.187 21.468C320.355 21.028 320.439 20.472 320.439 19.8C320.439 19.12 320.355 18.564 320.187 18.132C320.027 17.692 319.803 17.368 319.515 17.16C319.227 16.944 318.887 16.836 318.495 16.836C318.119 16.836 317.783 16.944 317.487 17.16C317.199 17.368 316.971 17.692 316.803 18.132C316.643 18.564 316.563 19.12 316.563 19.8C316.563 20.472 316.643 21.028 316.803 21.468C316.971 21.908 317.199 22.236 317.487 22.452C317.783 22.66 318.119 22.764 318.495 22.764Z"
         fill="white"></path>
@@ -227,7 +236,10 @@
 // toggleElements.forEach(element => {
 //   element.addEventListener('click', toggleStrokeColor);
 // });
+import { ref } from 'vue';
+const active = ref<number | null>(null);
 const handleClick = (index: number) => {
-  alert(`¡Le diste click al SVG! ${index}`);
+  active.value = index;
+  alert(`¡Le diste click al SVG! ${active.value}`);
 };
 </script>
