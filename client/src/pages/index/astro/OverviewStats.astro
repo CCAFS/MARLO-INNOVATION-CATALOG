@@ -26,10 +26,9 @@ const stats = [
 ];
 ---
 
-<div class="flex justify-center items-center gap-4 text-4xl">
-  <div>{texts.home.overviewStatsTitle}</div>
-
-  <div class="flex gap-10 items-center mt-10">
+<div class="flex space-between gap-4 text-4xl mt-10">
+  <div class="uppercase text-[#0277A2] text-2xl font-medium max-w-[500px]">{texts.home.overviewStatsTitle}</div>
+  <div class="flex gap-10">
     {
       stats.map((stat, index) => (
         <>
