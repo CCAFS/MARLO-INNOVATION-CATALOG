@@ -288,8 +288,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useSharedValue } from './composables/useSharedValue';
+
+const { setValue } = useSharedValue();
+
 const active = ref<number | null>(null);
 const handleClick = (index: number) => {
   active.value = index;
+  setValue(index);
 };
 </script>
