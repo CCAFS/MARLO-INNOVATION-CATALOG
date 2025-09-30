@@ -6,7 +6,7 @@ const value = ref(0);
 
 export function useSharedValue() {
   const setValue = (v: number) => (value.value = v);
-  const display = computed(() => `El valor seleccionado es ${value.value}`);
+  const display = computed(() => `This is the value: ${value.value}`);
 
   return { value, setValue, display };
 }
