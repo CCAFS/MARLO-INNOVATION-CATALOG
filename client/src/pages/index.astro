@@ -3,7 +3,7 @@ import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '../jsons/innovation-list';
 import type { InnovationCatalog } from '~/interfaces/innovation-catalog.interface';
 import OverviewStats from '../components/OverviewStats.astro';
-import ReadinessExplorer from '../components/ReadinessExplorer.astro';
+import ReadinessExplorer from './index/vue/ReadinessExplorer.vue';
 import InnovationCards from '../components/InnovationCards.astro';
 
 const innovationCatalogData: InnovationCatalog = innovationCatalog || [];
@@ -13,7 +13,7 @@ console.log('Innovation Catalog Data:', innovationCatalogData);
 
 <MainLayout title="Astro">
   <OverviewStats />
-  <ReadinessExplorer />
+  <ReadinessExplorer client:load />
   <InnovationCards />
   <section class="container mx-auto p-4">
     <h1 class="text-4xl font-bold mb-6 text-center">Innovation Catalog</h1>
