@@ -287,31 +287,9 @@
 </template>
 
 <script setup lang="ts">
-// Obtener todos los elementos con la clase toggle-trigger
-// const toggleElements = document.querySelectorAll('.toggle-trigger');
-// const clickableRect = document.getElementById('clickable-rect');
-
-// Función para cambiar el color del stroke
-// function toggleStrokeColor() {
-// Obtener el color actual del stroke del elemento con borde
-// const currentStroke: string = clickableRect?.getAttribute('stroke') || '';
-
-// Toggle entre white y #F39619
-// if (currentStroke === 'white') {
-//   clickableRect?.setAttribute('stroke', '#F39619');
-// } else {
-//   clickableRect?.setAttribute('stroke', 'white');
-// }
-// }
-
-// Agregar event listener a todos los elementos con la clase toggle-trigger
-// toggleElements.forEach(element => {
-//   element.addEventListener('click', toggleStrokeColor);
-// });
 import { ref } from 'vue';
 const active = ref<number | null>(null);
 const handleClick = (index: number) => {
   active.value = index;
-  // alert(`¡Le diste click al SVG! ${active.value}`);
 };
 </script>
