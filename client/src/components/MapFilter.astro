@@ -57,7 +57,7 @@
   </g>
   <g filter="url(#filter7_d_532_106)">
     <rect x="397" y="199" width="37" height="37" rx="18.5" fill="#439255" shape-rendering="crispEdges"></rect>
-    <rect x="399.5" y="201.5" width="32" height="32" rx="16" stroke="#F39619" stroke-width="5" shape-rendering="crispEdges"></rect>
+    <rect x="399.5" y="201.5" width="32" height="32" rx="16" stroke="white" stroke-width="5" shape-rendering="crispEdges"></rect>
     <path
       d="M415.308 222.12C414.716 222.12 414.136 222.036 413.568 221.868C413.008 221.692 412.536 221.452 412.152 221.148L412.812 219.936C413.116 220.184 413.484 220.384 413.916 220.536C414.356 220.688 414.812 220.764 415.284 220.764C415.836 220.764 416.268 220.648 416.58 220.416C416.9 220.184 417.06 219.872 417.06 219.48C417.06 219.216 416.992 218.984 416.856 218.784C416.728 218.584 416.496 218.432 416.16 218.328C415.832 218.224 415.38 218.172 414.804 218.172H412.776L413.208 213.6H418.14V214.908H413.784L414.6 214.164L414.276 217.584L413.46 216.852H415.152C415.984 216.852 416.652 216.964 417.156 217.188C417.668 217.404 418.04 217.708 418.272 218.1C418.512 218.484 418.632 218.924 418.632 219.42C418.632 219.908 418.512 220.356 418.272 220.764C418.032 221.172 417.664 221.5 417.168 221.748C416.68 221.996 416.06 222.12 415.308 222.12Z"
       fill="white"></path>
@@ -227,13 +227,13 @@
   // Función para cambiar el color del stroke
   function toggleStrokeColor() {
     // Obtener el color actual del stroke del elemento con borde
-    const currentStroke: string = clickableRect.getAttribute('stroke');
+    const currentStroke: string = clickableRect?.getAttribute('stroke') || '';
 
     // Toggle entre white y #F39619
     if (currentStroke === 'white') {
-      clickableRect.setAttribute('stroke', '#F39619');
+      clickableRect?.setAttribute('stroke', '#F39619');
     } else {
-      clickableRect.setAttribute('stroke', 'white');
+      clickableRect?.setAttribute('stroke', 'white');
     }
   }
 
