@@ -13,7 +13,7 @@ export const innovationCatalog = {
           key_metrics: {
             geoscope: 'Senegal',
             typology: 'Research and Communication Methodologies and Tools',
-            scaling_readiness: 5
+            scaling_readiness: 0
           },
           expected_outcomes: 'Local radio stations and farmer organizations increase advisory coverage reaching 80k households.',
           intended_beneficiaries: 'Smallholder farmers, rural women groups, and youth cooperatives.',
@@ -38,7 +38,7 @@ export const innovationCatalog = {
           key_metrics: {
             geoscope: 'Ghana',
             typology: 'Digital Tools',
-            scaling_readiness: 5
+            scaling_readiness: 0
           },
           expected_outcomes: 'Reduction of 30% in water use by pilot farmers.',
           intended_beneficiaries: 'Maize and tomato farmers in northern Ghana.',
@@ -47,74 +47,6 @@ export const innovationCatalog = {
               author: 'Kwame Mensah',
               date: '10 Sep 2024',
               text: 'Saved us water during the last dry season.'
-            }
-          ]
-        },
-        {
-          id: 'inv-003',
-          country: 'Kenya',
-          title: 'Drought-resistant sorghum varieties',
-          summary: 'New seed lines tested for high yield under low rainfall conditions.',
-          key_metrics: {
-            geoscope: 'Kenya',
-            typology: 'Seed Innovations',
-            scaling_readiness: 5
-          },
-          expected_outcomes: 'Yield increase of 25% in semi-arid zones.',
-          intended_beneficiaries: 'Smallholder sorghum farmers.',
-          comments: []
-        },
-        {
-          id: 'inv-004',
-          country: 'Ethiopia',
-          title: 'Community-based weather forecasting groups',
-          summary: 'Local communities trained to interpret meteorological data and advise farmers.',
-          key_metrics: {
-            geoscope: 'Ethiopia',
-            typology: 'Capacity Building',
-            scaling_readiness: 5
-          },
-          expected_outcomes: 'Improved planting decisions in 50 rural districts.',
-          intended_beneficiaries: 'Pastoralists and rainfed farmers.',
-          comments: [
-            {
-              author: 'Abebe T.',
-              date: '15 Aug 2024',
-              text: 'Forecasts were accurate and timely this season.'
-            }
-          ]
-        },
-        {
-          id: 'inv-005',
-          country: 'Mali',
-          title: 'Agroforestry with nitrogen-fixing trees',
-          summary: 'Integration of Faidherbia albida trees into farming systems.',
-          key_metrics: {
-            geoscope: 'Mali',
-            typology: 'Agroforestry',
-            scaling_readiness: 5
-          },
-          expected_outcomes: 'Soil fertility improvement and 10% yield increase.',
-          intended_beneficiaries: 'Millet and sorghum farmers.',
-          comments: []
-        },
-        {
-          id: 'inv-006',
-          country: 'Nigeria',
-          title: 'Climate insurance for smallholders',
-          summary: 'Weather-index insurance products tailored for small farmers.',
-          key_metrics: {
-            geoscope: 'Nigeria',
-            typology: 'Financial Instruments',
-            scaling_readiness: 5
-          },
-          expected_outcomes: '10k farmers covered by insurance pilot.',
-          intended_beneficiaries: 'Rice and maize producers.',
-          comments: [
-            {
-              author: 'Ngozi U.',
-              date: '03 Jul 2024',
-              text: 'Farmers felt more secure planting during unpredictable rains.'
             }
           ]
         }
@@ -256,6 +188,181 @@ export const innovationCatalog = {
           },
           expected_outcomes: 'Increase yields by 20% in drought conditions.',
           intended_beneficiaries: 'Maize farmers in Southern Province.',
+          comments: []
+        }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Scaling in Progress',
+      description: 'Innovations being scaled to reach more users and regions.',
+      innovations: [
+        {
+          id: 'inv-015',
+          country: 'Ghana',
+          title: 'Climate-smart cocoa farming practices',
+          summary: 'Training programs for sustainable cocoa production under climate stress.',
+          key_metrics: {
+            geoscope: 'Ghana',
+            typology: 'Capacity Building',
+            scaling_readiness: 5
+          },
+          expected_outcomes: 'Train 10,000 cocoa farmers in climate adaptation.',
+          intended_beneficiaries: 'Cocoa farmers in Ashanti and Western regions.',
+          comments: []
+        },
+        {
+          id: 'inv-016',
+          country: 'Kenya',
+          title: 'Mobile money for agricultural inputs',
+          summary: 'Digital payment system for seeds and fertilizers.',
+          key_metrics: {
+            geoscope: 'Kenya',
+            typology: 'Financial Instruments',
+            scaling_readiness: 5
+          },
+          expected_outcomes: 'Enable 50,000 farmers to access inputs on credit.',
+          intended_beneficiaries: 'Smallholder farmers across Kenya.',
+          comments: []
+        }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Widespread Adoption',
+      description: 'Innovations adopted at scale across multiple regions.',
+      innovations: [
+        {
+          id: 'inv-017',
+          country: 'Ethiopia',
+          title: 'Index-based livestock insurance',
+          summary: 'Insurance protecting pastoralists against drought-related livestock losses.',
+          key_metrics: {
+            geoscope: 'Ethiopia',
+            typology: 'Financial Instruments',
+            scaling_readiness: 6
+          },
+          expected_outcomes: 'Cover 100,000 livestock across pastoral regions.',
+          intended_beneficiaries: 'Pastoralist communities in Somali and Afar regions.',
+          comments: []
+        },
+        {
+          id: 'inv-018',
+          country: 'Tanzania',
+          title: 'Improved storage facilities network',
+          summary: 'Network of warehouses reducing post-harvest losses.',
+          key_metrics: {
+            geoscope: 'Tanzania',
+            typology: 'Infrastructure',
+            scaling_readiness: 6
+          },
+          expected_outcomes: 'Reduce grain losses by 30% for 200,000 farmers.',
+          intended_beneficiaries: 'Maize and rice farmers nationwide.',
+          comments: []
+        }
+      ]
+    },
+    {
+      id: 7,
+      name: 'Systemic Change',
+      description: 'Innovations creating systemic changes in agricultural systems.',
+      innovations: [
+        {
+          id: 'inv-019',
+          country: 'Rwanda',
+          title: 'National agricultural advisory system',
+          summary: 'Integrated digital and field-based extension services.',
+          key_metrics: {
+            geoscope: 'Rwanda',
+            typology: 'Institutional Innovation',
+            scaling_readiness: 7
+          },
+          expected_outcomes: 'Reach 90% of farming households with timely advice.',
+          intended_beneficiaries: 'All farming households in Rwanda.',
+          comments: []
+        },
+        {
+          id: 'inv-020',
+          country: 'Senegal',
+          title: 'Climate information services platform',
+          summary: 'National platform integrating weather, market, and advisory services.',
+          key_metrics: {
+            geoscope: 'Senegal',
+            typology: 'Digital Tools',
+            scaling_readiness: 7
+          },
+          expected_outcomes: 'Provide climate services to 500,000 farmers.',
+          intended_beneficiaries: 'Farmers, pastoralists, and fishers nationwide.',
+          comments: []
+        }
+      ]
+    },
+    {
+      id: 8,
+      name: 'Institutionalized',
+      description: 'Innovations embedded in policies and institutional frameworks.',
+      innovations: [
+        {
+          id: 'inv-021',
+          country: 'Nigeria',
+          title: 'National climate-smart agriculture policy',
+          summary: 'Policy framework promoting climate adaptation in agriculture.',
+          key_metrics: {
+            geoscope: 'Nigeria',
+            typology: 'Policy Innovation',
+            scaling_readiness: 8
+          },
+          expected_outcomes: 'Guide climate adaptation for 10 million farmers.',
+          intended_beneficiaries: 'All agricultural stakeholders in Nigeria.',
+          comments: []
+        },
+        {
+          id: 'inv-022',
+          country: 'Uganda',
+          title: 'Agricultural insurance regulatory framework',
+          summary: 'National framework enabling agricultural insurance products.',
+          key_metrics: {
+            geoscope: 'Uganda',
+            typology: 'Policy Innovation',
+            scaling_readiness: 8
+          },
+          expected_outcomes: 'Enable insurance coverage for 2 million farmers.',
+          intended_beneficiaries: 'Farmers and insurance providers nationwide.',
+          comments: []
+        }
+      ]
+    },
+    {
+      id: 9,
+      name: 'Transformative Impact',
+      description: 'Innovations achieving transformative impact at national or regional scale.',
+      innovations: [
+        {
+          id: 'inv-023',
+          country: 'Multi-country',
+          title: 'Regional climate services network',
+          summary: 'Cross-border platform for climate information sharing.',
+          key_metrics: {
+            geoscope: 'West Africa',
+            typology: 'Institutional Innovation',
+            scaling_readiness: 9
+          },
+          expected_outcomes: 'Serve 15 countries with harmonized climate services.',
+          intended_beneficiaries: 'Farmers and policymakers across West Africa.',
+          comments: []
+        },
+        {
+          id: 'inv-024',
+          country: 'Multi-country',
+          title: 'African agricultural transformation initiative',
+          summary: 'Continental program for sustainable agricultural development.',
+          key_metrics: {
+            geoscope: 'Africa',
+            typology: 'Institutional Innovation',
+            scaling_readiness: 9
+          },
+          expected_outcomes: 'Transform agriculture for 50 million households.',
+          intended_beneficiaries: 'Farming communities across Africa.',
           comments: []
         }
       ]
