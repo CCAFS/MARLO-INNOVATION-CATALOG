@@ -27,12 +27,12 @@ const filteredScales = computed(() => {
         <article
           v-for="innovation in scale.innovations"
           :key="innovation.id"
-          class="border-2 border-green-600/80 rounded-3xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+          class="border-1 border-green-600/80 rounded-3xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
           <!-- Badges -->
           <div class="flex items-center gap-3 mb-5">
             <!-- Trending chip -->
             <div class="inline-flex items-center gap-2 border-2 border-green-600 rounded-full px-4 py-1.5 text-green-700">
-              <div class="w-7 h-7 rounded-full border-2 border-green-600 grid place-items-center leading-none">
+              <div class="w-3 h-3 rounded-full border-2 border-green-600 grid place-items-center leading-none">
                 <span class="text-sm -mt-0.5">↗</span>
               </div>
               <span class="font-semibold">{{ innovation.key_metrics?.scaling_readiness ?? 5 }}</span>
@@ -40,7 +40,7 @@ const filteredScales = computed(() => {
 
             <!-- Country chip -->
             <div class="inline-flex items-center gap-2 border-2 border-green-600 rounded-full px-4 py-1.5 text-green-700">
-              <div class="w-7 h-7 rounded-full border-2 border-green-600 grid place-items-center">
+              <div class="w-3 h-3 rounded-full border-2 border-green-600 grid place-items-center">
                 <div class="w-3 h-3 rounded-full bg-green-600/80" />
               </div>
               <span class="font-semibold">{{ innovation.country ?? 'Senegal' }}</span>
