@@ -1,36 +1,32 @@
 ---
-
 interface Props {
-    text: string;
-    type?: "button" | "submit" | "reset";
-    onClick?: () => void;
-    disabled?: boolean;
-    hasIcon?: boolean;
-    icon?: string;
+  text: string;
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: () => void;
+  disabled?: boolean;
+  hasIcon?: boolean;
+  icon?: string;
+  class?: string;
+  classList?: any;
 }
 
-const { text, type = "button", onClick, disabled = false, hasIcon = false, icon = "" } = Astro.props;
-
+const { text, type = 'button', onClick, disabled = false, hasIcon = false, icon = '', class: className = '', classList = [] } = Astro.props;
 ---
 
-<button 
-    type={type} 
-    class="basic-button"
-    class:list={[
-        'inline-flex items-center justify-center px-4 py-2.25 border rounded-lg text-xs leading-[10px] text-primary-300 bg-white font-medium',
-        'hover:bg-primary-300 hover:text-white hover:border-transparent',
-        {
-            'opacity-50 cursor-not-allowed': disabled,
-            'gap-1': hasIcon,
-        },
-        
-    ]}
-    disabled={disabled}
->
-    {hasIcon && icon && <i class={`${icon}`} class:list={
-        [
-            'text-[1rem]'
-        ]
-    }></i>}
-    {text}
+<button
+  type={type}
+  class="basic-button"
+  class:list={[
+    'inline-flex items-center justify-center px-4 py-2.25 border rounded-lg text-xs leading-[10px] text-primary-300 bg-white font-medium',
+    'hover:bg-primary-300 hover:text-white hover:border-transparent',
+    {
+      'opacity-50 cursor-not-allowed': disabled,
+      'gap-1': hasIcon
+    },
+    className,
+    classList
+  ]}
+  disabled={disabled}>
+  {hasIcon && icon && <i class={`${icon}`} class:list={['text-[1rem]']} />}
+  {text}
 </button>
