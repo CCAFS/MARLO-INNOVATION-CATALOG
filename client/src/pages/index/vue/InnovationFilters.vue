@@ -18,11 +18,13 @@ const backgroundColor = computed(() => {
     </div>
 
     <div>SELECTED OPTION:</div>
-    <div class="flex flex-1 gap-2" :style="{ backgroundColor }">
-      <div>{{ display }}</div>
-      <div class="flex flex-col gap-2">
-        <div>5 Model/Early Prototype</div>
-        <div>The innovation is validated for its ability to achieve a specific impact under fully-controlled conditions</div>
+    <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white" :style="{ backgroundColor }">
+      <div class="text-white border-7 w-13 h-13 flex items-center justify-center rounded-full shadow-lg">{{ value }}</div>
+      <div class="flex flex-col gap-5">
+        <div class="text-xl font-semibold">5 Model/Early Prototype</div>
+        <div class="text-lg font-light">
+          The innovation is validated for its ability to achieve a specific impact under fully-controlled conditions
+        </div>
       </div>
     </div>
 
