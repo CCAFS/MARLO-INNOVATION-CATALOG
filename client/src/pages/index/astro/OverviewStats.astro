@@ -8,38 +8,35 @@ const stats = [
   {
     title: 'Total innovations',
     value: 32,
-    imagePath: Icon1,
-    quality: 'low'
+    imagePath: Icon1
   },
   {
     title: 'Countries',
     value: 25,
-    imagePath: Icon2,
-    quality: 'max'
+    imagePath: Icon2
   },
   {
     title: 'CounAverage scaling readinesstries',
     value: 7,
-    imagePath: Icon3,
-    quality: 'low'
+    imagePath: Icon3
   }
 ];
 ---
 
 <div class="flex justify-between text-4xl mt-10">
-  <div class="uppercase text-[#0277A2] text-2xl font-medium max-w-[500px]">{texts.home.overviewStatsTitle}</div>
-  <div class="flex gap-10">
+  <div class="uppercase text-[#0277A2] text-3xl font-semibold max-w-[500px]">{texts.home.overviewStatsTitle}</div>
+  <div class="flex gap-7 items-center">
     {
       stats.map((stat, index) => (
         <>
-          <div class="flex items-center gap-4">
-            {<Image height="50" quality={stat.quality} src={stat.imagePath} alt={stat.title} />}
+          <div class="flex items-center gap-5">
+            {<Image height="35" quality="low" src={stat.imagePath} alt={stat.title} />}
             <div>
-              <div class="text-2xl font-600">{stat.value}</div>
-              <div class="text-sm text-gray-500 font-light">{stat.title}</div>
+              <div class="text-xl font-600 -mb-1.5">{stat.value}</div>
+              <div class="text-sm text-gray-400 font-light">{stat.title}</div>
             </div>
           </div>
-          {index < stats.length - 1 && <div class="bg-gray-300 h-15 w-0.5" />}
+          {index < stats.length - 1 && <div class="bg-gray-300 h-12 w-0.5" />}
         </>
       ))
     }
