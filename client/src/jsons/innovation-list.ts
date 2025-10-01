@@ -130,6 +130,13 @@ export const innovationCatalog = {
           country: 'Uganda',
           title: 'Solar-powered cold storage',
           summary: 'Pilot units help reduce post-harvest losses for vegetables.',
+          key_metrics: {
+            geoscope: 'Uganda',
+            typology: 'Post-Harvest Technology',
+            scaling_readiness: 1
+          },
+          expected_outcomes: 'Reduce vegetable losses by 40% in pilot communities.',
+          intended_beneficiaries: 'Vegetable farmers and market vendors.',
           comments: []
         },
         {
@@ -137,6 +144,13 @@ export const innovationCatalog = {
           country: 'Rwanda',
           title: 'Digital soil fertility maps',
           summary: 'Maps guiding fertilizer application for maize fields.',
+          key_metrics: {
+            geoscope: 'Rwanda',
+            typology: 'Digital Tools',
+            scaling_readiness: 1
+          },
+          expected_outcomes: 'Optimize fertilizer use in 100 pilot farms.',
+          intended_beneficiaries: 'Maize farmers in Eastern Province.',
           comments: []
         }
       ]
@@ -151,6 +165,13 @@ export const innovationCatalog = {
           country: 'Tanzania',
           title: 'Mobile livestock health tracker',
           summary: 'Track animal diseases via SMS.',
+          key_metrics: {
+            geoscope: 'Tanzania',
+            typology: 'Digital Tools',
+            scaling_readiness: 2
+          },
+          expected_outcomes: 'Early disease detection in 500 livestock.',
+          intended_beneficiaries: 'Pastoralists in northern regions.',
           comments: []
         },
         {
@@ -158,6 +179,13 @@ export const innovationCatalog = {
           country: 'Malawi',
           title: 'Flood-resistant rice paddies',
           summary: 'Modified paddies withstand heavy rains.',
+          key_metrics: {
+            geoscope: 'Malawi',
+            typology: 'Infrastructure',
+            scaling_readiness: 2
+          },
+          expected_outcomes: 'Protect rice crops in flood-prone areas.',
+          intended_beneficiaries: 'Rice farmers in lowland areas.',
           comments: []
         }
       ]
@@ -172,6 +200,13 @@ export const innovationCatalog = {
           country: 'Burkina Faso',
           title: 'Water harvesting bunds',
           summary: 'Simple structures to conserve rainwater.',
+          key_metrics: {
+            geoscope: 'Burkina Faso',
+            typology: 'Water Management',
+            scaling_readiness: 3
+          },
+          expected_outcomes: 'Increase water availability for 200 hectares.',
+          intended_beneficiaries: 'Smallholder farmers in Sahel region.',
           comments: []
         },
         {
@@ -179,6 +214,13 @@ export const innovationCatalog = {
           country: 'Cameroon',
           title: 'Mobile extension service',
           summary: 'Extension agents supported with digital tools.',
+          key_metrics: {
+            geoscope: 'Cameroon',
+            typology: 'Digital Tools',
+            scaling_readiness: 3
+          },
+          expected_outcomes: 'Reach 5,000 farmers with timely advice.',
+          intended_beneficiaries: 'Cocoa and coffee farmers.',
           comments: []
         }
       ]
@@ -193,6 +235,13 @@ export const innovationCatalog = {
           country: 'Mozambique',
           title: 'Cassava disease detection app',
           summary: 'App helps identify cassava mosaic disease.',
+          key_metrics: {
+            geoscope: 'Mozambique',
+            typology: 'Digital Tools',
+            scaling_readiness: 4
+          },
+          expected_outcomes: 'Early detection in 1,000 farms.',
+          intended_beneficiaries: 'Cassava farmers in central provinces.',
           comments: []
         },
         {
@@ -200,6 +249,13 @@ export const innovationCatalog = {
           country: 'Zambia',
           title: 'Drought-tolerant maize hybrids',
           summary: 'Seed hybrids tested in dry zones.',
+          key_metrics: {
+            geoscope: 'Zambia',
+            typology: 'Seed Innovations',
+            scaling_readiness: 4
+          },
+          expected_outcomes: 'Increase yields by 20% in drought conditions.',
+          intended_beneficiaries: 'Maize farmers in Southern Province.',
           comments: []
         }
       ]

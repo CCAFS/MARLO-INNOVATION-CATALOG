@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { innovationCatalog } from '../../../jsons/innovation-list';
 import type { InnovationCatalog } from '../../../interfaces/innovation-catalog.interface';
 import { useSharedValue } from './composables/useSharedValue';
-
+import Paginator from 'primevue/paginator';
 const innovationCatalogData: InnovationCatalog = innovationCatalog;
 const { value } = useSharedValue();
 
@@ -65,5 +65,6 @@ const filteredScales = computed(() => {
         </article>
       </div>
     </div>
+    <Paginator :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"></Paginator>
   </section>
 </template>
