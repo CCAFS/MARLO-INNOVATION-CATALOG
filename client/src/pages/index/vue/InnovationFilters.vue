@@ -7,11 +7,11 @@ import Select from 'primevue/select';
 
 const selectedCity = ref();
 const cities = ref([
-  { name: 'New York', code: 'NY' },
-  { name: 'Rome', code: 'RM' },
-  { name: 'London', code: 'LDN' },
-  { name: 'Istanbul', code: 'IST' },
-  { name: 'Paris', code: 'PRS' }
+  { name: 'Option 1', code: '0' },
+  { name: 'Option 2', code: '1' },
+  { name: 'Option 3', code: '2' },
+  { name: 'Option 4', code: '3' },
+  { name: 'Option 5', code: '4' }
 ]);
 
 const { value, setValue, display } = useSharedValue();
@@ -40,9 +40,9 @@ const backgroundColor = computed(() => {
 
     <div class="flex flex-1 gap-2 justify-between">
       <div>
-        Innovation typology: <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Select a City" class="w-full md:w-56" />
+        Innovation typology: <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full md:w-56" />
       </div>
-      <div>SDG</div>
+      <div>SDG <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full md:w-56" /></div>
       <div><button>Clear</button></div>
     </div>
   </div>
