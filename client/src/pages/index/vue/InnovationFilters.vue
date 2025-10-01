@@ -13,8 +13,8 @@ const backgroundColor = computed(() => {
 <template>
   <div class="flex flex-col gap-4">
     <div>
-      <h2>{{ texts.home.ReadinessExplorerTitle }}</h2>
-      <p>{{ texts.home.ReadinessExplorerDescription }}</p>
+      <h2 class="text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
+      <p class="text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
     </div>
 
     <div>SELECTED OPTION:</div>
