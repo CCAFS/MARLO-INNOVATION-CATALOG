@@ -27,7 +27,7 @@ const filteredScales = computed(() => {
         <article
           v-for="innovation in scale.innovations"
           :key="innovation.id"
-          class="border-2 border-green-600/80 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+          class="border-2 border-green-600/80 rounded-3xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
           <!-- Badges -->
           <div class="flex items-center gap-3 mb-5">
             <!-- Trending chip -->
@@ -48,12 +48,12 @@ const filteredScales = computed(() => {
           </div>
 
           <!-- Title -->
-          <h3 class="text-3xl md:text-4xl font-extrabold leading-tight text-gray-900 mb-4">
+          <h3 class="text-md md:text-lg font-extrabold leading-tight text-gray-900 mb-2">
             {{ innovation.title ?? 'The Community of Practices of Institutions creates an' }}
           </h3>
 
           <!-- Summary -->
-          <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
+          <p class="text-gray-700 text-sm md:text-base leading-5 mb-2">
             {{
               innovation.summary ??
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
