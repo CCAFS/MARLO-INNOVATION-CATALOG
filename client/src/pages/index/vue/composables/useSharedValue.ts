@@ -1,7 +1,7 @@
 // composables/useSharedValue.ts
 import { ref, computed } from 'vue';
 
-// ref declarado fuera => todos los componentes comparten la misma instancia
+// ref declared outside => all components share the same instance
 const value = ref(0);
 
 export function useSharedValue() {
