@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { texts } from '../../../content/texts';
+import { circleColors } from './colors';
 
 const { value, setValue, display } = useSharedValue();
+
+const backgroundColor = computed(() => {
+  return value.value !== null ? circleColors[value.value] : '#16a34a';
+});
 </script>
 <template>
   <div class="flex flex-col gap-4">
@@ -12,7 +18,7 @@ const { value, setValue, display } = useSharedValue();
     </div>
 
     <div>SELECTED OPTION:</div>
-    <div class="flex flex-1 gap-2 bg-green-600">
+    <div class="flex flex-1 gap-2" :style="{ backgroundColor }">
       <div>{{ display }}</div>
       <div class="flex flex-col gap-2">
         <div>5 Model/Early Prototype</div>
