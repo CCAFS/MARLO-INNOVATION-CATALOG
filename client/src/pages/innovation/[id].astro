@@ -1,8 +1,35 @@
 ---
+import { Image } from 'astro:assets';
+import Icon1 from '../../images/icon-1.png';
+import Icon2 from '../../images/icon-2.png';
+import Icon3 from '../../images/icon-3.png';
+
 import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '~/jsons/innovation-list';
 import type { Innovation } from '~/interfaces/innovation-catalog.interface';
+import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
+
+const stats = [
+  {
+    title: 'Total innovations',
+    value: 32,
+    imagePath: Icon1,
+    quality: 'low'
+  },
+  {
+    title: 'Countries',
+    value: 25,
+    imagePath: Icon2,
+    quality: 'max'
+  },
+  {
+    title: 'Average scaling readiness',
+    value: 7,
+    imagePath: Icon3,
+    quality: 'low'
+  }
+];
 
 export const getStaticPaths = (() => {
   return innovationCatalog.scales.flatMap(scale =>
@@ -21,5 +48,165 @@ const { innovation } = Astro.props;
 ---
 
 <MainLayout title="Innovation Page">
-  <p>{innovation.title}</p>
+  <article class="container mx-auto">
+    <!-- Return link -->
+    <a href="/" class="my-12 mb-8 text-primary-500 text-sm font-semibold flex items-center gap-2">
+      <span class="pi pi-arrow-left"></span>
+      <p class="text-xs">Go back to innovations catalogue</p>
+    </a>
+
+    <!-- Title and main options -->
+    <section class="max-width">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-2.5">
+        <h1 class="text-base font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
+        <div class="flex flex-wrap gap-2 flex-shrink-0">
+          <button class="bg-white-100 text-primary-500 border border-border-light text-xs px-3 py-1 rounded pi pi-bookmark w-[36px] h-[36px]">
+          </button>
+          <button class="bg-white-100 text-secondary-300 border border-border-light text-xs px-3 py-1 rounded pi pi-file-pdf w-[36px] h-[36px]">
+          </button>
+          <button class="bg-white-100 text-accent-300 border border-border-light text-xs px-3 py-1 rounded pi pi-share-alt w-[36px] h-[36px]">
+          </button>
+          <button class="bg-white-100 text-accent-500 border border-border-light text-xs px-3 py-1 rounded pi pi-image w-[36px] h-[36px]"> </button>
+        </div>
+      </div>
+      <p class="text-base font-normal text-text-600 mb-6">{innovation.summary}</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-4 gap-4">
+      <section class="col-span-3">
+        <!-- Key Metrics -->
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500">Key metrics</p>
+          <div class="flex flex-wrap gap-24 mt-4 justify-center">
+            <!-- Geoscope -->
+            <div class="flex flex-col text-center items-center">
+              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
+                {(<Image height="40" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
+              </div>
+              <span class="text-[10px] text-primary-500 font-bold">Geoscope</span>
+              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.geoscope}</span>
+            </div>
+            <!-- Typology -->
+            <div class="flex flex-col text-center items-center">
+              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
+                {(<Image height="40" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
+              </div>
+              <span class="text-[10px] text-primary-500 font-bold">Typology</span>
+              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.typology}</span>
+            </div>
+            <!-- Scaling Readiness -->
+            <div class="flex flex-col text-center items-center">
+              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
+                {(<Image height="40" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
+              </div>
+              <span class="text-[10px] text-primary-500 font-bold">Scaling Readiness</span>
+              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.scaling_readiness}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Description -->
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500">Expected outcomes</p>
+          <p class="text-xs text-text-800 font-normal mt-4">{innovation.expected_outcomes}</p>
+          <p class="text-sm font-semibold text-primary-500 mt-6">Intended beneficiaries/users</p>
+          <p class="text-xs text-text-800 font-normal mt-4">{innovation.intended_beneficiaries}</p>
+        </div>
+        <!-- Community solution stories -->
+        <section class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500 mb-4">Community solution stories</p>
+
+          <!-- Input container -->
+          <div class="w-full mb-6">
+            <textarea
+              class="w-full p-3 border border-border-light rounded resize-none text-xs text-text-800 font-normal focus:outline-none focus:ring-2 focus:ring-primary-500"
+              rows="4"
+              placeholder="Share your story..."></textarea>
+            <div class="flex justify-end mt-2">
+              <button class="bg-primary-500 text-white text-xs px-4 py-2 rounded hover:bg-primary-600 transition-colors duration-300">
+                Submit
+              </button>
+            </div>
+          </div>
+          <!-- Comment stories -->
+          <div class="grid grid-cols-1 gap-4">
+            {
+              innovation.comments.map((story, index) => (
+                <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
+                  <div class="flex items-center mb-2 gap-2">
+                    <span class="text-xs text-text-800 font-semibold">{story.author}</span>
+                    <span class="w-[2px] h-[2px] rounded-full bg-text-800" />
+                    <span class="text-xs text-text-500 font-normal">{story.date}</span>
+                  </div>
+                  <p class="text-xs text-text-800 font-normal">{story.text}</p>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+      </section>
+      <aside class="col-span-1">
+        <!-- Download PDF button -->
+        <BasicButton
+          text="Download PDF"
+          hasIcon
+          icon="pi pi-file-pdf"
+          classList={'w-full justify-center border-secondary-300 text-secondary-300 mb-4 hover:bg-secondary-300'}
+        />
+        <!-- Quick Information -->
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500 mb-4">Quick information</p>
+
+          <div class="mb-4">
+            <p class="text-xs font-semibold text-text-800">Key actors</p>
+            <p class="text-xs text-text-800 font-normal">{innovation.key_actors}</p>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-text-800">Involved organizations</p>
+            <ul>
+              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 1</li>
+              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 2</li>
+              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 3</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Contact information -->
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500 mb-4">Contact information</p>
+
+          <div class="mb-4">
+            <p class="text-xs text-text-800 font-normal">Get in touch with the responsible team</p>
+            <div class="mt-6">
+              <p class="text-xs font-semibold text-text-800">Technical Support</p>
+              <a href="mailto:MARLOSupport@cgiar.org" class="text-[11px] text-primary-500 hover:underline break-all"
+                >KDS Team - MARLOSupport@cgiar.org</a
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Share -->
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg -white-100 text-text-300">
+          <p class="text-sm font-semibold text-primary-500 mb-4">Share</p>
+          <BasicButton
+            text="Save to favorites"
+            hasIcon
+            icon="pi pi-bookmark"
+            classList={'w-full justify-center border-primary-500 text-primary-500 mb-2 hover:bg-primary-500 '}
+          />
+          <BasicButton
+            text="Share to social network"
+            hasIcon
+            icon="pi pi-share-alt"
+            classList={'w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white'}
+          />
+          <BasicButton
+            text="Download jpg"
+            hasIcon
+            icon="pi pi-image"
+            classList={'w-full justify-center !border-accent-500 !text-accent-500 mb-2 hover:!bg-accent-500 hover:!text-white'}
+          />
+        </div>
+      </aside>
+    </div>
+  </article>
 </MainLayout>
