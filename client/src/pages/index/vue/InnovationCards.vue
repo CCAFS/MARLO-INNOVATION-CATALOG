@@ -1,14 +1,26 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { innovationCatalog } from '../../../jsons/innovation-list';
 import type { InnovationCatalog } from '../../../interfaces/innovation-catalog.interface';
-const innovationCatalogData: InnovationCatalog = innovationCatalog;
-</script>
+import { useSharedValue } from './composables/useSharedValue';
 
+const innovationCatalogData: InnovationCatalog = innovationCatalog;
+const { value } = useSharedValue();
+
+// Filter scales based on the selected value (index corresponds directly to scale.id)
+const filteredScales = computed(() => {
+  if (value.value === null || value.value === undefined) {
+    return innovationCatalogData.scales;
+  }
+
+  return innovationCatalogData.scales.filter(scale => scale.id === value.value);
+});
+</script>
 <template>
   <section class="container mx-auto p-4">
     <h1 class="text-4xl font-bold mb-6 text-center">Innovation Catalog</h1>
 
-    <div v-for="scale in innovationCatalogData.scales" :key="scale.id" class="mb-8">
+    <div v-for="scale in filteredScales" :key="scale.id" class="mb-8">
       <h2 class="text-2xl font-semibold mb-4">{{ scale.name }}</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
