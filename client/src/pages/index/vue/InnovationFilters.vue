@@ -7,11 +7,11 @@ import Select from 'primevue/select';
 
 const selectedCity = ref();
 const cities = ref([
-  { name: 'New York', code: 'NY' },
-  { name: 'Rome', code: 'RM' },
-  { name: 'London', code: 'LDN' },
-  { name: 'Istanbul', code: 'IST' },
-  { name: 'Paris', code: 'PRS' }
+  { name: 'Option 1', code: '0' },
+  { name: 'Option 2', code: '1' },
+  { name: 'Option 3', code: '2' },
+  { name: 'Option 4', code: '3' },
+  { name: 'Option 5', code: '4' }
 ]);
 
 const { value, setValue, display } = useSharedValue();
@@ -21,7 +21,7 @@ const backgroundColor = computed(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5 h-max">
     <div>
       <h2 class="text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
       <p class="text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
@@ -38,12 +38,23 @@ const backgroundColor = computed(() => {
       </div>
     </div>
 
-    <div class="flex flex-1 gap-2 justify-between">
-      <div>
-        Innovation typology: <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Select a City" class="w-full md:w-56" />
+    <div class="flex flex-1 gap-4">
+      <!-- Innovation typology -->
+      <div class="flex flex-1 items-center gap-2">
+        <div class="whitespace-nowrap">Innovation typology:</div>
+        <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full" />
       </div>
-      <div>SDG</div>
-      <div><button>Clear</button></div>
+
+      <!-- SDG -->
+      <div class="flex flex-1 items-center gap-2">
+        <div class="whitespace-nowrap">SDG</div>
+        <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full" />
+      </div>
+
+      <!-- Clear button -->
+      <div class="flex items-center">
+        <button>Clear</button>
+      </div>
     </div>
   </div>
 </template>
