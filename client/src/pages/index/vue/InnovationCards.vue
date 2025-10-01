@@ -18,20 +18,16 @@ const filteredScales = computed(() => {
 </script>
 <template>
   <section class="container mx-auto p-4">
-    <h1 class="text-4xl font-bold mb-6 text-center">Innovation Catalog</h1>
-
-    <div v-for="scale in filteredScales" :key="scale.id" class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">{{ scale.name }}</h2>
-
+    <div v-for="scale in filteredScales" :key="scale.id" class="mb-8 mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <article
           v-for="innovation in scale.innovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-3xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
           <!-- Badges -->
-          <div class="flex items-center gap-3 mb-5">
+          <div class="flex items-center gap-3 mb-3">
             <!-- Trending chip -->
-            <div class="inline-flex items-center gap-2 border-2 border-green-600 rounded-full px-4 py-1.5 text-green-700">
+            <div class="inline-flex items-center gap-2 border-1 border-green-600 rounded-full px-4 py-0.5 text-green-700">
               <div class="w-3 h-3 rounded-full border-2 border-green-600 grid place-items-center leading-none">
                 <span class="text-sm -mt-0.5">↗</span>
               </div>
@@ -39,7 +35,7 @@ const filteredScales = computed(() => {
             </div>
 
             <!-- Country chip -->
-            <div class="inline-flex items-center gap-2 border-2 border-green-600 rounded-full px-4 py-1.5 text-green-700">
+            <div class="inline-flex items-center gap-2 border-1 border-green-600 rounded-full px-4 py-0.5 text-green-700">
               <div class="w-3 h-3 rounded-full border-2 border-green-600 grid place-items-center">
                 <div class="w-3 h-3 rounded-full bg-green-600/80" />
               </div>
