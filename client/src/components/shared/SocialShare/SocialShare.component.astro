@@ -28,47 +28,48 @@ const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${en
     Share to social network
   </button>
 
-  <!-- Dropdown menu -->
-  <div
-    class="social-share-dropdown hidden group-hover:block absolute top-full left-0 w-full mt-1 bg-white border border-border-light rounded-lg shadow-lg z-10 overflow-hidden">
-    <!-- LinkedIn -->
-    <a
-      href={linkedInUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
-      <i class="pi pi-linkedin text-[#0A66C2] text-base"></i>
-      <span>Share on LinkedIn</span>
-    </a>
+  <!-- Dropdown wrapper with padding to bridge the gap -->
+  <div class="dropdown-wrapper hidden group-hover:block absolute top-full left-0 w-full pt-1 z-10">
+    <div class="social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg overflow-hidden">
+      <!-- LinkedIn -->
+      <a
+        href={linkedInUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
+        <i class="pi pi-linkedin text-[#0A66C2] text-base"></i>
+        <span>Share on LinkedIn</span>
+      </a>
 
-    <!-- Facebook -->
-    <a
-      href={facebookUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
-      <i class="pi pi-facebook text-[#1877F2] text-base"></i>
-      <span>Share on Facebook</span>
-    </a>
+      <!-- Facebook -->
+      <a
+        href={facebookUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        <i class="pi pi-facebook text-[#1877F2] text-base"></i>
+        <span>Share on Facebook</span>
+      </a>
 
-    <!-- Twitter/X -->
-    <a
-      href={twitterUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
-      <i class="pi pi-twitter text-[#000000] text-base"></i>
-      <span>Share on X (Twitter)</span>
-    </a>
+      <!-- Twitter/X -->
+      <a
+        href={twitterUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        <i class="pi pi-twitter text-[#000000] text-base"></i>
+        <span>Share on X (Twitter)</span>
+      </a>
 
-    <!-- Copy Link -->
-    <button
-      type="button"
-      class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left"
-      data-url={shareUrl}>
-      <i class="pi pi-link text-accent-300 text-base"></i>
-      <span class="copy-link-text">Copy hyperlink</span>
-    </button>
+      <!-- Copy Link -->
+      <button
+        type="button"
+        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left"
+        data-url={shareUrl}>
+        <i class="pi pi-link text-accent-300 text-base"></i>
+        <span class="copy-link-text">Copy hyperlink</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -110,13 +111,13 @@ const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${en
     position: relative;
   }
 
-  .social-share-dropdown {
+  .dropdown-wrapper {
     min-width: 100%;
   }
 
-  /* Ensure dropdown stays visible on hover */
-  .social-share-container:hover .social-share-dropdown,
-  .social-share-dropdown:hover {
+  /* Ensure dropdown stays visible on hover - the wrapper includes padding to bridge the gap */
+  .social-share-container:hover .dropdown-wrapper,
+  .dropdown-wrapper:hover {
     display: block;
   }
 </style>
