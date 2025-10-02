@@ -23,7 +23,7 @@ const filteredScales = computed(() => {
         <article
           v-for="innovation in scale.innovations"
           :key="innovation.id"
-          class="border-1 border-green-600/80 rounded-xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+          class="border-1 border-green-600/80 rounded-xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white flex flex-col">
           <!-- Badges -->
           <div class="flex items-center gap-3 mb-3">
             <!-- Trending chip -->
@@ -49,7 +49,7 @@ const filteredScales = computed(() => {
           </h3>
 
           <!-- Summary -->
-          <p class="text-gray-700 text-sm md:text-base leading-5 mb-2">
+          <p class="text-gray-700 text-sm md:text-base leading-5 mb-2 flex-grow">
             {{
               innovation.summary ??
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -57,8 +57,10 @@ const filteredScales = computed(() => {
           </p>
 
           <!-- View more -->
-          <div class="flex">
-            <a :href="`/innovation/${innovation.id}`" class="ml-auto text-green-700 underline underline-offset-4 decoration-2 hover:text-green-800">
+          <div class="flex mt-auto">
+            <a
+              :href="`/innovation/${innovation.id}`"
+              class="ml-auto text-[#439255] text-sm font-light underline underline-offset-4 decoration-1 hover:text-green-600">
               View more
             </a>
           </div>
