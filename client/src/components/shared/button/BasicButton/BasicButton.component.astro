@@ -1,6 +1,6 @@
 ---
 interface Props {
-  text: string;
+  text?: string;
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
   disabled?: boolean;
@@ -21,7 +21,8 @@ const { text, type = 'button', onClick, disabled = false, hasIcon = false, icon 
     'hover:bg-primary-300 hover:text-white hover:border-transparent',
     {
       'opacity-50 cursor-not-allowed': disabled,
-      'gap-1': hasIcon
+      'gap-1': hasIcon,
+      'w-[36px] h-[36px]': hasIcon && !text
     },
     className,
     classList

@@ -1,0 +1,123 @@
+---
+interface Props {
+  url?: string;
+  title?: string;
+}
+
+const { url, title } = Astro.props;
+
+// Get the current page URL if not provided
+const shareUrl = url || Astro.url.href;
+const shareTitle = title || 'Check out this innovation';
+
+// Encode URL and title for sharing
+const encodedUrl = encodeURIComponent(shareUrl);
+const encodedTitle = encodeURIComponent(shareTitle);
+
+// Social media share URLs
+const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+---
+
+<div class="social-share-container group relative">
+  <button
+    class="w-full flex items-center justify-center gap-2 px-4 py-2.25 border border-accent-300 rounded-lg text-xs text-accent-300 bg-white font-medium hover:bg-accent-300 hover:text-white transition-colors duration-300"
+    type="button">
+    <i class="pi pi-share-alt text-[1rem]"></i>
+    Share to social network
+  </button>
+
+  <!-- Dropdown wrapper with padding to bridge the gap -->
+  <div class="dropdown-wrapper hidden group-hover:block absolute top-full left-0 w-full pt-1 z-10">
+    <div class="social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg overflow-hidden">
+      <!-- LinkedIn -->
+      <a
+        href={linkedInUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
+        <i class="pi pi-linkedin text-[#0A66C2] text-base"></i>
+        <span>Share on LinkedIn</span>
+      </a>
+
+      <!-- Facebook -->
+      <a
+        href={facebookUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        <i class="pi pi-facebook text-[#1877F2] text-base"></i>
+        <span>Share on Facebook</span>
+      </a>
+
+      <!-- Twitter/X -->
+      <a
+        href={twitterUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        <i class="pi pi-twitter text-[#000000] text-base"></i>
+        <span>Share on X (Twitter)</span>
+      </a>
+
+      <!-- Copy Link -->
+      <button
+        type="button"
+        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left"
+        data-url={shareUrl}>
+        <i class="pi pi-link text-accent-300 text-base"></i>
+        <span class="copy-link-text">Copy hyperlink</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Handle copy link functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-link-btn');
+
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async e => {
+        e.preventDefault();
+        const url = button.getAttribute('data-url');
+        const textSpan = button.querySelector('.copy-link-text');
+
+        if (url && textSpan) {
+          try {
+            await navigator.clipboard.writeText(url);
+            const originalText = textSpan.textContent;
+            textSpan.textContent = 'Copied!';
+
+            setTimeout(() => {
+              textSpan.textContent = originalText;
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+            textSpan.textContent = 'Failed to copy';
+            setTimeout(() => {
+              textSpan.textContent = 'Copy hyperlink';
+            }, 2000);
+          }
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .social-share-container {
+    position: relative;
+  }
+
+  .dropdown-wrapper {
+    min-width: 100%;
+  }
+
+  /* Ensure dropdown stays visible on hover - the wrapper includes padding to bridge the gap */
+  .social-share-container:hover .dropdown-wrapper,
+  .dropdown-wrapper:hover {
+    display: block;
+  }
+</style>
