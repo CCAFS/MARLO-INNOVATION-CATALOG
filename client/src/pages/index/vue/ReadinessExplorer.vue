@@ -6,8 +6,8 @@ import { texts } from './../../../content/texts.ts';
 </script>
 
 <template>
-  <div class="bg-gradient-to-r from-[#DFF5FF] to-[#B1D4C5] p-10 pb-6">
-    <div class="w-full rounded-lg mt-10 grid grid-cols-[525px_auto] gap-4">
+  <div class="bg-gradient-to-r from-[#DFF5FF] to-[#B1D4C5] p-10 pb-6 mt-10">
+    <div class="w-full rounded-lg grid grid-cols-[525px_auto] gap-4">
       <MapFilter />
       <PrimeProvider>
         <InnovationFilters />
