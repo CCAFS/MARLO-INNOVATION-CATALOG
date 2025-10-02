@@ -27,7 +27,7 @@ const filteredScales = computed(() => {
           <!-- Badges -->
           <div class="flex items-center gap-2 mb-2">
             <!-- Trending chip -->
-            <div class="inline-flex items-center gap-1 border-1 border-green-600 rounded-full px-2 py-0.5 text-green-700">
+            <div class="inline-flex items-center gap-1 border-1 border-[#439255] rounded-full px-2 py-0.5 text-[#439255]">
               <svg height="14" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fill-rule="evenodd"
@@ -40,7 +40,7 @@ const filteredScales = computed(() => {
             </div>
 
             <!-- Country chip -->
-            <div class="inline-flex items-center gap-1 border-1 border-green-600 rounded-full px-2 py-0.5 text-green-700">
+            <div class="inline-flex items-center gap-1 border-1 border-[#439255] rounded-full px-2 py-0.5 text-[#439255]">
               <img src="icon-2.png" class="h-4" alt="" srcset="" />
               <span class="">{{ innovation.country ?? 'Senegal' }}</span>
             </div>
@@ -52,7 +52,7 @@ const filteredScales = computed(() => {
           </h3>
 
           <!-- Summary -->
-          <p class="text-gray-700 text-sm md:text-base leading-5 mb-2 flex-grow">
+          <p class="text-gray-700 text-sm md:text-base leading-5 mb-2 flex-grow text-justify">
             {{
               innovation.summary ??
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
