@@ -9,6 +9,7 @@ import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '~/jsons/innovation-list';
 import type { Innovation } from '~/interfaces/innovation-catalog.interface';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
+import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 
 const stats = [
   {
@@ -185,7 +186,7 @@ const { innovation } = Astro.props;
           </div>
         </div>
         <!-- Share -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded bg -white-100 text-text-300">
+        <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
           <p class="text-sm font-semibold text-primary-500 mb-4">Share</p>
           <BasicButton
             text="Save to favorites"
@@ -193,15 +194,8 @@ const { innovation } = Astro.props;
             icon="pi pi-bookmark"
             classList={'w-full justify-center border-primary-500 text-primary-500 mb-2 hover:bg-primary-500 '}
           />
-          <BasicButton
-            text="Share to social network"
-            hasIcon
-            icon="pi pi-share-alt"
-            classList={'w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white'}
-          />
-          <div class="h-10 p-5 bg-accent-300 flex items-center justify-center group relative">
-            share
-            <div class="bg-white hidden group-hover:block absolute top-10 left-0 w-full h-[50px] p-4 shadow-md"></div>
+          <div class="mb-2">
+            <SocialShare title={innovation.title} />
           </div>
           <BasicButton
             text="Download jpg"
