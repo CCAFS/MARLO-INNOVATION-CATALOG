@@ -1,5 +1,6 @@
 ---
 const { title, description } = Astro.props;
+import { domain } from './../content/vars.ts';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
@@ -21,8 +22,8 @@ import '../styles/global.css';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="article" />
-    <!-- <meta property="og:url" content="https://tudominio.com" />
-    <meta property="og:image" content="https://tudominio.com/preview.jpg" /> -->
+    <!-- <meta property="og:url" content="https://tudominio.com" /> -->
+    <meta property="og:image" content={domain + 'logo.png'} />
     <title>{title}</title>
     <ClientRouter />
   </head>
