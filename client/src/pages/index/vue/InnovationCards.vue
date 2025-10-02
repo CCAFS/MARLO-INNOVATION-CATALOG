@@ -23,7 +23,7 @@ const filteredScales = computed(() => {
         <article
           v-for="innovation in scale.innovations"
           :key="innovation.id"
-          class="border-1 border-green-600/80 rounded-3xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+          class="border-1 border-green-600/80 rounded-xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
           <!-- Badges -->
           <div class="flex items-center gap-3 mb-3">
             <!-- Trending chip -->
