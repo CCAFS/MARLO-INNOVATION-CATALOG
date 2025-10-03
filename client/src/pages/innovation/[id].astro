@@ -10,6 +10,7 @@ import { innovationCatalog } from '~/jsons/innovation-list';
 import type { Innovation } from '~/interfaces/innovation-catalog.interface';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
+import Input from '~/components/shared/input/Input.astro';
 
 const stats = [
   {
@@ -131,19 +132,17 @@ const { innovation } = Astro.props;
           <p class="text-sm font-semibold text-primary-300 mb-4">Community solution stories</p>
 
           <!-- Input container -->
-          <div class="w-full mb-6">
-            <textarea
-              class="w-full p-3 border border-border-light rounded resize-none text-xs text-text-800 font-normal focus:outline-none focus:ring-2 focus:ring-primary-300"
-              rows="4"
-              placeholder="Share your story..."></textarea>
-            <div class="flex justify-end mt-2">
-              <button class="bg-primary-300 text-white text-xs px-4 py-2 rounded hover:bg-primary-600 transition-colors duration-300">
-                Submit
-              </button>
-            </div>
-          </div>
+          <Input
+            label="Share your experience with this innovation or read what others have accomplished."
+            placeholder="Share your story..."
+            id="story-input"
+            name="story-input"
+            maxLength={30}
+            hasBtnIcon
+            btnIcon="majesticons--comment"
+          />
           <!-- Comment stories -->
-          <div class="grid grid-cols-1 gap-4">
+          <div class="grid grid-cols-1 gap-4 mt-4">
             {
               innovation.comments.map((story, index) => (
                 <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
