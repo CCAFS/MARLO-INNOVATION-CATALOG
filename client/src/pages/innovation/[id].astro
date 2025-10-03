@@ -49,7 +49,7 @@ interface Props {
 const { innovation } = Astro.props;
 ---
 
-<MainLayout title="Innovation Page">
+<MainLayout title={innovation.title} description={innovation.summary}>
   <article class="container mx-auto">
     <!-- Return link -->
     <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2">
