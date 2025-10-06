@@ -21,7 +21,7 @@ const backgroundColor = computed(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-5 h-max">
+  <div class="flex flex-col gap-5 h-max m-8">
     <div>
       <h2 class="text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
       <p class="text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>

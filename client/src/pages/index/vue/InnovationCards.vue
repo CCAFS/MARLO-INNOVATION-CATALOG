@@ -17,7 +17,7 @@ const filteredScales = computed(() => {
 });
 </script>
 <template>
-  <section class="container mx-auto p-4">
+  <section class="container mx-auto p-0 xl:p-16 2xl:p-20">
     <div v-for="scale in filteredScales" :key="scale.id" class="mb-8 mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <article
