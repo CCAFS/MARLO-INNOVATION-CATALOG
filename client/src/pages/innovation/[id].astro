@@ -11,6 +11,7 @@ import type { Innovation } from '~/interfaces/innovation-catalog.interface';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
+import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
 
 const stats = [
   {
@@ -73,11 +74,7 @@ const { innovation } = Astro.props;
             classList={'bg-white-100 text-secondary-300 border border-border-light text-xs px-3 py-1 rounded hover:!bg-secondary-300 hover:!text-white'}
           />
           <SocialShare title={innovation.title} isJustIcon className={'!border-border-light text-xs px-3 py-1 rounded mb-0 !w-[36px]'} />
-          <BasicButton
-            hasIcon
-            icon="pi pi-image"
-            classList={'bg-white-100 !text-accent-500 border border-border-light text-xs px-3 py-1 rounded hover:!bg-accent-500 hover:!text-white'}
-          />
+          <DownloadImage isJustIcon className={'!border-border-light text-xs px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
       <p class="text-base font-normal text-text-600 mb-6">{innovation.summary}</p>
@@ -205,12 +202,7 @@ const { innovation } = Astro.props;
           <div class="mb-2">
             <SocialShare title={innovation.title} className="!mb-0" />
           </div>
-          <BasicButton
-            text="Download jpg"
-            hasIcon
-            icon="pi pi-image"
-            classList={'w-full justify-center !border-accent-500 !text-accent-500 mb-2 hover:!bg-accent-500 hover:!text-white'}
-          />
+          <DownloadImage />
         </div>
       </aside>
     </div>
