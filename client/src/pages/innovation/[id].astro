@@ -72,11 +72,7 @@ const { innovation } = Astro.props;
             icon="pi pi-file-pdf"
             classList={'bg-white-100 text-secondary-300 border border-border-light text-xs px-3 py-1 rounded hover:!bg-secondary-300 hover:!text-white'}
           />
-          <BasicButton
-            hasIcon
-            icon="pi pi-share-alt"
-            classList={'bg-white-100 !text-accent-300 border border-border-light text-xs px-3 py-1 rounded hover:!bg-accent-300 hover:!text-white'}
-          />
+          <SocialShare title={innovation.title} isJustIcon className={'!border-border-light text-xs px-3 py-1 rounded mb-0 !w-[36px]'} />
           <BasicButton
             hasIcon
             icon="pi pi-image"
@@ -207,7 +203,7 @@ const { innovation } = Astro.props;
             classList={'w-full justify-center border-primary-300 text-primary-300 mb-2 hover:bg-primary-300 '}
           />
           <div class="mb-2">
-            <SocialShare title={innovation.title} />
+            <SocialShare title={innovation.title} className="!mb-0" />
           </div>
           <BasicButton
             text="Download jpg"
