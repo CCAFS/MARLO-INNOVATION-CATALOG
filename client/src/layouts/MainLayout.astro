@@ -6,6 +6,8 @@ import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
+
+const link = Astro.url.href;
 ---
 
 <html lang="en">
@@ -22,12 +24,21 @@ import '../styles/global.css';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="article" />
-    <!-- <meta property="og:url" content="https://tudominio.com" /> -->
+    <meta property="og:url" content={link} />
     <meta property="og:image" content={domain + '/logo.png'} />
+    <meta property="og:image:alt" content="AICCRA Innovation Catalog Logo" />
+    <meta property="og:logo" content={domain + '/logo.png'} />
+    <meta property="og:site_name" content="AICCRA Innovation Catalog" />
+
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={domain + '/logo.png'} />
     <title>{title}</title>
     <ClientRouter />
   </head>
-  <body>
+  <body class="bg-white">
     <TopBar />
     <div class="max-w-screen-2xl mx-auto">
       <slot />

@@ -1,0 +1,119 @@
+---
+interface Props {
+  placeholder: string;
+  id: string;
+  name: string;
+  label?: string;
+  value?: string;
+  required?: boolean;
+  maxLength?: number;
+  hasBtnIcon?: boolean;
+  btnIcon?: string;
+  hasIcon?: boolean;
+  icon?: string;
+}
+
+const {
+  placeholder,
+  label,
+  id,
+  name,
+  value = '',
+  required = false,
+  maxLength = 100,
+  hasBtnIcon = false,
+  btnIcon,
+  hasIcon = false,
+  icon
+} = Astro.props;
+---
+
+<custom-input data-id={id} data-maxlength={maxLength} class="input-container w-full mx-auto min-w-[300px] mb-8">
+  {
+    label && (
+      <label for={id} class="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+    )
+  }
+  <div class="relative">
+    <input
+      type="text"
+      class="peer block w-full rounded-md border border-gray-300 px-3 pt-1 pb-1 text-sm text-gray-900 focus:border-primary-300 focus:outline-none focus:ring-1 focus:ring-primary-300"
+      placeholder={placeholder}
+      id={id}
+      name={name}
+      value={value}
+      required={required}
+    />
+
+    {
+      hasIcon && icon && (
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <i class={icon} />
+        </span>
+      )
+    }
+
+    {
+      hasBtnIcon && btnIcon && (
+        <button
+          type="submit"
+          class="absolute right-1.5 top-0.75 rounded text-primary-300 border border-transparent text-center text-sm transition-all "
+          aria-label="Button Icon">
+          <i
+            class={btnIcon}
+            class:list={[
+              'w-2 h-2',
+              'pointer-events-all',
+              {
+                'text-primary-300': true,
+                'hover:text-primary-500': true
+              }
+            ]}
+          />
+        </button>
+      )
+    }
+    {
+      maxLength > 0 && (
+        <p id="word-count" class="flex items-end justify-end mt-2 text-xs text-slate-400">
+          ({maxLength} words remaining of {maxLength})
+        </p>
+      )
+    }
+  </div>
+</custom-input>
+
+<script>
+  class CustomInput extends HTMLElement {
+    connectedCallback() {
+      const id = this.dataset.id;
+      if (id) {
+        const inputElement = document.getElementById(id) as HTMLInputElement;
+        const wordCountElement = document.getElementById('word-count') as HTMLElement;
+
+        if (!inputElement || !wordCountElement) return;
+
+        const maxLength = parseInt(this.dataset.maxlength || '100');
+
+        inputElement.addEventListener('input', () => {
+          const words = inputElement.value
+            .trim()
+            .split(/\s+/)
+            .filter(word => word.length > 0);
+
+          const wordsRemaining = Math.max(0, maxLength - words.length);
+          wordCountElement.textContent = `(${wordsRemaining} words remaining of ${maxLength})`;
+
+          if (words.length > maxLength) {
+            /* Make input not write more characters */
+            inputElement.value = words.slice(0, maxLength).join(' ');
+          }
+        });
+      }
+    }
+  }
+
+  customElements.define('custom-input', CustomInput);
+</script>

@@ -1,36 +1,57 @@
 ---
+import getSharingLink from '~/utils/share-link/getSharingLink';
+import BasicButton from '../button/BasicButton/BasicButton.component.astro';
+
 interface Props {
   url?: string;
   title?: string;
+  isJustIcon?: boolean;
+  className?: string;
 }
 
-const { url, title } = Astro.props;
+const { url, title, isJustIcon, className } = Astro.props;
 
 // Get the current page URL if not provided
 const shareUrl = url || Astro.url.href;
 const shareTitle = title || 'Check out this innovation';
-
 // Encode URL and title for sharing
 const encodedUrl = encodeURIComponent(shareUrl);
 const encodedTitle = encodeURIComponent(shareTitle);
 
 // Social media share URLs
-const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+/* const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
 const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`; */
+
+const linkedInUrl = getSharingLink({
+  url: shareUrl,
+  network: 'linkedin'
+});
+
+const facebookUrl = getSharingLink({
+  url: shareUrl,
+  network: 'facebook'
+});
+
+const twitterUrl = getSharingLink({
+  url: shareUrl,
+  title: shareTitle,
+  network: 'twitter',
+  hashtags: 'Innovation,Research,AICCRA'
+});
 ---
 
-<div class="social-share-container group relative">
-  <button
-    class="w-full flex items-center justify-center gap-2 px-4 py-2.25 border border-accent-300 rounded-lg text-xs text-accent-300 bg-white font-medium hover:bg-accent-300 hover:text-white transition-colors duration-300"
-    type="button">
-    <i class="pi pi-share-alt text-[1rem]"></i>
-    Share to social network
-  </button>
-
+<div class="social-share-container group relative overflow-visible">
+  <BasicButton
+    {...isJustIcon ? {} : { text: 'Share to social network' }}
+    hasIcon
+    icon="pi pi-share-alt"
+    classList={`w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white ${className}`}
+  />
   <!-- Dropdown wrapper with padding to bridge the gap -->
-  <div class="dropdown-wrapper hidden group-hover:block absolute top-full left-0 w-full pt-1 z-10">
-    <div class="social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg overflow-hidden">
+  <div class={`dropdown-wrapper hidden group-hover:block absolute top-full w-full pt-1 z-10`}>
+    <div
+      class={`social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg ${isJustIcon ? 'w-max absolute right-0' : 'overflow-hidden w-full'}`}>
       <!-- LinkedIn -->
       <a
         href={linkedInUrl}
