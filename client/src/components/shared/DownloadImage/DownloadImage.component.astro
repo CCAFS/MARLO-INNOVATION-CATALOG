@@ -1,0 +1,74 @@
+---
+import BasicButton from '../button/BasicButton/BasicButton.component.astro';
+
+interface Props {
+  url?: string;
+  title?: string;
+  isJustIcon?: boolean;
+  className?: string;
+}
+
+const { url, title, isJustIcon, className } = Astro.props;
+---
+
+<download-image class="download-image-container group relative overflow-visible">
+  <BasicButton
+    {...isJustIcon ? {} : { text: 'Download jpg' }}
+    hasIcon
+    icon="pi pi-image"
+    classList={`w-full justify-center !border-accent-500 !text-accent-500 mb-2 hover:!bg-accent-500 hover:!text-white ${className}`}
+  />
+</download-image>
+
+<script>
+  import { domToJpeg } from 'modern-screenshot';
+
+  class DownloadImage extends HTMLElement {
+    connectedCallback() {
+      const btnDownload = this.querySelector('button');
+      if (btnDownload) {
+        document.addEventListener('DOMContentLoaded', () => {
+          const downloadBtn = btnDownload as HTMLButtonElement | null;
+          console.log('DownloadImage component loaded');
+          if (downloadBtn) {
+            downloadBtn.addEventListener('click', async () => {
+              try {
+                // Show loading state (optional)
+                downloadBtn.disabled = true;
+
+                // Capture screenshot of the entire article
+                const bodyElement = document.querySelector('body');
+
+                if (bodyElement) {
+                  const dataUrl = await domToJpeg(bodyElement, {
+                    quality: 0.95,
+                    width: bodyElement.scrollWidth,
+                    height: bodyElement.scrollHeight
+                  });
+
+                  // Create download link
+                  const link = document.createElement('a');
+                  link.download = `innovation-${Date.now()}.jpg`;
+                  link.href = dataUrl;
+
+                  // Trigger download
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }
+              } catch (error) {
+                console.error('Screenshot failed:', error);
+                alert('Failed to generate screenshot');
+              } finally {
+                // Reset button state
+                downloadBtn.disabled = false;
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  customElements.define('download-image', DownloadImage);
+</script>
