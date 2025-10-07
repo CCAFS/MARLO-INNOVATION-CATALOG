@@ -31,7 +31,7 @@ const {
 <custom-input data-id={id} data-maxlength={maxLength} class="input-container w-full mx-auto min-w-[300px] mb-8">
   {
     label && (
-      <label for={id} class="block text-sm font-medium text-gray-700 mb-1">
+      <label for={id} class="block text-sm xl:text-base 2xl:text-lg font-medium text-gray-700 mb-1">
         {label}
       </label>
     )
@@ -39,7 +39,7 @@ const {
   <div class="relative">
     <input
       type="text"
-      class="peer block w-full rounded-md border border-gray-300 px-3 pt-1 pb-1 text-sm text-gray-900 focus:border-primary-300 focus:outline-none focus:ring-1 focus:ring-primary-300"
+      class="peer block w-full rounded-md border border-gray-300 px-3 pt-1 pb-1 text-sm xl:text-base 2xl:text-lg text-gray-900 focus:border-primary-300 focus:outline-none focus:ring-1 focus:ring-primary-300"
       placeholder={placeholder}
       id={id}
       name={name}
@@ -59,7 +59,7 @@ const {
       hasBtnIcon && btnIcon && (
         <button
           type="submit"
-          class="absolute right-1.5 top-0.75 rounded text-primary-300 border border-transparent text-center text-sm transition-all "
+          class="absolute right-1.5 top-0.75 rounded text-primary-300 border border-transparent text-center text-sm xl:text-base 2xl:text-lg transition-all "
           aria-label="Button Icon">
           <i
             class={btnIcon}
