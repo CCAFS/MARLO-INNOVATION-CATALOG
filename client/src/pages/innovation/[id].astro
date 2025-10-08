@@ -7,11 +7,11 @@ import Icon6 from '../../images/icon-6.png';
 import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '~/jsons/innovation-list';
-import type { Innovation } from '~/interfaces/innovation-catalog.interface';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
+import type { InnovationCatalogV2, InnovationDetail } from '~/interfaces/innovation-catalog-v2.interface';
 
 const stats = [
   {
@@ -34,7 +34,191 @@ const stats = [
   }
 ];
 
-export const getStaticPaths = (() => {
+export const getStaticPaths = (async () => {
+  console.log('Building static paths for innovations...');
+
+  // Helper function to fetch innovations from API at build time
+  async function fetchInnovationsFromAPI(): Promise<InnovationCatalogV2 | null> {
+    try {
+      // Use direct server URL for build-time fetching
+      const apiUrl = 'http://172.30.0.32:8080/api/innovations/search-simple?phase=428';
+
+      console.log('Building: Fetching innovations from:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`API request failed with status: ${response.status}. Falling back to static data.`);
+        return null;
+      }
+
+      const data = await response.json();
+      console.log('Build: Successfully fetched innovations from API');
+      return data;
+    } catch (error) {
+      console.warn('Build: API fetch failed, falling back to static data:', error);
+      return null;
+    }
+  }
+
+  // Helper function to fetch a specific innovation by ID
+  async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
+    try {
+      const apiUrl = `http://172.30.0.32:8080/api/innovations/?phase=428&innovationId=${id}`;
+
+      console.log('Building: Fetching innovation detail from:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`API request failed for innovation ${id} with status: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+      console.log(`Build: Successfully fetched innovation ${id} from API`);
+      return data;
+    } catch (error) {
+      console.warn(`Build: API fetch failed for innovation ${id}:`, error);
+      return null;
+    }
+  }
+
+  try {
+    // Try to fetch from API first
+    const apiData = await fetchInnovationsFromAPI();
+
+    console.log('API Data:', apiData);
+
+    if (apiData?.innovations && apiData.innovations.length > 0) {
+      console.log(`Building paths from API data: ${apiData.innovations.length} innovations`);
+
+      // Create paths and fetch detailed data for each innovation
+      const paths = await Promise.allSettled(
+        apiData.innovations.map(async innovation => {
+          try {
+            const detailedInnovation = await fetchInnovationById(innovation.projectInnovationId);
+
+            if (detailedInnovation) {
+              return {
+                params: { id: innovation.projectInnovationId.toString() },
+                props: { innovation: detailedInnovation }
+              };
+            } else {
+              // Return a basic innovation object if detailed fetch fails
+              return {
+                params: { id: innovation.projectInnovationId.toString() },
+                props: {
+                  innovation: {
+                    id: innovation.projectInnovationId,
+                    title: innovation.title || 'Innovation Detail',
+                    narrative: innovation.narrative || 'Loading...',
+                    // Map other available fields from InnovationResume to InnovationDetail structure
+                    projectInnovationId: innovation.projectInnovationId,
+                    idPhase: innovation.idPhase,
+                    year: innovation.year,
+                    innovationTypeId: innovation.innovationTypeId,
+                    readinessScale: innovation.readinessScale,
+                    // Add default values for missing fields
+                    descriptionStage: '',
+                    evidenceLink: '',
+                    genderExplanation: '',
+                    youthExplanation: '',
+                    beneficiariesNarrative: '',
+                    otherIntellectualProperty: '',
+                    innovationImportance: '',
+                    readinessReason: '',
+                    genderScoreId: 0,
+                    climateChangeScoreId: 0,
+                    foodSecurityScoreId: 0,
+                    environmentalScoreId: 0,
+                    povertyJobsScoreId: 0,
+                    isActive: innovation.isActive,
+                    projectId: innovation.projectId,
+                    actors: [],
+                    sdgs: innovation.sdgs || [],
+                    regions: innovation.regions || [],
+                    countries: innovation.countries || [],
+                    organizations: [],
+                    externalPartners: [],
+                    // Copy nested objects
+                    phase: innovation.phase,
+                    innovationType: innovation.innovationType,
+                    activeSince: new Date(),
+                    createdBy: null,
+                    modifiedBy: null,
+                    modificationJustification: null,
+                    // Initialize optional fields
+                    phaseResearchId: null,
+                    stageInnovationId: null,
+                    geographicScopeId: null,
+                    repIndRegionId: null,
+                    repIndContributionCrpId: null,
+                    repIndDegreeInnovationId: null,
+                    projectExpectedStudiesId: null,
+                    genderFocusLevelId: null,
+                    youthFocusLevelId: null,
+                    leadOrganizationId: null,
+                    adaptativeResearchNarrative: null,
+                    isClearLead: false,
+                    otherInnovationType: null,
+                    externalLink: null,
+                    numberOfInnovations: null,
+                    hasMilestones: null,
+                    shortTitle: innovation.title || '',
+                    innovationNatureId: innovation.innovationNatureId,
+                    hasCgiarContribution: null,
+                    reasonNotCgiarContribution: null,
+                    intellectualPropertyInstitutionId: null,
+                    hasLegalRestrictions: null,
+                    hasAssetPotential: null,
+                    hasFurtherDevelopment: null,
+                    innovationStage: null,
+                    geographicScope: null,
+                    region: null,
+                    contributionCrp: null,
+                    degreeInnovation: null,
+                    leadOrganization: null,
+                    genderFocusLevel: null,
+                    youthFocusLevel: null,
+                    intellectualPropertyInstitution: null,
+                    phaseResearch: null,
+                    knowledgeResultsNarrative: innovation.knowledgeResultsNarrative || ''
+                  } as InnovationDetail
+                }
+              };
+            }
+          } catch (error) {
+            console.warn(`Failed to process innovation ${innovation.projectInnovationId}:`, error);
+            return null;
+          }
+        })
+      );
+
+      // Filter out failed requests and extract successful ones
+      const successfulPaths = paths
+        .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled' && result.value !== null)
+        .map(result => result.value);
+
+      console.log(`Successfully built ${successfulPaths.length} paths from API data`);
+      return successfulPaths;
+    }
+  } catch (error) {
+    console.warn('Failed to fetch from API during build, falling back to static data:', error);
+  }
+
+  console.log('Falling back to static data for building paths');
+  // Fallback to static data
   return innovationCatalog.scales.flatMap(scale =>
     scale.innovations.map(innovation => ({
       params: { id: innovation.id.toString() },
@@ -44,13 +228,13 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 interface Props {
-  innovation: Innovation;
+  innovation: InnovationDetail;
 }
 
 const { innovation } = Astro.props;
 ---
 
-<MainLayout title={innovation.title} description={innovation.summary}>
+<MainLayout title={innovation.title} description={innovation.narrative}>
   <article class="container mx-auto m-auto my-auto p-0 xl:p-16 2xl:p-20">
     <!-- Return link -->
     <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
@@ -73,7 +257,7 @@ const { innovation } = Astro.props;
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
-      <p class="text-base xl:text-lg 2xl:text-xl font-normal text-text-600 mb-6">{innovation.summary}</p>
+      <p class="text-base xl:text-lg 2xl:text-xl font-normal text-text-600 mb-6">{innovation.narrative}</p>
     </section>
 
     <!-- Main Content -->
@@ -89,7 +273,7 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Geoscope</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.key_metrics!.geoscope}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.countries}</span>
             </div>
             <!-- Typology -->
             <div class="flex flex-col text-center items-center">
@@ -97,7 +281,7 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.key_metrics!.typology}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType}</span>
             </div>
             <!-- Scaling Readiness -->
             <div class="flex flex-col text-center items-center">
@@ -105,16 +289,20 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Scaling readiness</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.key_metrics!.scaling_readiness}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.readinessScale}</span>
             </div>
           </div>
         </div>
         <!-- Description -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">{innovation.expected_outcomes}</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
+            {innovation.knowledgeResultsNarrative ?? <span class="text-gray-500">No expected outcomes available</span>}
+          </p>
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-6">Intended beneficiaries/users</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">{innovation.intended_beneficiaries}</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
+            {innovation.beneficiariesNarrative ?? <span class="text-gray-500">No intended beneficiaries/users available</span>}
+          </p>
         </div>
         <!-- Community solution stories -->
         <section class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
@@ -133,7 +321,8 @@ const { innovation } = Astro.props;
           <!-- Comment stories -->
           <div class="grid grid-cols-1 gap-4 mt-4">
             {
-              innovation.comments.map((story, index) => (
+              /* Note: comments property doesn't exist in InnovationDetail interface, using placeholder */
+              [].map((story: any, index: number) => (
                 <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
                   <div class="flex items-center mb-2 gap-2">
                     <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-semibold">{story.author}</span>
@@ -144,6 +333,10 @@ const { innovation } = Astro.props;
                 </div>
               ))
             }
+            {/* Show message when no comments are available */}
+            <div class="text-center py-4 text-gray-500">
+              <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
+            </div>
           </div>
         </section>
       </section>

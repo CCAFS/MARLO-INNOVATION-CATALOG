@@ -78,6 +78,7 @@ export interface InnovationDetail {
     foodSecurityScoreId:               number;
     environmentalScoreId:              number;
     povertyJobsScoreId:                number;
+    knowledgeResultsNarrative:         string;
     phase:                             InnovationType;
     innovationStage:                   null;
     geographicScope:                   null;
