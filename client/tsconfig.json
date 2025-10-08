@@ -9,6 +9,9 @@
   ],
   "compilerOptions": {
     "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
     "paths": {
       "~/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
