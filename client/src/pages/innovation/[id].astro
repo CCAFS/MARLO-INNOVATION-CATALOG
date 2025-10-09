@@ -41,7 +41,7 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationsFromAPI(): Promise<InnovationCatalogV2 | null> {
     try {
       // Use direct server URL for build-time fetching
-      const apiUrl = 'http://172.30.0.32:8080/api/innovations/search-simple?phase=428';
+      const apiUrl = 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api/innovations/search-simple?phase=428';
 
       console.log('Building: Fetching innovations from:', apiUrl);
 
@@ -69,7 +69,7 @@ export const getStaticPaths = (async () => {
   // Helper function to fetch a specific innovation by ID
   async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
     try {
-      const apiUrl = `http://172.30.0.32:8080/api/innovations/?phase=428&innovationId=${id}`;
+      const apiUrl = `https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api/innovations/?phase=428&innovationId=${id}`;
 
       console.log('Building: Fetching innovation detail from:', apiUrl);
 
