@@ -5,7 +5,8 @@ import type { InnovationCatalog } from '../../../interfaces/innovation-catalog.i
 import { useSharedValue } from './composables/useSharedValue';
 import Paginator from 'primevue/paginator';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
-import type { Country, InnovationCatalogV2, Region } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationCatalogV2 } from '~/interfaces/innovation-catalog-v2.interface';
+import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 
 const innovationCatalogData: InnovationCatalog = innovationCatalog;
 const { value } = useSharedValue();
@@ -70,16 +71,6 @@ const filteredScales = computed(() => {
   return innovationCatalogData.scales.filter(scale => scale.id === value.value);
 });
 
-// Return text in the country badge based on the information received from the API
-const getCountryText = (countries: Country[], regions: Region[]): string => {
-  if (countries && countries.length > 0) {
-    return countries[0].name;
-  } else if (regions && regions.length > 0) {
-    return regions[0].name;
-  } else {
-    return 'Unknown';
-  }
-};
 </script>
 
 <template>
@@ -189,7 +180,7 @@ const getCountryText = (countries: Country[], regions: Region[]): string => {
             <!-- Country chip -->
             <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
               <img src="icon-2.png" class="h-4" alt="" srcset="" />
-              <span class="text-sm">{{ getCountryText(innovation.countries, innovation.regions) }}</span>
+              <span class="text-sm">{{ getCountryTextStructured(innovation.countries, innovation.regions).text }}</span>
             </div>
           </div>
           <!-- Title -->

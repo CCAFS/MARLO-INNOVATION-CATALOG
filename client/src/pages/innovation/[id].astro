@@ -12,6 +12,8 @@ import SocialShare from '~/components/shared/SocialShare/SocialShare.component.a
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
 import type { InnovationCatalogV2, InnovationDetail } from '~/interfaces/innovation-catalog-v2.interface';
+import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
+import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 
 const stats = [
   {
@@ -273,7 +275,10 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Geoscope</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.countries}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
+                >{getCountryTextStructured(innovation.countries, innovation.regions, true).text}
+                <em>{getCountryTextStructured(innovation.countries, innovation.regions, true).additionalText}</em>
+              </span>
             </div>
             <!-- Typology -->
             <div class="flex flex-col text-center items-center">
@@ -281,7 +286,7 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType.name}</span>
             </div>
             <!-- Scaling Readiness -->
             <div class="flex flex-col text-center items-center">
@@ -289,7 +294,9 @@ const { innovation } = Astro.props;
                 {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Scaling readiness</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.readinessScale}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
+                >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
+              >
             </div>
           </div>
         </div>
@@ -297,11 +304,23 @@ const { innovation } = Astro.props;
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
           <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
-            {innovation.knowledgeResultsNarrative ?? <span class="text-gray-500">No expected outcomes available</span>}
+            {
+              innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
+                <span class="text-gray-500">No expected outcomes available</span>
+              ) : (
+                innovation.knowledgeResultsNarrative
+              )
+            }
           </p>
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-6">Intended beneficiaries/users</p>
           <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
-            {innovation.beneficiariesNarrative ?? <span class="text-gray-500">No intended beneficiaries/users available</span>}
+            {
+              innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
+                <span class="text-gray-500">No intended beneficiaries/users available</span>
+              ) : (
+                innovation.beneficiariesNarrative
+              )
+            }
           </p>
         </div>
         <!-- Community solution stories -->
