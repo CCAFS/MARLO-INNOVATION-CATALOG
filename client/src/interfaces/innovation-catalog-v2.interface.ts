@@ -159,6 +159,7 @@ export interface Country {
     idCountry:           number;
     name:         string;
     idPhase:             number;
+    countryName?:    string;
 }
 
 export interface Region {
@@ -167,6 +168,7 @@ export interface Region {
     idRegion:           number;
     name:         string;
     idPhase:             number;
+    regionName?:   string;
 }
 
 export interface ExternalPartner {

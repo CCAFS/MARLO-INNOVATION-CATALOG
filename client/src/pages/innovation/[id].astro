@@ -14,6 +14,7 @@ import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.compo
 import type { InnovationCatalogV2, InnovationDetail } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
+import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
 
 const stats = [
   {
@@ -45,8 +46,6 @@ export const getStaticPaths = (async () => {
       // Use direct server URL for build-time fetching
       const apiUrl = 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api/innovations/search-simple?phase=428';
 
-      console.log('Building: Fetching innovations from:', apiUrl);
-
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -60,7 +59,6 @@ export const getStaticPaths = (async () => {
       }
 
       const data = await response.json();
-      console.log('Build: Successfully fetched innovations from API');
       return data;
     } catch (error) {
       console.warn('Build: API fetch failed, falling back to static data:', error);
@@ -71,9 +69,7 @@ export const getStaticPaths = (async () => {
   // Helper function to fetch a specific innovation by ID
   async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
     try {
-      const apiUrl = `https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api/innovations/?phase=428&innovationId=${id}`;
-
-      console.log('Building: Fetching innovation detail from:', apiUrl);
+      const apiUrl = `https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api/innovations/info?phaseId=428&innovationId=${id}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -100,8 +96,6 @@ export const getStaticPaths = (async () => {
     // Try to fetch from API first
     const apiData = await fetchInnovationsFromAPI();
 
-    console.log('API Data:', apiData);
-
     if (apiData?.innovations && apiData.innovations.length > 0) {
       console.log(`Building paths from API data: ${apiData.innovations.length} innovations`);
 
@@ -110,6 +104,8 @@ export const getStaticPaths = (async () => {
         apiData.innovations.map(async innovation => {
           try {
             const detailedInnovation = await fetchInnovationById(innovation.projectInnovationId);
+
+            console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
 
             if (detailedInnovation) {
               return {
@@ -195,7 +191,7 @@ export const getStaticPaths = (async () => {
                     youthFocusLevel: null,
                     intellectualPropertyInstitution: null,
                     phaseResearch: null,
-                    knowledgeResultsNarrative: innovation.knowledgeResultsNarrative || ''
+                    knowledgeResultsNarrative: ''
                   } as InnovationDetail
                 }
               };
@@ -212,14 +208,12 @@ export const getStaticPaths = (async () => {
         .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled' && result.value !== null)
         .map(result => result.value);
 
-      console.log(`Successfully built ${successfulPaths.length} paths from API data`);
       return successfulPaths;
     }
   } catch (error) {
     console.warn('Failed to fetch from API during build, falling back to static data:', error);
   }
 
-  console.log('Falling back to static data for building paths');
   // Fallback to static data
   return innovationCatalog.scales.flatMap(scale =>
     scale.innovations.map(innovation => ({
@@ -250,11 +244,7 @@ const { innovation } = Astro.props;
         <h1 class="text-base xl:text-lg 2xl:text-xl font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} />
-          <BasicButton
-            hasIcon
-            icon="pi pi-file-pdf"
-            classList={'bg-white-100 text-secondary-300 border border-border-light px-3 py-1 rounded hover:!bg-secondary-300 hover:!text-white'}
-          />
+          <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
           <SocialShare title={innovation.title} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
@@ -361,12 +351,7 @@ const { innovation } = Astro.props;
       </section>
       <aside class="col-span-1">
         <!-- Download PDF button -->
-        <BasicButton
-          text="Download PDF"
-          hasIcon
-          icon="pi pi-file-pdf"
-          classList={'w-full justify-center border-secondary-300 text-secondary-300 mb-4 hover:bg-secondary-300'}
-        />
+        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-6" />
         <!-- Quick Information -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Quick information</p>

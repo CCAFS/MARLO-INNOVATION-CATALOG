@@ -9,16 +9,20 @@ interface CountryTextResult {
 
 // Alternative function that returns structured data
 const getCountryTextStructured = (countries: Country[], regions: Region[], isMore?: boolean): CountryTextResult => {
-    if ((!countries || countries.length === 0) && (!regions || regions.length === 0)) {
-        return { text: 'Unknown', hasMore: false };
+    // Add more defensive checks
+    const validCountries = Array.isArray(countries) ? countries.filter(c => c && c.countryName) : [];
+    const validRegions = Array.isArray(regions) ? regions.filter(r => r && r.regionName) : [];
+    
+    if (validCountries.length === 0 && validRegions.length === 0) {
+        return { text: 'Unknown', hasMore: false }; 
     }
 
     let additionalText = '';
     let hasAdditional = false;
     
     if (isMore) {
-        const countryCount = countries && countries.length > 0 ? countries.length-1 : 0;
-        const regionCount = regions && regions.length > 0 ? regions.length-1 : 0;
+        const countryCount = validCountries.length > 1 ? validCountries.length - 1 : 0;
+        const regionCount = validRegions.length > 1 ? validRegions.length - 1 : 0;
         const totalAdditional = countryCount + regionCount;
 
         if (totalAdditional > 0) {
@@ -27,10 +31,10 @@ const getCountryTextStructured = (countries: Country[], regions: Region[], isMor
         }
     }
 
-    const mainText = countries && countries.length > 0 
-        ? countries[0].name 
-        : regions && regions.length > 0 
-            ? regions[0].name 
+    const mainText = validCountries.length > 0 
+        ? validCountries[0].name 
+        : validRegions.length > 0 
+            ? validRegions[0].name 
             : 'Unknown';
 
     return {
