@@ -103,6 +103,7 @@ export interface InnovationDetail {
     countries:                         Country[];
     organizations:                     any[];
     externalPartners:                  ExternalPartner[];
+    contributingOrganizations:         ContributingOrganization[];
 }
 
 export enum Name {
@@ -184,6 +185,15 @@ export interface ExternalPartner {
     isActive:                boolean;
     activeSince:             Date;
     contactPersons:          ContactPerson[];
+}
+
+export interface ContributingOrganization {
+    id: number,
+    projectInnovationId: number,
+    idPhase: number,
+    institutionId: number,
+    institutionName: string,
+    institutionAcronym: string
 }
 
 export interface ContactPerson {

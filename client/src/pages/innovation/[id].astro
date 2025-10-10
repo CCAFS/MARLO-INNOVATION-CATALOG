@@ -16,6 +16,11 @@ import { getCountryTextStructured } from '~/utils/country-normalize-text/getCoun
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
 
+interface staticPaths {
+  params: { id: string };
+  props: { innovation: InnovationDetail };
+}
+
 const stats = [
   {
     title: 'Geoscope',
@@ -36,6 +41,8 @@ const stats = [
     quality: 'max'
   }
 ];
+
+(globalThis as any).__innovationCache ??= null;
 
 export const getStaticPaths = (async () => {
   console.log('Building static paths for innovations...');
@@ -92,12 +99,23 @@ export const getStaticPaths = (async () => {
     }
   }
 
+  // Return cached data if available
+  if ((globalThis as any).__innovationCache) {
+    console.log('Using cached static paths for innovations');
+    return (globalThis as any).__innovationCache;
+  }
   try {
     // Try to fetch from API first
     const apiData = await fetchInnovationsFromAPI();
 
     if (apiData?.innovations && apiData.innovations.length > 0) {
       console.log(`Building paths from API data: ${apiData.innovations.length} innovations`);
+
+      // Log the innovation IDs we're processing
+      console.log(
+        'Innovation IDs being processed:',
+        apiData.innovations.map(i => i.projectInnovationId)
+      );
 
       // Create paths and fetch detailed data for each innovation
       const paths = await Promise.allSettled(
@@ -145,8 +163,8 @@ export const getStaticPaths = (async () => {
                     projectId: innovation.projectId,
                     actors: [],
                     sdgs: innovation.sdgs || [],
-                    regions: innovation.regions || [],
-                    countries: innovation.countries || [],
+                    regions: Array.isArray(innovation.regions) ? innovation.regions : [],
+                    countries: Array.isArray(innovation.countries) ? innovation.countries : [],
                     organizations: [],
                     externalPartners: [],
                     // Copy nested objects
@@ -191,7 +209,8 @@ export const getStaticPaths = (async () => {
                     youthFocusLevel: null,
                     intellectualPropertyInstitution: null,
                     phaseResearch: null,
-                    knowledgeResultsNarrative: ''
+                    knowledgeResultsNarrative: '',
+                    contributingOrganizations: []
                   } as InnovationDetail
                 }
               };
@@ -207,6 +226,14 @@ export const getStaticPaths = (async () => {
       const successfulPaths = paths
         .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled' && result.value !== null)
         .map(result => result.value);
+
+      console.log(`Successfully generated ${successfulPaths.length} paths`);
+      console.log(
+        'Generated path IDs:',
+        successfulPaths.map(p => p.params.id)
+      );
+
+      (globalThis as any).__innovationCache = successfulPaths; // Cache the successful paths
 
       return successfulPaths;
     }
@@ -228,6 +255,13 @@ interface Props {
 }
 
 const { innovation } = Astro.props;
+
+// Add debugging for country data
+console.log('Innovation countries:', innovation.countries);
+console.log('Innovation regions:', innovation.regions);
+if (innovation.countries) {
+  console.log('Country text result:', getCountryTextStructured(innovation.countries, innovation.regions || [], true));
+}
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
@@ -358,14 +392,26 @@ const { innovation } = Astro.props;
 
           <div class="mb-4">
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">Key actor</p>
+            {
+              innovation.externalPartners && innovation.externalPartners.length > 0 ? (
+                <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.externalPartners[0].institutionName}</p>
+              ) : (
+                <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">No key actors available</p>
+              )
+            }
           </div>
           <div>
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Involved organizations</p>
             <ul class="pl-2">
-              <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">Item 1</li>
-              <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">Item 2</li>
-              <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">Item 3</li>
+              {
+                innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
+                  innovation.contributingOrganizations.map(org => (
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{org.institutionName}</li>
+                  ))
+                ) : (
+                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">No organizations available</li>
+                )
+              }
             </ul>
           </div>
         </div>
