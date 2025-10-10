@@ -8,7 +8,6 @@ import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationCatalogV2 } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 
-const innovationCatalogData: InnovationCatalog = innovationCatalog;
 const { value } = useSharedValue();
 
 const { apiUrl, apiBaseUrl } = usePublicAPI();
@@ -66,13 +65,13 @@ onMounted(() => {
 });
 
 // Filter scales based on the selected value (index corresponds directly to scale.id)
-const filteredScales = computed(() => {
+/* const filteredScales = computed(() => {
   if (value.value === null || value.value === undefined) {
     return innovationCatalogData.scales;
   }
 
   return innovationCatalogData.scales.filter(scale => scale.id === value.value);
-});
+}); */
 
 </script>
 
