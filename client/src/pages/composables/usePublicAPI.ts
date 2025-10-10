@@ -9,7 +9,7 @@ const apiBaseUrl = computed(() => {
     return 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
   }
   // Client-side: access import.meta.env safely
-  return import.meta.env.PUBLIC_API || '/api';
+  return import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
 });
 
 const apiUrl = computed(() => `${apiBaseUrl.value}`);
