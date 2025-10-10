@@ -245,12 +245,10 @@ export const getStaticPaths = (async () => {
   }
 
   // Fallback to static data
-  return innovationCatalog.scales.flatMap(scale =>
-    scale.innovations.map(innovation => ({
-      params: { id: innovation.id.toString() },
-      props: { innovation }
-    }))
-  );
+  return innovationCatalog.flatMap(innovation => ({
+    params: { id: innovation.id.toString() },
+    props: { innovation }
+  }));
 }) satisfies GetStaticPaths;
 
 interface Props {
