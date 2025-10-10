@@ -6,16 +6,16 @@ import { texts } from './../../../content/texts.ts';
 </script>
 
 <template>
-  <div class="bg-gradient-to-r from-[#DFF5FF] to-[#B1D4C5] p-10 pb-6 mt-10">
-    <div class="w-full rounded-lg grid grid-cols-[525px_auto] gap-4">
+  <div class="container mx-auto mt-10 p-0 xl:p-16 2xl:p-20 h-full overflow-hidden">
+    <div class="w-full bg-gradient-to-r from-[#DFF5FF] to-[#B1D4C5] grid grid-cols-2 gap-4 rounded-t-lg">
       <MapFilter />
       <PrimeProvider>
         <InnovationFilters />
       </PrimeProvider>
     </div>
 
-    <div class="flex flex-1 w-full justify-center text-[#439255] text-lg font-light gap-4 items-center">
-      {{ texts.home.seeInnovations }} <i class="pi pi-arrow-down block"></i>
+    <div class="flex flex-1 w-full bg-gradient-to-r from-[#DFF5FF] to-[#B1D4C5] justify-center text-[#439255] text-sm xl:text-base 2xl:text-lg font-light gap-2 items-center pb-4 rounded-b-lg">
+      {{ texts.home.seeInnovations }} <i class="pi pi-arrow-down block w-3 xl:w-4 2xl:w-4.5"></i>
     </div>
   </div>
 </template>

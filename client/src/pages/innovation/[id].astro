@@ -7,11 +7,19 @@ import Icon6 from '../../images/icon-6.png';
 import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '~/jsons/innovation-list';
-import type { Innovation } from '~/interfaces/innovation-catalog.interface';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
+import type { InnovationCatalogV2, InnovationDetail } from '~/interfaces/innovation-catalog-v2.interface';
+import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
+import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
+import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
+
+interface staticPaths {
+  params: { id: string };
+  props: { innovation: InnovationDetail };
+}
 
 const stats = [
   {
@@ -34,7 +42,209 @@ const stats = [
   }
 ];
 
-export const getStaticPaths = (() => {
+(globalThis as any).__innovationCache ??= null;
+
+export const getStaticPaths = (async () => {
+  console.log('Building static paths for innovations...');
+
+  // Helper function to fetch innovations from API at build time
+  async function fetchInnovationsFromAPI(): Promise<InnovationCatalogV2 | null> {
+    try {
+      // Use full API URL for build-time fetching (SSG), since no proxy is available during build
+      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+      const apiUrl = `${baseApiUrl}/innovations/search-simple?phase=428`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`API request failed with status: ${response.status}. Falling back to static data.`);
+        return null;
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.warn('Build: API fetch failed, falling back to static data:', error);
+      return null;
+    }
+  }
+
+  // Helper function to fetch a specific innovation by ID
+  async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
+    try {
+      // Use full API URL for build-time fetching (SSG), since no proxy is available during build
+      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+      const apiUrl = `${baseApiUrl}/innovations/info?phaseId=428&innovationId=${id}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.warn(`API request failed for innovation ${id} with status: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+      console.log(`Build: Successfully fetched innovation ${id} from API`);
+      return data;
+    } catch (error) {
+      console.warn(`Build: API fetch failed for innovation ${id}:`, error);
+      return null;
+    }
+  }
+
+  // Return cached data if available
+  if ((globalThis as any).__innovationCache) {
+    console.log('Using cached static paths for innovations');
+    return (globalThis as any).__innovationCache;
+  }
+  try {
+    // Try to fetch from API first
+    const apiData = await fetchInnovationsFromAPI();
+
+    if (apiData?.innovations && apiData.innovations.length > 0) {
+      console.log(`Building paths from API data: ${apiData.innovations.length} innovations`);
+
+      // Log the innovation IDs we're processing
+      console.log(
+        'Innovation IDs being processed:',
+        apiData.innovations.map(i => i.projectInnovationId)
+      );
+
+      // Create paths and fetch detailed data for each innovation
+      const paths = await Promise.allSettled(
+        apiData.innovations.map(async innovation => {
+          try {
+            const detailedInnovation = await fetchInnovationById(innovation.projectInnovationId);
+
+            console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
+
+            if (detailedInnovation) {
+              return {
+                params: { id: innovation.projectInnovationId.toString() },
+                props: { innovation: detailedInnovation }
+              };
+            } else {
+              // Return a basic innovation object if detailed fetch fails
+              return {
+                params: { id: innovation.projectInnovationId.toString() },
+                props: {
+                  innovation: {
+                    id: innovation.projectInnovationId,
+                    title: innovation.title || 'Innovation Detail',
+                    narrative: innovation.narrative || 'Loading...',
+                    // Map other available fields from InnovationResume to InnovationDetail structure
+                    projectInnovationId: innovation.projectInnovationId,
+                    idPhase: innovation.idPhase,
+                    year: innovation.year,
+                    innovationTypeId: innovation.innovationTypeId,
+                    readinessScale: innovation.readinessScale,
+                    // Add default values for missing fields
+                    descriptionStage: '',
+                    evidenceLink: '',
+                    genderExplanation: '',
+                    youthExplanation: '',
+                    beneficiariesNarrative: '',
+                    otherIntellectualProperty: '',
+                    innovationImportance: '',
+                    readinessReason: '',
+                    genderScoreId: 0,
+                    climateChangeScoreId: 0,
+                    foodSecurityScoreId: 0,
+                    environmentalScoreId: 0,
+                    povertyJobsScoreId: 0,
+                    isActive: innovation.isActive,
+                    projectId: innovation.projectId,
+                    actors: [],
+                    sdgs: innovation.sdgs || [],
+                    regions: Array.isArray(innovation.regions) ? innovation.regions : [],
+                    countries: Array.isArray(innovation.countries) ? innovation.countries : [],
+                    organizations: [],
+                    externalPartners: [],
+                    // Copy nested objects
+                    phase: innovation.phase,
+                    innovationType: innovation.innovationType,
+                    activeSince: new Date(),
+                    createdBy: null,
+                    modifiedBy: null,
+                    modificationJustification: null,
+                    // Initialize optional fields
+                    phaseResearchId: null,
+                    stageInnovationId: null,
+                    geographicScopeId: null,
+                    repIndRegionId: null,
+                    repIndContributionCrpId: null,
+                    repIndDegreeInnovationId: null,
+                    projectExpectedStudiesId: null,
+                    genderFocusLevelId: null,
+                    youthFocusLevelId: null,
+                    leadOrganizationId: null,
+                    adaptativeResearchNarrative: null,
+                    isClearLead: false,
+                    otherInnovationType: null,
+                    externalLink: null,
+                    numberOfInnovations: null,
+                    hasMilestones: null,
+                    shortTitle: innovation.title || '',
+                    innovationNatureId: innovation.innovationNatureId,
+                    hasCgiarContribution: null,
+                    reasonNotCgiarContribution: null,
+                    intellectualPropertyInstitutionId: null,
+                    hasLegalRestrictions: null,
+                    hasAssetPotential: null,
+                    hasFurtherDevelopment: null,
+                    innovationStage: null,
+                    geographicScope: null,
+                    region: null,
+                    contributionCrp: null,
+                    degreeInnovation: null,
+                    leadOrganization: null,
+                    genderFocusLevel: null,
+                    youthFocusLevel: null,
+                    intellectualPropertyInstitution: null,
+                    phaseResearch: null,
+                    knowledgeResultsNarrative: '',
+                    contributingOrganizations: []
+                  } as InnovationDetail
+                }
+              };
+            }
+          } catch (error) {
+            console.warn(`Failed to process innovation ${innovation.projectInnovationId}:`, error);
+            return null;
+          }
+        })
+      );
+
+      // Filter out failed requests and extract successful ones
+      const successfulPaths = paths
+        .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled' && result.value !== null)
+        .map(result => result.value);
+
+      console.log(`Successfully generated ${successfulPaths.length} paths`);
+      console.log(
+        'Generated path IDs:',
+        successfulPaths.map(p => p.params.id)
+      );
+
+      (globalThis as any).__innovationCache = successfulPaths; // Cache the successful paths
+
+      return successfulPaths;
+    }
+  } catch (error) {
+    console.warn('Failed to fetch from API during build, falling back to static data:', error);
+  }
+
+  // Fallback to static data
   return innovationCatalog.scales.flatMap(scale =>
     scale.innovations.map(innovation => ({
       params: { id: innovation.id.toString() },
@@ -44,40 +254,39 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 interface Props {
-  innovation: Innovation;
+  innovation: InnovationDetail;
 }
 
 const { innovation } = Astro.props;
+
+// Add debugging for country data
+console.log('Innovation countries:', innovation.countries);
+console.log('Innovation regions:', innovation.regions);
+if (innovation.countries) {
+  console.log('Country text result:', getCountryTextStructured(innovation.countries, innovation.regions || [], true));
+}
 ---
 
-<MainLayout title={innovation.title} description={innovation.summary}>
-  <article class="container mx-auto">
+<MainLayout title={innovation.title} description={innovation.narrative}>
+  <article class="container mx-auto m-auto my-auto p-0 xl:p-16 2xl:p-20">
     <!-- Return link -->
-    <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2">
+    <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
       <span class="pi pi-arrow-left"></span>
-      <p class="text-xs">Go back to innovations catalogue</p>
+      <p>Go back to innovations catalogue</p>
     </a>
 
     <!-- Title and main options -->
     <section class="max-width">
       <div class="flex flex-wrap items-start justify-between gap-4 mb-2.5">
-        <h1 class="text-base font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
+        <h1 class="text-base xl:text-lg 2xl:text-xl font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
-          <BasicButton
-            hasIcon
-            icon="pi pi-bookmark"
-            classList={'bg-white-100 text-primary-300 border border-border-light text-xs px-3 py-1 rounded'}
-          />
-          <BasicButton
-            hasIcon
-            icon="pi pi-file-pdf"
-            classList={'bg-white-100 text-secondary-300 border border-border-light text-xs px-3 py-1 rounded hover:!bg-secondary-300 hover:!text-white'}
-          />
-          <SocialShare title={innovation.title} isJustIcon className={'!border-border-light text-xs px-3 py-1 rounded mb-0 !w-[36px]'} />
-          <DownloadImage isJustIcon className={'!border-border-light text-xs px-3 py-1 rounded mb-0 !w-[36px]'} />
+          <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} />
+          <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
+          <SocialShare title={innovation.title} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
+          <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
-      <p class="text-base font-normal text-text-600 mb-6">{innovation.summary}</p>
+      <p class="text-base xl:text-lg 2xl:text-xl font-normal text-text-600 mb-6">{innovation.narrative}</p>
     </section>
 
     <!-- Main Content -->
@@ -85,44 +294,65 @@ const { innovation } = Astro.props;
       <section class="col-span-3">
         <!-- Key Metrics -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300">Key metrics</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Key metrics</p>
           <div class="flex flex-wrap gap-24 mt-4 justify-center">
             <!-- Geoscope -->
             <div class="flex flex-col text-center items-center">
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
               </div>
-              <span class="text-[10px] text-primary-300 font-bold">Geoscope</span>
-              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.geoscope}</span>
+              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Geoscope</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
+                >{getCountryTextStructured(innovation.countries, innovation.regions, true).text}
+                <em>{getCountryTextStructured(innovation.countries, innovation.regions, true).additionalText}</em>
+              </span>
             </div>
             <!-- Typology -->
             <div class="flex flex-col text-center items-center">
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
               </div>
-              <span class="text-[10px] text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.typology}</span>
+              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType.name}</span>
             </div>
             <!-- Scaling Readiness -->
             <div class="flex flex-col text-center items-center">
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
                 {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
               </div>
-              <span class="text-[10px] text-primary-300 font-bold">Scaling readiness</span>
-              <span class="text-xs text-text-800 font-normal">{innovation.key_metrics!.scaling_readiness}</span>
+              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Scaling readiness</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
+                >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
+              >
             </div>
           </div>
         </div>
         <!-- Description -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300">Expected outcomes</p>
-          <p class="text-xs text-text-800 font-normal mt-4">{innovation.expected_outcomes}</p>
-          <p class="text-sm font-semibold text-primary-300 mt-6">Intended beneficiaries/users</p>
-          <p class="text-xs text-text-800 font-normal mt-4">{innovation.intended_beneficiaries}</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
+            {
+              innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
+                <span class="text-gray-500">No expected outcomes available</span>
+              ) : (
+                innovation.knowledgeResultsNarrative
+              )
+            }
+          </p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-6">Intended beneficiaries/users</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
+            {
+              innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
+                <span class="text-gray-500">No intended beneficiaries/users available</span>
+              ) : (
+                innovation.beneficiariesNarrative
+              )
+            }
+          </p>
         </div>
         <!-- Community solution stories -->
         <section class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300 mb-4">Community solution stories</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Community solution stories</p>
 
           <!-- Input container -->
           <Input
@@ -137,54 +367,66 @@ const { innovation } = Astro.props;
           <!-- Comment stories -->
           <div class="grid grid-cols-1 gap-4 mt-4">
             {
-              innovation.comments.map((story, index) => (
+              /* Note: comments property doesn't exist in InnovationDetail interface, using placeholder */
+              [].map((story: any, index: number) => (
                 <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
                   <div class="flex items-center mb-2 gap-2">
-                    <span class="text-xs text-text-800 font-semibold">{story.author}</span>
+                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-semibold">{story.author}</span>
                     <span class="w-[2px] h-[2px] rounded-full bg-text-800" />
-                    <span class="text-xs text-text-500 font-normal">{story.date}</span>
+                    <span class="text-xs xl:text-sm 2xl:text-base text-text-500 font-normal">{story.date}</span>
                   </div>
-                  <p class="text-xs text-text-800 font-normal">{story.text}</p>
+                  <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{story.text}</p>
                 </div>
               ))
             }
+            {/* Show message when no comments are available */}
+            <div class="text-center py-4 text-gray-500">
+              <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
+            </div>
           </div>
         </section>
       </section>
       <aside class="col-span-1">
         <!-- Download PDF button -->
-        <BasicButton
-          text="Download PDF"
-          hasIcon
-          icon="pi pi-file-pdf"
-          classList={'w-full justify-center border-secondary-300 text-secondary-300 mb-4 hover:bg-secondary-300'}
-        />
+        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-6" />
         <!-- Quick Information -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300 mb-4">Quick information</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Quick information</p>
 
           <div class="mb-4">
-            <p class="text-xs font-semibold text-text-800">Key actors</p>
-            <p class="text-xs text-text-800 font-normal">Key actor</p>
+            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
+            {
+              innovation.externalPartners && innovation.externalPartners.length > 0 ? (
+                <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.externalPartners[0].institutionName}</p>
+              ) : (
+                <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">No key actors available</p>
+              )
+            }
           </div>
           <div>
-            <p class="text-xs font-semibold text-text-800">Involved organizations</p>
+            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Involved organizations</p>
             <ul class="pl-2">
-              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 1</li>
-              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 2</li>
-              <li class="text-xs text-text-800 font-normal list-disc list-inside">Item 3</li>
+              {
+                innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
+                  innovation.contributingOrganizations.map(org => (
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{org.institutionName}</li>
+                  ))
+                ) : (
+                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">No organizations available</li>
+                )
+              }
             </ul>
           </div>
         </div>
         <!-- Contact information -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300 mb-4">Contact information</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Contact information</p>
 
           <div class="mb-4">
-            <p class="text-xs text-text-800 font-normal">Get in touch with the responsible team</p>
+            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">Get in touch with the responsible team</p>
             <div class="mt-6">
-              <p class="text-xs font-semibold text-text-800">Technical Support</p>
-              <a href="mailto:MARLOSupport@cgiar.org" class="text-[11px] text-primary-300 hover:underline break-all"
+              <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Technical Support</p>
+              <a href="mailto:MARLOSupport@cgiar.org" class="text-[11px] xl:text-sm 2xl:text-base text-primary-300 hover:underline break-all"
                 >KDS Team - MARLOSupport@cgiar.org</a
               >
             </div>
@@ -192,7 +434,7 @@ const { innovation } = Astro.props;
         </div>
         <!-- Share -->
         <div class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
-          <p class="text-sm font-semibold text-primary-300 mb-4">Share</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Share</p>
           <BasicButton
             text="Save to favorites"
             hasIcon

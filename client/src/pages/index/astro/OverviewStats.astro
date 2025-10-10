@@ -16,24 +16,24 @@ const stats = [
     imagePath: Icon2
   },
   {
-    title: 'CounAverage scaling readinesstries',
+    title: 'Average scaling readiness',
     value: 7,
     imagePath: Icon3
   }
 ];
 ---
 
-<div class="flex justify-between text-4xl mt-10">
-  <div class="uppercase text-[#0277A2] text-3xl font-semibold max-w-[500px]">{texts.home.overviewStatsTitle}</div>
-  <div class="flex gap-7 items-center">
+<div class="container mx-auto flex justify-between text-4xl mt-10 p-0 xl:p-16 2xl:p-20">
+  <div class="uppercase text-[#0277A2] text-2xl font-bold max-w-[450px]">{texts.home.overviewStatsTitle}</div>
+  <div class="flex gap-5 items-center">
     {
       stats.map((stat, index) => (
         <>
-          <div class="flex items-center gap-5">
+          <div class="flex items-center gap-2.5">
             {<Image height="35" quality="low" src={stat.imagePath} alt={stat.title} />}
             <div>
-              <div class="text-xl font-600 -mb-1.5">{stat.value}</div>
-              <div class="text-sm text-gray-400 font-light">{stat.title}</div>
+              <div class="text-base font-600 -mb-1.5">{stat.value}</div>
+              <div class="text-xs text-gray-400 font-light">{stat.title}</div>
             </div>
           </div>
           {index < stats.length - 1 && <div class="bg-gray-300 h-12 w-0.5" />}

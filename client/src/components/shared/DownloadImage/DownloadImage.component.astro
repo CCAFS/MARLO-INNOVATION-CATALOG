@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-const { url, title, isJustIcon, className } = Astro.props;
+const { isJustIcon, className } = Astro.props;
 ---
 
 <download-image class="download-image-container group relative overflow-visible">
@@ -29,7 +29,6 @@ const { url, title, isJustIcon, className } = Astro.props;
       if (btnDownload) {
         document.addEventListener('DOMContentLoaded', () => {
           const downloadBtn = btnDownload as HTMLButtonElement | null;
-          console.log('DownloadImage component loaded');
           if (downloadBtn) {
             downloadBtn.addEventListener('click', async () => {
               try {

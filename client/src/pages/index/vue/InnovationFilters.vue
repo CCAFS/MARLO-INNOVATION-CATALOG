@@ -21,18 +21,18 @@ const backgroundColor = computed(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-5 h-max">
+  <div class="flex flex-col gap-5 h-max m-8">
     <div>
-      <h2 class="text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
-      <p class="text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
+      <h2 class="text-base xl:text-lg 2xl:text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
+      <p class="text-xs xl:text-base 2xl:text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
     </div>
 
-    <div>SELECTED OPTION:</div>
+    <div class="text-sm xl:text-base 2xl:text-lg">SELECTED OPTION:</div>
     <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white" :style="{ backgroundColor }">
-      <div class="text-white border-7 w-13 h-13 flex items-center justify-center rounded-full shadow-lg">{{ value }}</div>
+      <div class="text-white border-7 w-[65.1px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">{{ value }}</div>
       <div class="flex flex-col gap-5">
-        <div class="text-xl font-semibold">5 Model/Early Prototype</div>
-        <div class="text-lg font-light">
+        <div class="text-base xl:text-lg 2xl:text-xl font-semibold">5 Model/Early Prototype</div>
+        <div class="text-sm xl:text-base 2xl:text-lg font-light">
           The innovation is validated for its ability to achieve a specific impact under fully-controlled conditions
         </div>
       </div>
@@ -41,13 +41,13 @@ const backgroundColor = computed(() => {
     <div class="flex flex-1 gap-4">
       <!-- Innovation typology -->
       <div class="flex flex-1 items-center gap-2">
-        <div class="whitespace-nowrap">Innovation typology:</div>
+        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology:</div>
         <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full" />
       </div>
 
       <!-- SDG -->
       <div class="flex flex-1 items-center gap-2">
-        <div class="whitespace-nowrap">SDG</div>
+        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">SDG</div>
         <Select v-model="selectedCity" :options="cities" optionLabel="name" placeholder="Options" class="w-full" />
       </div>
 
