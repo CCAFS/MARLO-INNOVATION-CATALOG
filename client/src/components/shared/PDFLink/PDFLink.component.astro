@@ -1,0 +1,90 @@
+---
+import BasicButton from '../button/BasicButton/BasicButton.component.astro';
+
+interface Props {
+  id: string;
+  isJustIcon?: boolean;
+  className?: string;
+}
+
+const { id, isJustIcon, className } = Astro.props;
+---
+
+<pdf-link class="pdf-link-container group relative overflow-visible" data-id={id}>
+  <BasicButton
+    {...isJustIcon ? {} : { text: 'Download PDF' }}
+    hasIcon
+    icon="pi pi-file-pdf"
+    classList={`w-full justify-center border-secondary-300 text-secondary-300 mb-2 hover:!bg-secondary-300 hover:!text-white ${className}`}
+  />
+</pdf-link>
+
+<script>
+  class PDFLink extends HTMLElement {
+    connectedCallback() {
+      const btnDownload = this.querySelector('button');
+      const innovationId = this.getAttribute('data-id');
+      if (btnDownload && innovationId) {
+        document.addEventListener('DOMContentLoaded', () => {
+          const downloadBtn = btnDownload as HTMLButtonElement | null;
+          if (downloadBtn) {
+            downloadBtn.addEventListener('click', async () => {
+              try {
+                // Show loading state (optional)
+                downloadBtn.disabled = true;
+
+                // Call the generatePDF function defined in the Astro component
+                const response = await this.generatePDF(innovationId);
+
+                if (response && response.pdfUrl) {
+                  window.open(response.pdfUrl, '_blank');
+                } else {
+                  alert('Failed to generate PDF. Please try again later.');
+                }
+              } catch (error) {
+                console.error('PDF generation failed:', error);
+                alert('Failed to generate PDF. Please try again later.');
+              } finally {
+                // Re-enable the button
+                downloadBtn.disabled = false;
+              }
+            });
+          }
+        });
+      }
+    }
+
+    async generatePDF(innovationId: string) {
+      // Dynamically import jsPDF to avoid loading it on the server side
+      try {
+        const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+        const apiUrl = `${baseApiUrl}/innovations/pdf/url/custom?innovationId=${innovationId}&cycle=Reporting&year=2025`;
+
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        });
+
+        if (!response.ok) {
+          console.warn(`API request failed with status: ${response.status}. Falling back to static data.`);
+          return null;
+        }
+
+        const data = await response.json();
+        console.log('Build: Successfully fetched link PDF from API');
+        return data;
+      } catch (error) {
+        console.error('Build: Error fetching link PDF from API', error);
+        return null;
+      }
+    }
+  }
+
+  customElements.define('pdf-link', PDFLink);
+</script>
