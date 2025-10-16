@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue';
-import { innovationCatalog } from '../../../jsons/innovation-list';
-import type { InnovationCatalog } from '../../../interfaces/innovation-catalog.interface';
+import { computed, ref, onMounted } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import Paginator from 'primevue/paginator';
+import Skeleton from 'primevue/skeleton';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
@@ -177,8 +176,38 @@ onMounted(() => {
       </div>
     </div> -->
 
+    <!-- Loading Skeleton -->
+    <div v-if="isLoading" class="mb-8 mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 md:p-4 shadow-sm bg-white flex flex-col">
+          <!-- Badges Skeleton -->
+          <div class="flex items-center gap-2 mb-2">
+            <Skeleton width="4rem" height="1.5rem" borderRadius="16px" />
+            <Skeleton width="5rem" height="1.5rem" borderRadius="16px" />
+          </div>
+
+          <!-- Title Skeleton -->
+          <div class="mb-2">
+            <Skeleton width="100%" height="1.25rem" class="mb-1" />
+            <Skeleton width="80%" height="1.25rem" />
+          </div>
+
+          <!-- Summary Skeleton -->
+          <div class="mb-2 flex-grow">
+            <Skeleton width="100%" height="1rem" class="mb-1" />
+            <Skeleton width="100%" height="1rem" class="mb-1" />
+            <Skeleton width="70%" height="1rem" />
+          </div>
+
+          <!-- View more Skeleton -->
+          <div class="flex mt-auto">
+            <Skeleton width="5rem" height="1rem" class="ml-auto" />
+          </div>
+        </article>
+      </div>
+    </div>
     <!-- V2 Innovations Cards from API -->
-    <div v-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
+    <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <article
           v-for="innovation in apiData.innovations"
@@ -222,6 +251,26 @@ onMounted(() => {
         </article>
       </div>
     </div>
+
+    <!-- Empty State -->
+    <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mb-8 mt-4">
+      <div class="text-center py-8">
+        <p class="text-gray-500 text-lg">No innovations found.</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div v-if="error && !isLoading" class="mb-8 mt-4">
+      <div class="text-center py-8">
+        <p class="text-red-500 text-lg">{{ error.message }}</p>
+        <button
+          @click="fetchInnovationsFromAPI(offset, limit)"
+          class="mt-4 px-4 py-2 bg-[#439255] text-white rounded hover:bg-green-600 transition-colors">
+          Try Again
+        </button>
+      </div>
+    </div>
+
     <!-- Paginator -->
     <div v-if="totalRecords > 0" class="mt-8">
       <Paginator
@@ -232,6 +281,19 @@ onMounted(() => {
         @page="onPageChange"
         template="PrevPageLink PageLinks NextPageLink"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" />
+    </div>
+
+    <!-- Paginator Skeleton -->
+    <div v-else-if="totalRecords === 0 && isLoading" class="mt-8">
+      <div class="flex justify-center items-center gap-4 mb-4">
+        <Skeleton width="2rem" height="2rem" borderRadius="4px" />
+        <div class="flex gap-2">
+          <Skeleton width="2rem" height="2rem" borderRadius="50%" />
+          <Skeleton width="2rem" height="2rem" borderRadius="50%" />
+          <Skeleton width="2rem" height="2rem" borderRadius="50%" />
+        </div>
+        <Skeleton width="2rem" height="2rem" borderRadius="4px" />
+      </div>
     </div>
   </section>
 </template>
