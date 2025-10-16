@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 
 // ref declared outside => all components share the same instance
-const value = ref(0);
+const value = ref();
 
 export function useSharedValue() {
   const setValue = (v: number) => (value.value = v);

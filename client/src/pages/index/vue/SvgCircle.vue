@@ -5,7 +5,7 @@ const props = defineProps<{
   x: number;
   y: number;
   fill: string;
-  activeIndex: number;
+  activeIndex: number | null;
   index: number;
   pathD: string;
 }>();

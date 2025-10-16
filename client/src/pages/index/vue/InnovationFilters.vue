@@ -4,6 +4,7 @@ import { useSharedValue } from './composables/useSharedValue';
 import { texts } from '../../../content/texts';
 import { circleColors } from './colors';
 import Select from 'primevue/select';
+import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 
 const selectedCity = ref();
 const cities = ref([
@@ -17,7 +18,11 @@ const cities = ref([
 const { value, setValue, display } = useSharedValue();
 
 const backgroundColor = computed(() => {
-  return value.value !== null ? circleColors[value.value] : '#16a34a';
+  return value.value !== null && value.value !== undefined ? circleColors[value.value] : '#16a34a';
+});
+
+const readinessText = computed(() => {
+  return value.value !== null && value.value !== undefined ? getReadinessScaleText(value.value + 1) : getReadinessScaleText(0);
 });
 </script>
 <template>
@@ -29,11 +34,13 @@ const backgroundColor = computed(() => {
 
     <div class="text-sm xl:text-base 2xl:text-lg">SELECTED OPTION:</div>
     <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white" :style="{ backgroundColor }">
-      <div class="text-white border-7 w-[65.1px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">{{ value }}</div>
-      <div class="flex flex-col gap-5">
-        <div class="text-base xl:text-lg 2xl:text-xl font-semibold">5 Model/Early Prototype</div>
+      <div class="text-white border-7 w-[40px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">
+        {{ value || '' }}
+      </div>
+      <div class="flex flex-col gap-5 flex-1 w-full">
+        <div class="text-base xl:text-lg 2xl:text-xl font-semibold">{{ readinessText.text }}</div>
         <div class="text-sm xl:text-base 2xl:text-lg font-light">
-          The innovation is validated for its ability to achieve a specific impact under fully-controlled conditions
+          {{ readinessText.description }}
         </div>
       </div>
     </div>
