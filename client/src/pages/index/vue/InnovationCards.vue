@@ -123,28 +123,6 @@ onMounted(() => {
 
 <template>
   <section class="container mx-auto p-0 xl:p-16 2xl:p-20">
-    <!-- API Debug Section -->
-    <div class="mb-4 p-4 bg-gray-100 rounded-lg">
-      <h3 class="font-bold text-lg mb-2">API Debug Info</h3>
-      <div class="text-sm">
-        <p><strong>Loading:</strong> {{ isLoading }}</p>
-        <p><strong>Error:</strong> {{ error?.message || 'None' }}</p>
-        <p><strong>API Data:</strong> {{ apiData ? 'Loaded' : 'Not loaded' }}</p>
-        <p><strong>API URL:</strong> {{ apiUrl }}</p>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="isLoading" class="text-center py-8">
-      <p class="text-lg">Loading innovations from API...</p>
-    </div>
-
-    <!-- Error State -->
-    <div v-if="error" class="text-center py-8 text-red-600">
-      <p class="text-lg">Error loading data: {{ error.message }}</p>
-      <button @click="fetchInnovationsFromAPI()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Retry</button>
-    </div>
-
     <!-- V1 Innovations Cards - DEPRECATED at the moment -->
     <!--     <div v-for="scale in filteredScales" :key="scale.id" class="mb-8 mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
