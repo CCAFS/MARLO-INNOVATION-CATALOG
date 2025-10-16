@@ -51,7 +51,7 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationsFromAPI(): Promise<InnovationCatalogV2 | null> {
     try {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
-      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+      const baseApiUrl = import.meta.env.PUBLIC_API;
       const apiUrl = `${baseApiUrl}/innovations/search-simple?phase=428`;
 
       const response = await fetch(apiUrl, {
@@ -78,7 +78,7 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
     try {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
-      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+      const baseApiUrl = import.meta.env.PUBLIC_API;
       const apiUrl = `${baseApiUrl}/innovations/info?phaseId=428&innovationId=${id}`;
 
       const response = await fetch(apiUrl, {
