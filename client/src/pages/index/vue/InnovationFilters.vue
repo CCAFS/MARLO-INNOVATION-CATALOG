@@ -10,14 +10,8 @@ import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-
 
 const { apiBaseUrl } = usePublicAPI();
 
-const selectedCity = ref();
-const cities = ref([
-  { name: 'Option 1', code: '0' },
-  { name: 'Option 2', code: '1' },
-  { name: 'Option 3', code: '2' },
-  { name: 'Option 4', code: '3' },
-  { name: 'Option 5', code: '4' }
-]);
+const selectedInnovationType = ref();
+const selectedSDG = ref();
 
 const { value, setValue, display } = useSharedValue();
 
@@ -25,11 +19,13 @@ const dataSDGs = ref<SdgResume[]>([]);
 const dataInnovationTypes = ref<InnovationType[]>([]);
 
 const backgroundColor = computed(() => {
-  return value.value !== null && value.value !== undefined ? circleColors[value.value] : '#16a34a';
+  return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined ? circleColors[value.value.scalingReadiness] : '#16a34a';
 });
 
 const readinessText = computed(() => {
-  return value.value !== null && value.value !== undefined ? getReadinessScaleText(value.value + 1) : getReadinessScaleText(0);
+  return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined
+    ? getReadinessScaleText(value.value.scalingReadiness + 1)
+    : getReadinessScaleText(0);
 });
 
 const fetchSGDsData = async () => {
@@ -72,6 +68,22 @@ const fetchInnovationsTypeData = async () => {
   }
 };
 
+const handleSelectInnovationTypeChange = (newValue: InnovationType) => {
+  selectedInnovationType.value = newValue;
+  setValue({
+    ...value.value,
+    innovationTypeId: newValue.id
+  });
+};
+
+const handleSelectSDGChange = (newValue: SdgResume) => {
+  selectedSDG.value = newValue;
+  setValue({
+    ...value.value,
+    sdgId: newValue.id
+  });
+};
+
 onMounted(() => {
   fetchSGDsData();
   fetchInnovationsTypeData();
@@ -88,7 +100,7 @@ onMounted(() => {
     <div class="text-sm xl:text-base 2xl:text-lg">SELECTED OPTION:</div>
     <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white" :style="{ backgroundColor }">
       <div class="text-white border-7 w-[40px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">
-        {{ value !== null && value !== undefined ? value : '' }}
+        {{ value.scalingReadiness !== null && value.scalingReadiness !== undefined ? value.scalingReadiness : '' }}
       </div>
       <div class="flex flex-col gap-5 flex-1 w-full">
         <div class="text-base xl:text-lg 2xl:text-xl font-semibold">{{ readinessText.text }}</div>
@@ -103,7 +115,8 @@ onMounted(() => {
       <div class="inline-flex items-center gap-2 flex-wrap flex-initial w-[58%]">
         <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology:</div>
         <Select
-          v-model="selectedCity"
+          :modelValue="selectedInnovationType"
+          @update:modelValue="handleSelectInnovationTypeChange"
           :options="dataInnovationTypes"
           optionLabel="name"
           placeholder="Filter by Innovation Typology"
@@ -113,7 +126,13 @@ onMounted(() => {
       <!-- SDG -->
       <div class="inline-flex items-center gap-2 flex-wrap w-[35%]">
         <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">SDG</div>
-        <Select v-model="selectedCity" :options="dataSDGs" optionLabel="shortName" placeholder="Filter by SDGs" class="w-[75%]" />
+        <Select
+          :modelValue="selectedSDG"
+          @update:modelValue="handleSelectSDGChange"
+          :options="dataSDGs"
+          optionLabel="shortName"
+          placeholder="Filter by SDGs"
+          class="w-[75%]" />
       </div>
 
       <!-- Clear button -->

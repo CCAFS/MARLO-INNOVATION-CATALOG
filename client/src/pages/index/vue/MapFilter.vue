@@ -154,7 +154,7 @@ import { ref } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import SvgCircle from './SvgCircle.vue';
 import { circleColors } from './colors';
-const { setValue } = useSharedValue();
+const { setValue, value } = useSharedValue();
 const circleList = [
   {
     class: 'cursor-pointer',
@@ -249,6 +249,9 @@ const circleList = [
 const active = ref<number | null>(null);
 const handleClick = (index: number) => {
   active.value = index;
-  setValue(index);
+  setValue({
+    ...value.value,
+    scalingReadiness: index
+  });
 };
 </script>
