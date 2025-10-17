@@ -6,6 +6,14 @@ import Skeleton from 'primevue/skeleton';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
+import EmptyDataImg from '~/images/empty-data.png';
+
+const imgEmptyDataStats = {
+  title: 'No Data',
+  value: 32,
+  imagePath: EmptyDataImg,
+  quality: 'max'
+};
 
 const { value } = useSharedValue();
 
@@ -288,7 +296,8 @@ onMounted(() => {
 
     <!-- Empty State -->
     <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mb-8 mt-4">
-      <div class="text-center py-8">
+      <div class="text-center py-8 border-1 border-gray-200 rounded-xl p-4 md:p-4 shadow-sm bg-white flex flex-col items-center">
+        <img :src="EmptyDataImg.src" :alt="imgEmptyDataStats.title" width="150" height="100" class="pb-2" />
         <p class="text-gray-500 text-lg">No innovations found.</p>
       </div>
     </div>
@@ -306,7 +315,7 @@ onMounted(() => {
     </div>
 
     <!-- Paginator -->
-    <div v-if="totalRecords > 0" class="mt-8">
+    <div v-if="totalRecords > 0" class="mt-8 mb-8">
       <Paginator
         :first="currentPage * rowsPerPage"
         :rows="rowsPerPage"
@@ -318,7 +327,7 @@ onMounted(() => {
     </div>
 
     <!-- Paginator Skeleton -->
-    <div v-else-if="totalRecords === 0 && isLoading" class="mt-8">
+    <div v-else-if="totalRecords === 0 && isLoading" class="mt-8 mb-8">
       <div class="flex justify-center items-center gap-4 mb-4">
         <Skeleton width="2rem" height="2rem" borderRadius="4px" />
         <div class="flex gap-2">
