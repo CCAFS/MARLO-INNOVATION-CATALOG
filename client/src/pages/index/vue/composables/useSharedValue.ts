@@ -1,12 +1,36 @@
 // composables/useSharedValue.ts
 import { ref, computed } from 'vue';
 
+interface Filters {
+  scalingReadiness: number | null;
+  innovationTypeId: number | null;
+  sdgId: number | null;
+  countryId: number | null;
+}
+
 // ref declared outside => all components share the same instance
-const value = ref(0);
+const value = ref<Filters>({
+  scalingReadiness: null,
+  innovationTypeId: null,
+  sdgId: null,
+  countryId: null
+});
 
 export function useSharedValue() {
-  const setValue = (v: number) => (value.value = v);
-  const display = computed(() => `This is the value: ${value.value}`);
+  const setValue = (v: Partial<Filters>) => {
+    console.log('Setting shared value to:', v);
+    value.value = { ...value.value, ...v };
+  };
+  const display = computed(() => `This is the value: ${JSON.stringify(value.value)}`);
 
-  return { value, setValue, display };
+  const clearFilters = () => {
+    value.value = {
+      scalingReadiness: null,
+      innovationTypeId: null,
+      sdgId: null,
+      countryId: null
+    };
+  };
+
+  return { value, setValue, display, clearFilters };
 }

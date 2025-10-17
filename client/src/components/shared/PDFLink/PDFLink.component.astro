@@ -57,7 +57,7 @@ const { id, isJustIcon, className } = Astro.props;
     async generatePDF(innovationId: string) {
       // Dynamically import jsPDF to avoid loading it on the server side
       try {
-        const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+        const baseApiUrl = import.meta.env.PUBLIC_API;
         const apiUrl = `${baseApiUrl}/innovations/pdf/url/custom?innovationId=${innovationId}&cycle=Reporting&year=2025`;
 
         const response = await fetch(apiUrl, {

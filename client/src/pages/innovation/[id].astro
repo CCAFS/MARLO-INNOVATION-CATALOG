@@ -51,8 +51,8 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationsFromAPI(): Promise<InnovationCatalogV2 | null> {
     try {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
-      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
-      const apiUrl = `${baseApiUrl}/innovations/search-simple?phase=428`;
+      const baseApiUrl = import.meta.env.PUBLIC_API;
+      const apiUrl = `${baseApiUrl}/innovations/search-simple?phase=428&limit=1000`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -78,7 +78,7 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationById(id: number): Promise<InnovationDetail | null> {
     try {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
-      const baseApiUrl = import.meta.env.PUBLIC_API || 'https://0lftavvygh.execute-api.us-east-1.amazonaws.com/dev/api';
+      const baseApiUrl = import.meta.env.PUBLIC_API;
       const apiUrl = `${baseApiUrl}/innovations/info?phaseId=428&innovationId=${id}`;
 
       const response = await fetch(apiUrl, {
@@ -270,7 +270,7 @@ if (innovation.countries) {
     <!-- Return link -->
     <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
       <span class="pi pi-arrow-left"></span>
-      <p>Go back to innovations catalogue</p>
+      <p>Go back to innovations catalog</p>
     </a>
 
     <!-- Title and main options -->
@@ -349,7 +349,7 @@ if (innovation.countries) {
           </p>
         </div>
         <!-- Community solution stories -->
-        <section class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300">
+        <section class="w-full p-4 mb-6 border border-border-light rounded bg-white-100 text-text-300 relative">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Community solution stories</p>
 
           <!-- Input container -->
@@ -380,6 +380,15 @@ if (innovation.countries) {
             {/* Show message when no comments are available */}
             <div class="text-center py-4 text-gray-500">
               <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
+            </div>
+          </div>
+
+          <!-- Blur overlay with under construction message -->
+          <div class="absolute inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center rounded">
+            <div class="bg-white border-2 border-yellow-400 rounded-lg p-6 shadow-lg text-center">
+              <div class="text-yellow-500 text-3xl mb-2">🚧</div>
+              <h3 class="text-lg font-semibold text-gray-800 mb-2">Under Construction</h3>
+              <p class="text-sm text-gray-600">This feature is currently being developed and will be available soon.</p>
             </div>
           </div>
         </section>

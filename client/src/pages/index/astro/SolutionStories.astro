@@ -1,0 +1,82 @@
+---
+import BgImgSolutionStories from '~/images/bg_img_solution_stories.png';
+
+const solutionStories = [
+  {
+    id: 1,
+    author: "Jhon Doe",
+    date: "22 Jul 2024",
+    rating: 0.62,
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+    innovation: "The Community of Practices of Institutions creates an environment for...",
+    readMoreLink: "#"
+  },
+  {
+    id: 2,
+    author: "Jane Smith",
+    date: "18 Jul 2024",
+    rating: 0.75,
+    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.",
+    innovation: "Digital Innovation Platform for Agricultural Solutions transforms...",
+    readMoreLink: "#"
+  }
+];
+
+---
+
+<div class="relative w-full h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-112 overflow-hidden mb-10">
+  <!-- Background with opacity - separate layer -->
+  <div 
+    class="absolute inset-0 bg-cover bg-center opacity-20" 
+    style={`background-image: url(${BgImgSolutionStories.src});`}>
+  </div>
+  
+  <!-- Content layer - full opacity -->
+  <div class="relative z-10">
+    <div class="container mx-auto flex justify-between text-4xl mt-10 p-0 xl:p-16 2xl:p-20">
+      <h1 class="text-base xl:text-lg 2xl:text-2xl font-bold text-[#1E1E1E]">Solution Stories</h1>
+    </div>
+    
+    <div class="container mx-auto relative mt-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {solutionStories.map((story) => (
+          <article class="story-card bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+            <!-- Card Header -->
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="flex flex-row items-center gap-1">
+                  <span class="text-sm font-medium text-gray-900">{story.author}</span>
+                  <div class="w-0.5 h-0.5 bg-gray-500 rounded-full"></div>
+                  <span class="text-sm text-gray-500">{story.date}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-4">
+              <p class="text-sm text-gray-700 leading-relaxed line-clamp-3">
+                {story.content}
+              </p>
+            </div>
+            
+            <!-- Innovation Title -->
+            <div class="mb-4">
+              <p class="text-xs text-gray-600 font-medium">
+                <span class="font-semibold">Innovation:</span> {story.innovation}
+              </p>
+            </div>
+
+            <!-- Read More Link -->
+            <div class="flex justify-end">
+              <a 
+                href={story.readMoreLink}
+                class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
+                Read More →
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

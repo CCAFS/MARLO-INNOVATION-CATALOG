@@ -15,7 +15,7 @@
       :x="circle.x"
       :y="circle.y"
       :fill="circle.fill"
-      :activeIndex="active"
+      :activeIndex="selectedIndex"
       :index="index"
       :pathD="circle.pathD"
       @click="handleClick" />
@@ -150,11 +150,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import SvgCircle from './SvgCircle.vue';
 import { circleColors } from './colors';
-const { setValue } = useSharedValue();
+const { setValue, value } = useSharedValue();
 const circleList = [
   {
     class: 'cursor-pointer',
@@ -247,8 +247,14 @@ const circleList = [
 ];
 
 const active = ref<number | null>(null);
+const selectedIndex = computed(() => {
+  if (value.value.scalingReadiness === null) return null;
+  return value.value.scalingReadiness;
+});
 const handleClick = (index: number) => {
   active.value = index;
-  setValue(index);
+  setValue({
+    scalingReadiness: index
+  });
 };
 </script>

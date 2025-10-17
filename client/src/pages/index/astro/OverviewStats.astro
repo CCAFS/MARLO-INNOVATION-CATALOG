@@ -4,20 +4,46 @@ import Icon1 from '../../../images/icon-1.png';
 import Icon2 from '../../../images/icon-2.png';
 import Icon3 from '../../../images/icon-3.png';
 import { texts } from '../../../content/texts';
+import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+
+async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
+  const baseApiUrl = import.meta.env.PUBLIC_API;
+  const url = `${baseApiUrl}/innovations/stats?phaseId=428`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching stats: ${response.statusText}`);
+      return null;
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch stats:', error);
+    return null;
+  }
+}
+
+const statsData = await fetchStatsInnovations();
+
 const stats = [
   {
     title: 'Total innovations',
-    value: 32,
+    value: statsData?.innovationCount || 0,
     imagePath: Icon1
   },
   {
     title: 'Countries',
-    value: 25,
+    value: statsData?.countryCount || 0,
     imagePath: Icon2
   },
   {
     title: 'Average scaling readiness',
-    value: 7,
+    value: statsData?.averageScalingReadiness || 0,
     imagePath: Icon3
   }
 ];
