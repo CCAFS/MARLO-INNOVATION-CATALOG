@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import Paginator from 'primevue/paginator';
 import Skeleton from 'primevue/skeleton';
@@ -32,8 +32,29 @@ const fetchInnovationsFromAPI = async (pageOffset = 0, pageLimit = 6) => {
     isLoading.value = true;
     error.value = null;
 
-    // Use the computed API URL instead of accessing import.meta directly
-    const url = `${apiBaseUrl.value}/innovations/search-simple?phase=428&offset=${pageOffset}&limit=${pageLimit}`;
+    // Build URL with URLSearchParams for proper query string handling
+    const params = new URLSearchParams({
+      phase: '428',
+      offset: pageOffset.toString(),
+      limit: pageLimit.toString()
+    });
+
+    // Add filters from shared value
+    const filters = value.value;
+    if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
+      params.append('readinessScale', (filters.scalingReadiness + 1).toString()); // Add 1 to match API expectation
+    }
+    if (filters.innovationTypeId) {
+      params.append('innovationTypeId', filters.innovationTypeId.toString());
+    }
+    if (filters.sdgId) {
+      params.append('sdgId', filters.sdgId.toString());
+    }
+    if (filters.countryId) {
+      params.append('countryId', filters.countryId.toString());
+    }
+
+    const url = `${apiBaseUrl.value}/innovations/search-simple?${params.toString()}`;
 
     console.log('Fetching from:', url);
     console.log('API Base URL:', apiBaseUrl.value);
@@ -112,6 +133,19 @@ const onPageChange = (event: any) => {
   const newOffset = event.page * event.rows;
   fetchInnovationsFromAPI(newOffset, event.rows);
 };
+
+// Handle Filter changes (if any filters are applied, refetch data accordingly)
+watch(
+  () => value.value,
+  (newFilters: any) => {
+    console.log('Filters changed:', newFilters);
+    // Reset to first page on filter change
+    currentPage.value = 0;
+    // Fetch data with new filteSrs applied
+    fetchInnovationsFromAPI(0, rowsPerPage.value);
+  },
+  { deep: true }
+);
 
 // Fetch data when component is mounted (client-side only)
 onMounted(() => {
