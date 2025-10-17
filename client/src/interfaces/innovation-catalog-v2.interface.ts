@@ -216,6 +216,7 @@ export interface ContactPerson {
 export interface InnovationType {
   id: number;
   name: string;
+  isOldType: boolean;
 }
 
 export interface Sdg {
@@ -226,4 +227,13 @@ export interface Sdg {
   sdgFullName: string;
   idPhase: number;
   isActive: boolean;
+}
+
+export interface SdgResume {
+  id: number;
+  smoCode: number;
+  shortName: string;
+  fullName: string;
+  icon: string;
+  description: string;
 }
