@@ -10,10 +10,7 @@ import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-
 
 const { apiBaseUrl } = usePublicAPI();
 
-const selectedInnovationType = ref();
-const selectedSDG = ref();
-
-const { value, setValue, display } = useSharedValue();
+const { value, setValue, clearFilters } = useSharedValue();
 
 const dataSDGs = ref<SdgResume[]>([]);
 const dataInnovationTypes = ref<InnovationType[]>([]);
@@ -26,6 +23,16 @@ const readinessText = computed(() => {
   return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined
     ? getReadinessScaleText(value.value.scalingReadiness + 1)
     : getReadinessScaleText(0);
+});
+
+const selectedInnovationType = computed(() => {
+  if (value.value.innovationTypeId === null) return null;
+  return dataInnovationTypes.value.find(type => type.id === value.value.innovationTypeId) || null;
+});
+
+const selectedSDG = computed(() => {
+  if (value.value.sdgId === null) return null;
+  return dataSDGs.value.find(sdg => sdg.id === value.value.sdgId) || null;
 });
 
 const fetchSGDsData = async () => {
@@ -68,19 +75,15 @@ const fetchInnovationsTypeData = async () => {
   }
 };
 
-const handleSelectInnovationTypeChange = (newValue: InnovationType) => {
-  selectedInnovationType.value = newValue;
+const handleSelectInnovationTypeChange = (newValue: InnovationType | null) => {
   setValue({
-    ...value.value,
-    innovationTypeId: newValue.id
+    innovationTypeId: newValue?.id || null
   });
 };
 
-const handleSelectSDGChange = (newValue: SdgResume) => {
-  selectedSDG.value = newValue;
+const handleSelectSDGChange = (newValue: SdgResume | null) => {
   setValue({
-    ...value.value,
-    sdgId: newValue.id
+    sdgId: newValue?.id || null
   });
 };
 
@@ -137,7 +140,7 @@ onMounted(() => {
 
       <!-- Clear button -->
       <div class="flex items-center flex-auto">
-        <button class="pi pi-eraser bg-primary-400 rounded-full text-white p-1 hover:bg-primary-500"></button>
+        <button class="pi pi-eraser bg-primary-400 rounded-full text-white p-1 hover:bg-primary-500" @click="clearFilters"></button>
       </div>
     </div>
   </div>

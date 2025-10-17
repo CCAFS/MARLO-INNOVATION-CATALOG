@@ -17,11 +17,20 @@ const value = ref<Filters>({
 });
 
 export function useSharedValue() {
-  const setValue = (v: Filters) => {
+  const setValue = (v: Partial<Filters>) => {
     console.log('Setting shared value to:', v);
-    value.value = v;
+    value.value = { ...value.value, ...v };
   };
   const display = computed(() => `This is the value: ${JSON.stringify(value.value)}`);
 
-  return { value, setValue, display };
+  const clearFilters = () => {
+    value.value = {
+      scalingReadiness: null,
+      innovationTypeId: null,
+      sdgId: null,
+      countryId: null
+    };
+  };
+
+  return { value, setValue, display, clearFilters };
 }
