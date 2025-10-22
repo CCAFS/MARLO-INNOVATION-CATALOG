@@ -1,14 +1,8 @@
-import { computed } from 'vue';
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 
 export function useApi() {
-  const apiBaseUrl = computed(() => {
-    if (typeof window === 'undefined') {
-      return '/api';
-    }
-    return import.meta.env.PUBLIC_API || '/api';
-  });
+  const apiBaseUrl = import.meta.env.PUBLIC_API || '/api';
 
   const { makeRequest, isLoading, error } = useApiRequest();
 
@@ -17,17 +11,13 @@ export function useApi() {
     isLoading,
     error,
 
-    getUsers: (params?: Record<string, any>) =>
-      makeRequest<User[]>('GET', `${apiBaseUrl.value}/users`, { params }),
+    getUsers: (params?: Record<string, any>) => makeRequest<User[]>('GET', `${apiBaseUrl}/users`, { params }),
 
-    getUserById: (id: string | number) =>
-      makeRequest<User>('GET', `${apiBaseUrl.value}/users/${id}`),
+    getUserById: (id: string | number) => makeRequest<User>('GET', `${apiBaseUrl}/users/${id}`),
 
-    getPosts: (params?: Record<string, any>) =>
-      makeRequest<Post[]>('GET', `${apiBaseUrl.value}/posts`, { params }),
+    getPosts: (params?: Record<string, any>) => makeRequest<Post[]>('GET', `${apiBaseUrl}/posts`, { params }),
 
-    postCreatePost: (body: CreatePostRequest) =>
-      makeRequest<CreatePostResponse>('POST', `${apiBaseUrl.value}/posts`, { body })
+    postCreatePost: (body: CreatePostRequest) => makeRequest<CreatePostResponse>('POST', `${apiBaseUrl}/posts`, { body })
   };
 }
 
