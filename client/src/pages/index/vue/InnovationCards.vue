@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
+import { useApi } from '~/composables/useApi';
 import Paginator from 'primevue/paginator';
 import Skeleton from 'primevue/skeleton';
-import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
@@ -16,86 +16,55 @@ const imgEmptyDataStats = {
 };
 
 const { value } = useSharedValue();
+const { getInnovations, getInnovationStats } = useApi();
 
-const { apiUrl, apiBaseUrl } = usePublicAPI();
-
-// Reactive data for API response
 const apiData = ref<InnovationCatalogV2 | null>(null);
 const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
 
-// Pagination state
-const currentPage = ref(0); // PrimeVue paginator uses 0-based indexing
-const rowsPerPage = ref(6); // Default items per page
+const currentPage = ref(0);
+const rowsPerPage = ref(6);
 const totalRecords = ref(0);
 
-// Computed values for pagination
 const offset = computed(() => currentPage.value * rowsPerPage.value);
 const limit = computed(() => rowsPerPage.value);
 
-// Function to fetch data from API
 const fetchInnovationsFromAPI = async (pageOffset = 0, pageLimit = 6) => {
   try {
     isLoading.value = true;
     error.value = null;
 
-    // Build URL with URLSearchParams for proper query string handling
-    const params = new URLSearchParams({
-      phase: '428',
-      offset: pageOffset.toString(),
-      limit: pageLimit.toString()
-    });
-
-    // Add filters from shared value
     const filters = value.value;
+    const params: any = {
+      phase: '428',
+      offset: pageOffset,
+      limit: pageLimit
+    };
+
     if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-      params.append('readinessScale', (filters.scalingReadiness + 1).toString()); // Add 1 to match API expectation
+      params.readinessScale = filters.scalingReadiness + 1;
     }
     if (filters.innovationTypeId) {
-      params.append('innovationTypeId', filters.innovationTypeId.toString());
+      params.innovationTypeId = filters.innovationTypeId;
     }
     if (filters.sdgId) {
-      params.append('sdgId', filters.sdgId.toString());
+      params.sdgId = filters.sdgId;
     }
     if (filters.countryId) {
-      params.append('countryId', filters.countryId.toString());
+      params.countryId = filters.countryId;
     }
 
-    const url = `${apiBaseUrl.value}/innovations/search-simple?${params.toString()}`;
-
-    console.log('Fetching from:', url);
-    console.log('API Base URL:', apiBaseUrl.value);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Data fetched from API:', data);
+    const data = await getInnovations(params);
     apiData.value = data;
 
-    // Update total records if the API provides it
     if (data.totalCount !== undefined) {
       totalRecords.value = data.totalCount;
-    } else if (data.count !== undefined) {
-      totalRecords.value = data.count;
     }
   } catch (err: any) {
     console.error('Error fetching data from API:', err);
     error.value = err instanceof Error ? err : new Error(String(err));
 
-    // Show user-friendly error message
     if (err.message.includes('ETIMEDOUT') || err.message.includes('503')) {
       error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
     }
@@ -104,58 +73,32 @@ const fetchInnovationsFromAPI = async (pageOffset = 0, pageLimit = 6) => {
   }
 };
 
-// Function to handle info stats, only executed on first load place
 const fetchInfoStats = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl.value}/innovations/stats?phaseId=428`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Info stats fetched from API:', apiDataStats.value);
-
+    const data = await getInnovationStats({ phaseId: '428' });
     apiDataStats.value = data;
-    totalRecords.value = data.totalInnovations || 0; // Update total records for pagination
+    totalRecords.value = data.totalInnovations || 0;
   } catch (error) {
     console.error('Error fetching info stats:', error);
   }
 };
 
-// Handle pagination events
 const onPageChange = (event: any) => {
-  console.log('Page changed:', event);
   currentPage.value = event.page;
   rowsPerPage.value = event.rows;
-
-  // Fetch new data based on pagination
   const newOffset = event.page * event.rows;
   fetchInnovationsFromAPI(newOffset, event.rows);
 };
 
-// Handle Filter changes (if any filters are applied, refetch data accordingly)
 watch(
   () => value.value,
-  (newFilters: any) => {
-    console.log('Filters changed:', newFilters);
-    // Reset to first page on filter change
+  () => {
     currentPage.value = 0;
-    // Fetch data with new filteSrs applied
     fetchInnovationsFromAPI(0, rowsPerPage.value);
   },
   { deep: true }
 );
 
-// Fetch data when component is mounted (client-side only)
 onMounted(() => {
   fetchInnovationsFromAPI();
   fetchInfoStats();

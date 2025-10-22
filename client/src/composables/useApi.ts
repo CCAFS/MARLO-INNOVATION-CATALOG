@@ -1,5 +1,6 @@
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
+import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 
 export function useApi() {
   const apiBaseUrl = import.meta.env.PUBLIC_API || '';
@@ -17,7 +18,20 @@ export function useApi() {
 
     getPosts: (params?: Record<string, any>) => makeRequest<Post[]>('GET', `${apiBaseUrl}/posts`, { params }),
 
-    postCreatePost: (body: CreatePostRequest) => makeRequest<CreatePostResponse>('POST', `${apiBaseUrl}/posts`, { body })
+    postCreatePost: (body: CreatePostRequest) => makeRequest<CreatePostResponse>('POST', `${apiBaseUrl}/posts`, { body }),
+
+    getInnovations: (params?: {
+      phase?: string;
+      offset?: number;
+      limit?: number;
+      readinessScale?: number;
+      innovationTypeId?: number;
+      sdgId?: number;
+      countryId?: number;
+    }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
+
+    getInnovationStats: (params?: { phaseId?: string }) =>
+      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, { params })
   };
 }
 
