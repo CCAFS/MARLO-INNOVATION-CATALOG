@@ -1,0 +1,61 @@
+import { computed } from 'vue';
+import { useApiRequest } from './useApiRequest';
+import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
+
+export function useApi() {
+  const apiBaseUrl = computed(() => {
+    if (typeof window === 'undefined') {
+      return '/api';
+    }
+    return import.meta.env.PUBLIC_API || '/api';
+  });
+
+  const { makeRequest, isLoading, error } = useApiRequest();
+
+  return {
+    apiBaseUrl,
+    isLoading,
+    error,
+
+    getUsers: (params?: Record<string, any>) =>
+      makeRequest<User[]>('GET', `${apiBaseUrl.value}/users`, { params }),
+
+    getUserById: (id: string | number) =>
+      makeRequest<User>('GET', `${apiBaseUrl.value}/users/${id}`),
+
+    getPosts: (params?: Record<string, any>) =>
+      makeRequest<Post[]>('GET', `${apiBaseUrl.value}/posts`, { params }),
+
+    postCreatePost: (body: CreatePostRequest) =>
+      makeRequest<CreatePostResponse>('POST', `${apiBaseUrl.value}/posts`, { body })
+  };
+}
+
+/*
+Usage example:
+
+import { useApi } from '~/composables/useApi';
+import type { User, Post } from '~/interfaces/api-example.interface';
+
+const { getUsers, getUserById, getPosts, postCreatePost, isLoading, error } = useApi();
+
+// Simple GET - returns User[]
+const users = await getUsers();
+console.log(users[0].name); // TypeScript knows this is a string
+
+// GET with ID - returns User
+const user = await getUserById('123');
+console.log(user.email); // TypeScript autocomplete works!
+
+// GET with query params - returns Post[]
+const posts = await getPosts({ limit: 10, offset: 0 });
+console.log(posts[0].title); // Fully typed
+
+// POST with body - returns CreatePostResponse
+const newPost = await postCreatePost({
+  title: 'New Post',
+  body: 'Content here',
+  userId: 1
+});
+console.log(newPost.id); // TypeScript validates the response structure
+*/
