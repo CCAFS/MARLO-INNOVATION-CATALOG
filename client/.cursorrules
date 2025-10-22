@@ -1,0 +1,141 @@
+# MARLO Innovation Catalog - Project Technologies
+
+## Main Technology Stack
+
+### Base Framework
+
+- **Astro 5.13.7**: Modern web framework that enables creating fast websites with less JavaScript
+- **Vue 3.5.21**: JavaScript framework for reactive user interfaces
+- **TypeScript**: JavaScript superset with static typing for greater robustness
+
+### Styles and UI
+
+- **Tailwind CSS 4.1.13**: Utility-first CSS framework for rapid design
+- **PrimeVue 4.3.9**: Vue component library with professional theme
+- **PrimeIcons 7.0.0**: Complete iconography for interfaces
+- **TailwindCSS-PrimeUI 0.6.1**: Integration between Tailwind and PrimeVue
+
+### Development Tools
+
+- **Vite**: Modern and fast build tool (integrated with Astro)
+- **Node.js 20**: JavaScript runtime for development
+- **Docker**: Containerization for deployment
+
+## Project Architecture
+
+### File Structure
+
+```
+src/
+├── components/          # Reusable components
+│   ├── shared/         # Shared components (Astro + Vue)
+│   └── vue/            # Vue-specific components
+├── pages/              # Application pages
+│   ├── index/          # Main page with subcomponents
+│   └── innovation/     # Innovation detail pages
+├── layouts/            # Base layouts (MainLayout.astro)
+├── interfaces/         # TypeScript definitions
+├── styles/             # Global styles and custom CSS
+├── utils/              # Utilities and helpers
+├── content/            # Static content and variables
+└── jsons/              # Static data in JSON/TS format
+```
+
+### Development Patterns
+
+#### Astro Components
+
+- `.astro` files for static and SEO-friendly components
+- Frontmatter with `---` for server-side logic
+- Hybrid components that can use Vue when necessary
+
+#### Vue Components
+
+- `.vue` files with `<script setup>` for reactive components
+- Use of `client:load` for client-side hydration
+- Composables for reusable logic (`useSharedValue.ts`, `usePublicAPI.ts`)
+
+#### State Management
+
+- Vue composables for shared state
+- Props drilling for component communication
+- Public APIs for dynamic data
+
+### Specific Integrations
+
+#### Astro + Vue
+
+- Native integration with `@astrojs/vue`
+- Vue components can be used within Astro pages
+- Selective hydration with directives like `client:load`
+
+#### Tailwind + PrimeVue
+
+- Custom configuration with `tailwindcss-primeui`
+- Global styles in `global.css`
+- Montserrat font for consistent typography
+
+#### TypeScript
+
+- Strict configuration with `astro/tsconfigs/strict`
+- Configured path aliases (`~/*`, `@components/*`, etc.)
+- Detailed interfaces for innovation data
+
+### Main Features
+
+#### Innovation Catalog
+
+- Advanced filtering system (country, phase, type, SDG)
+- Readiness scale explorer
+- Innovation cards with detailed information
+- General statistics and interactive maps
+
+#### Data Management
+
+- Public APIs for dynamic data
+- Static data in TypeScript files
+- Complex interfaces for innovations, countries, SDGs
+
+#### SEO and Performance
+
+- Open Graph and Twitter Card meta tags
+- Client-side routing with `ClientRouter`
+- Image and static asset optimization
+
+### Deployment
+
+- Docker multi-stage build (build → test → production)
+- Nginx to serve static files
+- Node.js Alpine for size optimization
+
+## Code Conventions
+
+### Naming
+
+- Components: PascalCase (e.g., `BasicButton.component.astro`)
+- Vue files: PascalCase (e.g., `Home.vue`)
+- Interfaces: PascalCase with `.interface.ts` suffix
+- Utilities: camelCase (e.g., `getCountryNormalizeText.ts`)
+
+### Component Structure
+
+- Clear separation between Astro (static) and Vue (reactive) components
+- Shared components in `/shared/`
+- Base layouts for visual consistency
+
+### Styles
+
+- Tailwind for utility styles
+- Custom CSS in `/styles/` for specific cases
+- CSS variables for colors and themes
+
+## Useful Commands
+
+```bash
+npm run dev      # Local development
+npm run build    # Production build
+npm run preview  # Build preview
+npm run astro    # Astro CLI
+```
+
+This project combines Astro's speed with Vue's reactivity, creating a modern and performant user experience for MARLO's innovation catalog.
