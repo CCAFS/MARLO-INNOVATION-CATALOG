@@ -144,8 +144,9 @@
         <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_532_106"></feBlend>
         <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_532_106" result="shape"></feBlend>
       </filter>
-      <image id="image0_532_106" width="410" height="425" preserveAspectRatio="none" xlink:href="map.png" />
+      <!-- <image id="image0_532_106" width="410" height="425" preserveAspectRatio="none" xlink:href="map.png" /> -->
     </defs>
+    <AfricaSvg />
   </svg>
 </template>
 
@@ -153,6 +154,7 @@
 import { ref, computed } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import SvgCircle from './SvgCircle.vue';
+import AfricaSvg from './AfricaSvg.vue';
 import { circleColors } from './colors';
 const { setValue, value } = useSharedValue();
 const circleList = [
