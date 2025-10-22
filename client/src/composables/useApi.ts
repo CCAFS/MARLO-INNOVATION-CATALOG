@@ -2,7 +2,7 @@ import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 
 export function useApi() {
-  const apiBaseUrl = import.meta.env.PUBLIC_API || '/api';
+  const apiBaseUrl = import.meta.env.PUBLIC_API || '';
 
   const { makeRequest, isLoading, error } = useApiRequest();
 
