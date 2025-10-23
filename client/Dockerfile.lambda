@@ -1,0 +1,36 @@
+########################################
+# Build stage: compile Astro in SSR mode
+########################################
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Install build prerequisites
+RUN apk add --no-cache python3 make g++ git
+
+# Cache dependency install
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev=false --no-audit --loglevel=error
+
+# Copy source and build
+COPY . .
+RUN npm run build && npm prune --omit=dev --no-audit --loglevel=error
+
+
+##############################################################
+# Runtime stage: AWS Lambda base image with the bundled assets
+##############################################################
+FROM public.ecr.aws/lambda/nodejs:20 AS runtime
+
+WORKDIR /var/task
+
+# Copy production dependencies and server output
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/.astro ./.astro
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/package-lock.json ./package-lock.json
+COPY --from=build /app/lambda ./lambda
+
+# Lambda entrypoint (handler.mjs exports handler function)
+CMD ["lambda/handler.handler"]
