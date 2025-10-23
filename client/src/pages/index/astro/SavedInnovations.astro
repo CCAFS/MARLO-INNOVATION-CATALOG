@@ -1,7 +1,17 @@
 ---
-const message = 'Hello World';
+import NoSaveInnovations from '../../../images/no-save-innovations.png';
 ---
 
-<div>
-  <h1>{message}</h1>
+<div class="container mx-auto p-0 xl:px-16 2xl:px-20">
+  <div class="w-full max-w-6xl">
+    <h1 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E] mb-8 text-left">My saved innovations</h1>
+  </div>
+  <div class="mb-8 mt-4">
+    <div
+      class="text-center py-8 rounded-xl p-7 md:p-7 bg-white flex flex-col items-center"
+      style="box-shadow: 4px 4px 10px -5px rgba(0, 0, 0, 0.25);">
+      <img src={NoSaveInnovations.src} alt="no saved innovations" width="150" height="100" class="pb-2" />
+      <p class="text-[1E1E1E] text-lg">No saved innovations yet. Browser and bookmark innovations to see them here.</p>
+    </div>
+  </div>
 </div>
