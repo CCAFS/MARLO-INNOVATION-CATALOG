@@ -156,6 +156,7 @@ export interface Country {
   projectInnovationId: number;
   idCountry: number;
   countryName: string;
+  name?: string; // Alias for compatibility
   idPhase: number;
 }
 

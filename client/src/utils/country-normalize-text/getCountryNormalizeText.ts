@@ -1,4 +1,5 @@
-import type { Country, Region } from "~/interfaces/innovation-catalog-v2.interface";
+import type { Country as CountryV2, Region as RegionV2 } from "~/interfaces/innovation-catalog-v2.interface";
+import type { Country as CountryComplete, Region as RegionComplete } from "~/interfaces/search-complete.interface";
 
 // Type for structured country text result
 interface CountryTextResult {
@@ -6,6 +7,10 @@ interface CountryTextResult {
     additionalText?: string;
     hasMore: boolean;
 }
+
+// Union types to accept both interface versions
+type Country = CountryV2 | CountryComplete;
+type Region = RegionV2 | RegionComplete;
 
 // Alternative function that returns structured data
 const getCountryTextStructured = (countries: Country[], regions: Region[], isMore?: boolean): CountryTextResult => {
