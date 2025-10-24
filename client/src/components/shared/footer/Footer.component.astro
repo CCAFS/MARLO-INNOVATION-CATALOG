@@ -9,7 +9,7 @@ import Tractor from '~/images/tractor.png';
   </div>
   <div class="bg-primary-500 py-6">
     <div class="container mx-auto p-0 xl:p-16 2xl:p-20">
-      <div class="grid grid-cols-3 pb-5">
+      <div class="grid grid-cols-3 pb-10">
         <!-- Contact Information -->
         <div class="h-fit text-left text-sm">
           <strong class="text-medium">Contact</strong>
@@ -36,24 +36,27 @@ import Tractor from '~/images/tractor.png';
 
       <!-- Copyright -->
       <div class="text-xs copyRight">
-        <hr class="mb-2.5" />
+        <hr class="mb-5" />
         <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
-        <span class="opacity-70"
-          >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
-            ><br />
-            <span class="opacity-50">Some rights reserved</span>
+        <div class="flex justify-between">
+          <span class="opacity-70"
+            >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
+              ><br />
+              <span>Some rights reserved</span>
+            </span>
           </span>
-
           <!-- MARLO Blog -->
-          <div class="newsButton">
+          <div class="flex items-center">
             <a
               href="https://cgiar-prms.notion.site/AICCRA-Knowledge-and-Data-Sharing-team-achievements-8742c91b3be14f05902f02224a63a2d9"
-              target="__blank">
-              <b> Check our blog </b>
-              <span class="fa fa-external-link-square"></span>
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-4 rounded-lg bg-white px-5 shadow-[0_4px_6px_-1px_rgba(255,255,255,0.3)]">
+              <span class="text-base text-primary-500">Check our blog</span>
+              <i class="pi pi-external-link text-primary-500"></i>
             </a>
           </div>
-        </span>
+        </div>
       </div>
     </div>
   </div>
