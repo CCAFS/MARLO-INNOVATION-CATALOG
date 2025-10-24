@@ -1,6 +1,7 @@
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import type { SearchComplete } from '~/interfaces/search-complete.interface';
 
 export function useApi() {
   const apiBaseUrl = import.meta.env.PUBLIC_API || '';
@@ -31,7 +32,17 @@ export function useApi() {
     }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
 
     getInnovationStats: (params?: { phaseId?: string }) =>
-      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, { params })
+      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, { params }),
+
+    getInnovationsComplete: (params?: {
+      phase?: string;
+      offset?: number;
+      limit?: number;
+      readinessScale?: number;
+      innovationTypeId?: number;
+      sdgId?: number;
+      countryId?: number;
+    }) => makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params })
   };
 }
 
