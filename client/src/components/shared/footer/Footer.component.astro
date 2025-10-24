@@ -1,54 +1,60 @@
 ---
 const currentYear = new Date().getFullYear();
+import Tractor from '~/images/tractor.png';
 ---
 
-<footer class="bg-primary-500 text-white py-6">
-  <div class="container mx-auto p-0 xl:p-16 2xl:p-20">
-    <div class="grid grid-cols-3 pb-5">
-      <!-- Contact Information -->
-      <div class="h-fit text-left text-sm">
-        <strong class="text-medium">Contact</strong>
-        <ul>
-          <li class="opacity-70"><a class="hover:underline" href="mailto:MARLOSupport@cgiar.org">MARLOSupport@cgiar.org</a></li>
-        </ul>
-      </div>
-      <!-- Legal Information -->
-      <div class="h-fit text-left text-sm">
-        <strong class="text-medium">Legal</strong>
-        <ul>
-          <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Privacy Notice </a></li>
-          <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Terms and Conditions</a></li>
-        </ul>
-      </div>
-      <!-- Glossary -->
-      <div class="h-fit text-left text-sm">
-        <strong class="text-medium">Others</strong>
-        <ul>
-          <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Glossary of relevant items </a></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Copyright -->
-    <div class="text-xs copyRight">
-      <hr class="mb-2.5" />
-      <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
-      <span class="opacity-70"
-        >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
-          ><br />
-          <span class="opacity-50">Some rights reserved</span>
-        </span>
-
-        <!-- MARLO Blog -->
-        <div class="newsButton">
-          <a
-            href="https://cgiar-prms.notion.site/AICCRA-Knowledge-and-Data-Sharing-team-achievements-8742c91b3be14f05902f02224a63a2d9"
-            target="__blank">
-            <b> Check our blog </b>
-            <span class="fa fa-external-link-square"></span>
-          </a>
+<footer class="text-white">
+  <div class="flex justify-center">
+    <img src={Tractor.src} alt="Tractor" />
+  </div>
+  <div class="bg-primary-500 py-6">
+    <div class="container mx-auto p-0 xl:p-16 2xl:p-20">
+      <div class="grid grid-cols-3 pb-5">
+        <!-- Contact Information -->
+        <div class="h-fit text-left text-sm">
+          <strong class="text-medium">Contact</strong>
+          <ul>
+            <li class="opacity-70"><a class="hover:underline" href="mailto:MARLOSupport@cgiar.org">MARLOSupport@cgiar.org</a></li>
+          </ul>
         </div>
-      </span>
+        <!-- Legal Information -->
+        <div class="h-fit text-left text-sm">
+          <strong class="text-medium">Legal</strong>
+          <ul>
+            <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Privacy Notice </a></li>
+            <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Terms and Conditions</a></li>
+          </ul>
+        </div>
+        <!-- Glossary -->
+        <div class="h-fit text-left text-sm">
+          <strong class="text-medium">Others</strong>
+          <ul>
+            <li class="opacity-70"><a class="hover:underline" target="_blank" href="">Glossary of relevant items </a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-xs copyRight">
+        <hr class="mb-2.5" />
+        <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
+        <span class="opacity-70"
+          >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
+            ><br />
+            <span class="opacity-50">Some rights reserved</span>
+          </span>
+
+          <!-- MARLO Blog -->
+          <div class="newsButton">
+            <a
+              href="https://cgiar-prms.notion.site/AICCRA-Knowledge-and-Data-Sharing-team-achievements-8742c91b3be14f05902f02224a63a2d9"
+              target="__blank">
+              <b> Check our blog </b>
+              <span class="fa fa-external-link-square"></span>
+            </a>
+          </div>
+        </span>
+      </div>
     </div>
   </div>
 </footer>
