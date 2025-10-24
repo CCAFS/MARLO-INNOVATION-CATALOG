@@ -11,7 +11,6 @@ import BasicButton from '~/components/shared/button/BasicButton/BasicButton.comp
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
-import type { InnovationDetail } from '~/interfaces/innovation-catalog-v2.interface';
 import type { Innovation as InnovationComplete } from '~/interfaces/search-complete.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
@@ -19,7 +18,7 @@ import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
 
 interface staticPaths {
   params: { id: string };
-  props: { innovation: InnovationDetail };
+  props: { innovation: InnovationComplete };
 }
 
 const stats = [
@@ -95,119 +94,14 @@ export const getStaticPaths = (async () => {
         apiData.map(i => i.projectInnovationId)
       );
 
-      // Create paths directly from complete innovation data
+      // Create paths directly from complete innovation data (no mapping needed)
       const paths = apiData.map(innovation => {
         console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
-
-        // Map Innovation (search-complete) to InnovationDetail
-        const mappedInnovation: InnovationDetail = {
-          id: innovation.id,
-          projectInnovationId: innovation.projectInnovationId,
-          idPhase: innovation.idPhase,
-          year: innovation.year,
-          title: innovation.title,
-          narrative: innovation.narrative,
-          phaseResearchId: innovation.phaseResearchId,
-          stageInnovationId: innovation.stageInnovationId,
-          geographicScopeId: innovation.geographicScopeId,
-          innovationTypeId: innovation.innovationType?.id || 0,
-          repIndRegionId: innovation.repIndRegionId,
-          repIndContributionCrpId: innovation.repIndContributionCrpId,
-          repIndDegreeInnovationId: innovation.repIndDegreeInnovationId,
-          projectExpectedStudiesId: innovation.projectExpectedStudiesId,
-          descriptionStage: innovation.descriptionStage || '',
-          evidenceLink: innovation.evidenceLink || '',
-          genderFocusLevelId: innovation.genderFocusLevelId,
-          genderExplanation: innovation.genderExplanation || '',
-          youthFocusLevelId: innovation.youthFocusLevelId,
-          youthExplanation: innovation.youthExplanation || '',
-          leadOrganizationId: innovation.leadOrganizationId,
-          adaptativeResearchNarrative: innovation.adaptativeResearchNarrative,
-          isClearLead: innovation.isClearLead || false,
-          otherInnovationType: innovation.otherInnovationType || null,
-          externalLink: innovation.externalLink,
-          numberOfInnovations: innovation.numberOfInnovations,
-          hasMilestones: innovation.hasMilestones || null,
-          shortTitle: innovation.shortTitle || innovation.title,
-          innovationNatureId: innovation.innovationNatureId,
-          hasCgiarContribution: innovation.hasCgiarContribution || null,
-          reasonNotCgiarContribution: innovation.reasonNotCgiarContribution,
-          beneficiariesNarrative: innovation.beneficiariesNarrative || '',
-          intellectualPropertyInstitutionId: innovation.intellectualPropertyInstitutionId || null,
-          hasLegalRestrictions: innovation.hasLegalRestrictions || null,
-          hasAssetPotential: innovation.hasAssetPotential || null,
-          hasFurtherDevelopment: innovation.hasFurtherDevelopment || null,
-          otherIntellectualProperty: innovation.otherIntellectualProperty || '',
-          innovationImportance: innovation.innovationImportance || '',
-          readinessScale: innovation.readinessScale || 0,
-          readinessReason: innovation.readinessReason || '',
-          genderScoreId: innovation.genderScoreId || 0,
-          climateChangeScoreId: innovation.climateChangeScoreId || 0,
-          foodSecurityScoreId: innovation.foodSecurityScoreId || 0,
-          environmentalScoreId: innovation.environmentalScoreId || 0,
-          povertyJobsScoreId: innovation.povertyJobsScoreId || 0,
-          knowledgeResultsNarrative: innovation.knowledgeResultsNarrative || '',
-          phase: innovation.phase,
-          innovationStage: innovation.innovationStage,
-          geographicScope: innovation.geographicScope,
-          innovationType: innovation.innovationType || { id: 0, name: 'Unknown', isOldType: false },
-          region: innovation.region,
-          contributionCrp: innovation.contributionCrp,
-          degreeInnovation: innovation.degreeInnovation,
-          leadOrganization: innovation.leadOrganization,
-          genderFocusLevel: innovation.genderFocusLevel,
-          youthFocusLevel: innovation.youthFocusLevel,
-          intellectualPropertyInstitution: innovation.intellectualPropertyInstitution || null,
-          phaseResearch: innovation.phaseResearch,
-          projectId: innovation.projectId,
-          isActive: innovation.isActive,
-          activeSince: new Date(innovation.activeSince),
-          createdBy: innovation.createdBy,
-          modifiedBy: innovation.modifiedBy,
-          modificationJustification: innovation.modificationJustification,
-          actors: innovation.actors.map(actor => ({
-            ...actor,
-            activeSince: new Date(actor.activeSince)
-          })),
-          sdgs: innovation.sdgs || [],
-          regions: innovation.regions.map(region => ({
-            ...region,
-            name: region.regionName
-          })),
-          countries: innovation.countries.map(country => ({
-            ...country,
-            name: country.countryName
-          })),
-          organizations: innovation.organizations || [],
-          externalPartners: innovation.contactPersons.map(cp => ({
-            id: cp.id,
-            projectInnovationId: cp.projectInnovationId,
-            institutionId: cp.institutionId,
-            institutionName: cp.institutionName,
-            institutionAcronym: cp.institutionAcronym || '',
-            institutionWebsite: cp.institutionWebsite || '',
-            idPhase: cp.idPhase,
-            innovationPartnerTypeId: cp.innovationPartnerTypeId,
-            partnerTypeName: cp.partnerTypeName,
-            isActive: cp.isActive,
-            activeSince: new Date(cp.activeSince),
-            contactPersons: cp.contactPersons.map(person => ({
-              id: person.id,
-              partnershipId: person.partnershipId,
-              userId: person.userId,
-              userName: person.userName,
-              userEmail: person.userEmail,
-              isActive: person.isActive,
-              activeSince: new Date(person.activeSince)
-            }))
-          })),
-          contributingOrganizations: innovation.contributingOrganizations || []
-        };
 
         return {
           params: { id: innovation.projectInnovationId.toString() },
           props: {
-            innovation: mappedInnovation
+            innovation
           }
         };
       });
@@ -234,7 +128,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 interface Props {
-  innovation: InnovationDetail;
+  innovation: InnovationComplete;
 }
 
 const { innovation } = Astro.props;
@@ -293,7 +187,7 @@ if (innovation.countries) {
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType.name}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType?.name || 'N/A'}</span>
             </div>
             <!-- Scaling Readiness -->
             <div class="flex flex-col text-center items-center">
@@ -385,8 +279,8 @@ if (innovation.countries) {
           <div class="mb-4">
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
             {
-              innovation.externalPartners && innovation.externalPartners.length > 0 ? (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.externalPartners[0].institutionName}</p>
+              innovation.contactPersons && innovation.contactPersons.length > 0 ? (
+                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionName}</p>
               ) : (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">No key actors available</p>
               )
