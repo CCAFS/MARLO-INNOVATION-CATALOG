@@ -122,7 +122,7 @@ onMounted(() => {
           @update:modelValue="handleSelectInnovationTypeChange"
           :options="dataInnovationTypes"
           optionLabel="name"
-          placeholder="Filter by Innovation Typology"
+          placeholder="All"
           class="w-[50%]" />
       </div>
 
@@ -134,7 +134,7 @@ onMounted(() => {
           @update:modelValue="handleSelectSDGChange"
           :options="dataSDGs"
           optionLabel="shortName"
-          placeholder="Filter by SDGs"
+          placeholder="All"
           class="w-[75%]" />
       </div>
 
