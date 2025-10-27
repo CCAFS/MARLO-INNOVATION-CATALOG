@@ -4,4 +4,5 @@ export interface AfricaSvgProps {
   pathD?: string;
   fill?: string;
   stroke?: string;
+  isSelected?: boolean;
 }

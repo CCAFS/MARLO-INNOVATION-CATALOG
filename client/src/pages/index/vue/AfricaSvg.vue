@@ -1,8 +1,28 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { africaSvgPaths } from './AfricaSVGPaths';
 import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+
+// Estado reactivo para países seleccionados
+const selectedCountries = ref<string[]>([]);
+
+// Función para manejar la selección de países
+const toggleCountrySelection = (countryId: string) => {
+  const index = selectedCountries.value.indexOf(countryId);
+  if (index > -1) {
+    // Si ya está seleccionado, lo removemos
+    selectedCountries.value.splice(index, 1);
+  } else {
+    // Si no está seleccionado, lo agregamos
+    selectedCountries.value.push(countryId);
+  }
+};
+
+// Función para verificar si un país está seleccionado
+const isCountrySelected = (countryId: string): boolean => {
+  return selectedCountries.value.includes(countryId);
+};
 
 const countryList = computed(() => {
   const list: AfricaSvgProps[] = [
@@ -137,6 +157,8 @@ const countryList = computed(() => {
       :title="country.title"
       :pathD="country.pathD"
       :fill="country.fill"
-      :stroke="country.stroke" />
+      :stroke="country.stroke"
+      :is-selected="isCountrySelected(country.id!)"
+      @click="toggleCountrySelection(country.id!)" />
   </svg>
 </template>
