@@ -5,34 +5,22 @@ import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 
 const countryList = computed(() => {
-  const list = [
+  const list: AfricaSvgProps[] = [
     {
       id: 'AE',
-      title: 'United Arab Emirates',
-      pathD: africaSvgPaths[0],
-      fill: '#ff0000',
-      stroke: '#ff0000'
+      title: 'United Arab Emirates'
     },
     {
       id: 'AO',
-      title: 'Angola',
-      pathD: africaSvgPaths[1],
-      fill: '#ff0000',
-      stroke: '#ff0000'
+      title: 'Angola'
     },
     {
       id: 'BF',
-      title: 'Burkina Faso',
-      pathD: africaSvgPaths[2],
-      fill: '#ff0000',
-      stroke: '#ff0000'
+      title: 'Burkina Faso'
     },
     {
       id: 'ZA',
-      title: 'South Africa',
-      pathD: africaSvgPaths[3],
-      fill: '#16a34a',
-      stroke: '#16a34a'
+      title: 'South Africa'
     },
     { title: 'Bahrain', id: 'BH' },
     { title: 'Burundi', id: 'BI' },
