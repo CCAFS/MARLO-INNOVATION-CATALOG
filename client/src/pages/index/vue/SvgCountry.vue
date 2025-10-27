@@ -1,13 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{
-  id: string;
-  title: string;
-  pathD: string;
-  fill: string;
-  stroke: string;
-}>();
-console.log(props.id);
-console.log('ho');
+import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+
+const props = defineProps<AfricaSvgProps>();
 </script>
 
 <template>

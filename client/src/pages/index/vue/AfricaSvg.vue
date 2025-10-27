@@ -2,8 +2,9 @@
 import { computed } from 'vue';
 import { africaSvgPaths } from './AfricaSVGPaths';
 import SvgCountry from './SvgCountry.vue';
+import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 
-const countryList: any = computed(() => {
+const countryList = computed(() => {
   const list = [
     {
       id: 'AE',
@@ -133,7 +134,7 @@ const countryList: any = computed(() => {
     item.stroke = '#bababa';
   });
 
-  return list;
+  return list as AfricaSvgProps[];
 });
 </script>
 
