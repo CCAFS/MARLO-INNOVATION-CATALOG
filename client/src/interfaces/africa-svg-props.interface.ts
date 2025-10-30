@@ -5,4 +5,5 @@ export interface AfricaSvgProps {
   fill?: string;
   stroke?: string;
   isSelected?: boolean;
+  isoCode: string;
 }
