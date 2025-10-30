@@ -169,6 +169,7 @@ const countryList = computed(() => {
       :pathD="country.pathD"
       :fill="country.fill"
       :stroke="country.stroke"
+      :isoCode="country.isoCode"
       :is-selected="isCountrySelected(country.id!)"
       @click="toggleCountrySelection(country.id!)" />
   </svg>
