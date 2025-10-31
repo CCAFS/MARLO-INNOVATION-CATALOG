@@ -1,5 +1,5 @@
 <template>
-  <svg height="440" viewBox="0 0 457 401" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="m-8">
+  <svg height="440" viewBox="0 0 457 401" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="m-8 mb-5">
     <g filter="url(#filter0_d_532_106)">
       <g filter="url(#filter1_i_532_106)">
         <circle cx="204" cy="196" r="182" fill="white"></circle>

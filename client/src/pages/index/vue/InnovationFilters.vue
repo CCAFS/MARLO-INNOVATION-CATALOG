@@ -94,13 +94,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-max m-8">
+  <div class="flex flex-col h-max m-8 !ml-0">
     <div class="flex flex-col mb-4">
-      <h2 class="text-base xl:text-lg 2xl:text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
+      <h2 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
       <p class="text-xs xl:text-base 2xl:text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
     </div>
 
-    <div class="text-sm xl:text-base 2xl:text-lg text-[#7D7D7D] font-medium mb-2">SELECTED OPTION:</div>
+    <div class="text-sm xl:text-base 2xl:text-base text-[#439255] font-medium mb-2">Scaling Readiness:</div>
     <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white mb-5" :style="{ backgroundColor }">
       <div class="text-white border-7 w-[40px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">
         {{ value.scalingReadiness !== null && value.scalingReadiness !== undefined ? value.scalingReadiness : '' }}
