@@ -7,6 +7,7 @@ import Select from 'primevue/select';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
+import { useApi } from '~/composables/useApi';
 
 const { apiBaseUrl } = usePublicAPI();
 
@@ -37,19 +38,9 @@ const selectedSDG = computed(() => {
 
 const fetchSGDsData = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl.value}/sustainable-development-goals`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    dataSDGs.value = data;
-    console.log('SDGs data:', data);
+    const { getSustainableDevelopmentGoals } = useApi();
+    const response = await getSustainableDevelopmentGoals();
+    dataSDGs.value = response;
   } catch (error) {
     console.error('Error fetching SDGs data:', error);
   }
@@ -57,19 +48,9 @@ const fetchSGDsData = async () => {
 
 const fetchInnovationsTypeData = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl.value}/innovations/innovation-types`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    dataInnovationTypes.value = data;
-    console.log('Innovation Types data:', data);
+    const { getInnovationTypes } = useApi();
+    const response = await getInnovationTypes();
+    dataInnovationTypes.value = response;
   } catch (error) {
     console.error('Error fetching Innovation Types data:', error);
   }

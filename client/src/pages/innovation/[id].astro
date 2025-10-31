@@ -15,6 +15,7 @@ import type { Innovation as InnovationComplete } from '~/interfaces/search-compl
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
+import { useApi } from '~/composables/useApi';
 
 interface staticPaths {
   params: { id: string };
@@ -51,24 +52,12 @@ export const getStaticPaths = (async () => {
   async function fetchInnovationsComplete(): Promise<InnovationComplete[] | null> {
     try {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
-      const baseApiUrl = import.meta.env.PUBLIC_API;
-      const apiUrl = `${baseApiUrl}/innovations/search-complete?phase=428&limit=1000`;
-
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const { getInnovationsComplete } = useApi();
+      const response = await getInnovationsComplete({
+        phase: '428',
+        limit: 1000
       });
-
-      if (!response.ok) {
-        console.warn(`API request failed with status: ${response.status}. Falling back to static data.`);
-        return null;
-      }
-
-      const data = await response.json();
-      console.log(`Build: Successfully fetched ${data.innovations?.length || 0} innovations from API`);
-      return data.innovations;
+      return response.innovations;
     } catch (error) {
       console.warn('Build: API fetch failed, falling back to static data:', error);
       return null;

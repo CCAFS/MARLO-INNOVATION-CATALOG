@@ -5,23 +5,15 @@ import Icon2 from '../../../images/icon-2.png';
 import Icon3 from '../../../images/icon-3.png';
 import { texts } from '../../../content/texts';
 import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import { useApi } from '~/composables/useApi';
 
 async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
-  const baseApiUrl = import.meta.env.PUBLIC_API;
-  const url = `${baseApiUrl}/innovations/stats?phaseId=428`;
+  const { getInnovationStats } = useApi();
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    const response = await getInnovationStats({
+      phaseId: '428'
     });
-    if (!response.ok) {
-      throw new Error(`Error fetching stats: ${response.statusText}`);
-      return null;
-    }
-    const data = await response.json();
-    return data;
+    return response;
   } catch (error) {
     console.error('Failed to fetch stats:', error);
     return null;
@@ -29,6 +21,8 @@ async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null>
 }
 
 const statsData = await fetchStatsInnovations();
+
+console.log('Stats Data:', statsData);
 
 const stats = [
   {

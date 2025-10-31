@@ -77,7 +77,7 @@ const fetchInfoStats = async () => {
   try {
     const data = await getInnovationStats({ phaseId: '428' });
     apiDataStats.value = data;
-    totalRecords.value = data.totalInnovations || 0;
+    totalRecords.value = data.innovationCount || 0;
   } catch (error) {
     console.error('Error fetching info stats:', error);
   }
