@@ -51,12 +51,14 @@ const fetchInnovationsFromAPI = async (pageOffset = 0, pageLimit = 6) => {
     if (filters.sdgId) {
       params.sdgId = filters.sdgId;
     }
-    if (filters.countryId) {
-      params.countryId = filters.countryId;
+    if (filters.countryIds && filters.countryIds.length > 0) {
+      params.countryIds = filters.countryIds;
     }
 
     const data = await getInnovations(params);
     apiData.value = data;
+
+    console.log('Fetched innovations data:', data);
 
     if (data.totalCount !== undefined) {
       totalRecords.value = data.totalCount;

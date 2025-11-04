@@ -5,7 +5,7 @@ interface Filters {
   scalingReadiness: number | null;
   innovationTypeId: number | null;
   sdgId: number | null;
-  countryId: number | null;
+  countryIds: number[] | null;
 }
 
 // ref declared outside => all components share the same instance
@@ -13,7 +13,7 @@ const value = ref<Filters>({
   scalingReadiness: null,
   innovationTypeId: null,
   sdgId: null,
-  countryId: null
+  countryIds: null
 });
 
 export function useSharedValue() {
@@ -28,7 +28,7 @@ export function useSharedValue() {
       scalingReadiness: null,
       innovationTypeId: null,
       sdgId: null,
-      countryId: null
+      countryIds: null
     };
   };
 

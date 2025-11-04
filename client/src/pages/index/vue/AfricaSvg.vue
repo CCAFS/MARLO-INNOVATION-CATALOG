@@ -3,9 +3,12 @@ import { computed, ref } from 'vue';
 import { africaSvgPaths } from './AfricaSVGPaths';
 import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+import { useSharedValue } from './composables/useSharedValue';
 
 // Estado reactivo para países seleccionados
 const selectedCountries = ref<string[]>([]);
+
+const { setValue } = useSharedValue();
 
 // Función para manejar la selección de países
 const toggleCountrySelection = (countryId: string) => {
@@ -13,9 +16,15 @@ const toggleCountrySelection = (countryId: string) => {
   if (index > -1) {
     // Si ya está seleccionado, lo removemos
     selectedCountries.value.splice(index, 1);
+    setValue({
+      countryIds: [...selectedCountries.value.map(id => parseInt(id))]
+    });
   } else {
     // Si no está seleccionado, lo agregamos
     selectedCountries.value.push(countryId);
+    setValue({
+      countryIds: [...selectedCountries.value.map(id => parseInt(id))]
+    });
   }
 };
 
