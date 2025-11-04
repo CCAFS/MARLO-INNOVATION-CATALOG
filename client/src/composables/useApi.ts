@@ -34,7 +34,7 @@ export function useApi() {
       readinessScale?: number;
       innovationTypeId?: number;
       sdgId?: number;
-      countryId?: number;
+      countryIds?: number[];
     }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
 
     getInnovationStats: (params?: { phaseId?: string }) =>
