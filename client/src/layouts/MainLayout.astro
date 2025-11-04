@@ -5,6 +5,7 @@ import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
+import SolutionStories from '~/pages/index/astro/SolutionStories.astro';
 
 const link = Astro.url.href;
 ---
@@ -41,6 +42,7 @@ const link = Astro.url.href;
     <div class="max-w-screen-2xl mx-auto">
       <slot />
     </div>
+    <SolutionStories />
     <Footer />
   </body>
 </html>

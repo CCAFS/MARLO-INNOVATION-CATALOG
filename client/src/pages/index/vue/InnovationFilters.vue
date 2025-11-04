@@ -97,14 +97,15 @@ onMounted(() => {
     <div class="flex flex-none gap-1 w-full">
       <!-- Innovation typology -->
       <div class="inline-flex items-center gap-2 flex-wrap flex-initial w-[58%]">
-        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology:</div>
+        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology</div>
         <Select
           :modelValue="selectedInnovationType"
           @update:modelValue="handleSelectInnovationTypeChange"
           :options="dataInnovationTypes"
           optionLabel="name"
           placeholder="All"
-          class="w-[50%]" />
+          class="w-[50%]"
+          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
       <!-- SDG -->
@@ -116,7 +117,8 @@ onMounted(() => {
           :options="dataSDGs"
           optionLabel="shortName"
           placeholder="All"
-          class="w-[75%]" />
+          class="w-[75%]"
+          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
       <!-- Clear button -->
