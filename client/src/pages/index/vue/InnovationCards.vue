@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
-import { useApi } from '~/composables/useApi';
+import { useInnovations } from './composables/useInnovations';
 import Paginator from 'primevue/paginator';
 import Skeleton from 'primevue/skeleton';
-import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
 
@@ -16,92 +15,33 @@ const imgEmptyDataStats = {
 };
 
 const { value } = useSharedValue();
-const { getInnovations, getInnovationStats } = useApi();
+const { apiData, isLoading, error, currentPage, rowsPerPage, totalRecords, fetchInnovations, fetchStats, onPageChange } = useInnovations();
 
-const apiData = ref<InnovationCatalogV2 | null>(null);
-const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
-const isLoading = ref(false);
-const error = ref<Error | null>(null);
-
-const currentPage = ref(0);
-const rowsPerPage = ref(6);
-const totalRecords = ref(0);
-
-const offset = computed(() => currentPage.value * rowsPerPage.value);
-const limit = computed(() => rowsPerPage.value);
-
-const fetchInnovationsFromAPI = async (pageOffset = 0, pageLimit = 6) => {
-  try {
-    isLoading.value = true;
-    error.value = null;
-
-    const filters = value.value;
-    const params: any = {
-      phase: '428',
-      offset: pageOffset,
-      limit: pageLimit
-    };
-
-    if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-      params.readinessScale = filters.scalingReadiness + 1;
-    }
-    if (filters.innovationTypeId) {
-      params.innovationTypeId = filters.innovationTypeId;
-    }
-    if (filters.sdgId) {
-      params.sdgId = filters.sdgId;
-    }
-    if (filters.countryId) {
-      params.countryId = filters.countryId;
-    }
-
-    const data = await getInnovations(params);
-    apiData.value = data;
-
-    if (data.totalCount !== undefined) {
-      totalRecords.value = data.totalCount;
-    }
-  } catch (err: any) {
-    console.error('Error fetching data from API:', err);
-    error.value = err instanceof Error ? err : new Error(String(err));
-
-    if (err.message.includes('ETIMEDOUT') || err.message.includes('503')) {
-      error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
-    }
-  } finally {
-    isLoading.value = false;
-  }
+const handlePageChange = (event: any) => {
+  onPageChange(event, value.value);
 };
 
-const fetchInfoStats = async () => {
-  try {
-    const data = await getInnovationStats({ phaseId: '428' });
-    apiDataStats.value = data;
-    totalRecords.value = data.totalInnovations || 0;
-  } catch (error) {
-    console.error('Error fetching info stats:', error);
-  }
+const handleFetchInnovations = (pageOffset = 0, pageLimit = 6) => {
+  fetchInnovations(value.value, pageOffset, pageLimit);
 };
 
-const onPageChange = (event: any) => {
-  currentPage.value = event.page;
-  rowsPerPage.value = event.rows;
-  const newOffset = event.page * event.rows;
-  fetchInnovationsFromAPI(newOffset, event.rows);
-};
-
+// Watch for filter changes and reset to first page
 watch(
   () => value.value,
-  () => {
-    currentPage.value = 0;
-    fetchInnovationsFromAPI(0, rowsPerPage.value);
+  (newValue, oldValue) => {
+    // Only reset if filters actually changed
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      console.log('Filters changed, fetching new data:', newValue);
+      currentPage.value = 0;
+      handleFetchInnovations(0, rowsPerPage.value);
+    }
   },
   { deep: true }
 );
 
 onMounted(() => {
-  fetchInnovationsFromAPI();
-  fetchInfoStats();
+  handleFetchInnovations();
+  fetchStats();
 });
 </script>
 
@@ -214,7 +154,7 @@ onMounted(() => {
             <!-- Country chip -->
             <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
               <img src="icon-2.png" class="h-4" alt="" srcset="" />
-              <span class="text-sm">{{ getCountryTextStructured(innovation.countries, innovation.regions).text }}</span>
+              <span class="text-sm">{{ getCountryTextStructured([...innovation.countries], [...innovation.regions]).text }}</span>
             </div>
           </div>
           <!-- Title -->
@@ -249,9 +189,7 @@ onMounted(() => {
     <div v-if="error && !isLoading" class="mb-8 mt-4">
       <div class="text-center py-8">
         <p class="text-red-500 text-lg">{{ error.message }}</p>
-        <button
-          @click="fetchInnovationsFromAPI(offset, limit)"
-          class="mt-4 px-4 py-2 bg-[#439255] text-white rounded hover:bg-green-600 transition-colors">
+        <button @click="handleFetchInnovations()" class="mt-4 px-4 py-2 bg-[#439255] text-white rounded hover:bg-green-600 transition-colors">
           Try Again
         </button>
       </div>
@@ -264,7 +202,7 @@ onMounted(() => {
         :rows="rowsPerPage"
         :totalRecords="totalRecords"
         :rowsPerPageOptions="[6, 12, 18, 24]"
-        @page="onPageChange"
+        @page="handlePageChange"
         template="PrevPageLink PageLinks NextPageLink"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" />
     </div>

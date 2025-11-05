@@ -1,6 +1,12 @@
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
-import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import {
+  type InnovationType,
+  type InnovationCatalogV2,
+  type InnovationCatalogV2Stats,
+  type SdgResume,
+  type PDFInfo
+} from '~/interfaces/innovation-catalog-v2.interface';
 import type { SearchComplete } from '~/interfaces/search-complete.interface';
 
 export function useApi() {
@@ -28,7 +34,7 @@ export function useApi() {
       readinessScale?: number;
       innovationTypeId?: number;
       sdgId?: number;
-      countryId?: number;
+      countryIds?: number[];
     }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
 
     getInnovationStats: (params?: { phaseId?: string }) =>
@@ -42,7 +48,29 @@ export function useApi() {
       innovationTypeId?: number;
       sdgId?: number;
       countryId?: number;
-    }) => makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params })
+    }) => makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params }),
+
+    getInnovationPDFById: (id: string | number) =>
+      makeRequest<PDFInfo>('GET', `${apiBaseUrl}/innovations/pdf/url/custom`, {
+        params: {
+          innovationId: id,
+          cycle: 'Reporting',
+          year: 2025
+        }
+      }),
+
+    postInnovationReport: (body: {
+      innovation_id: number;
+      user_name: string;
+      user_lastname: string;
+      user_email: string;
+      interest_narrative: string;
+      modification_justification: string;
+    }) => makeRequest('POST', `${apiBaseUrl}/innovation-reports`, { body }),
+
+    getInnovationTypes: () => makeRequest<InnovationType[]>('GET', `${apiBaseUrl}/innovations/innovation-types`),
+
+    getSustainableDevelopmentGoals: () => makeRequest<SdgResume[]>('GET', `${apiBaseUrl}/sustainable-development-goals`)
   };
 }
 

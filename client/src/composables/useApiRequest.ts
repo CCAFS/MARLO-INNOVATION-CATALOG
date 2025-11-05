@@ -28,7 +28,8 @@ export function useApiRequest() {
       const response = await fetch(finalUrl, {
         method,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         ...(options?.body && { body: JSON.stringify(options.body) })
       });

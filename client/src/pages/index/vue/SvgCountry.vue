@@ -27,6 +27,7 @@ const handleClick = () => {
 
 <template>
   <path
+    :isoCode="props.isoCode"
     :d="props.pathD"
     :title="props.title"
     :fill="fillColor"

@@ -5,23 +5,15 @@ import Icon2 from '../../../images/icon-2.png';
 import Icon3 from '../../../images/icon-3.png';
 import { texts } from '../../../content/texts';
 import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import { useApi } from '~/composables/useApi';
 
 async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
-  const baseApiUrl = import.meta.env.PUBLIC_API;
-  const url = `${baseApiUrl}/innovations/stats?phaseId=428`;
+  const { getInnovationStats } = useApi();
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    const response = await getInnovationStats({
+      phaseId: '428'
     });
-    if (!response.ok) {
-      throw new Error(`Error fetching stats: ${response.statusText}`);
-      return null;
-    }
-    const data = await response.json();
-    return data;
+    return response;
   } catch (error) {
     console.error('Failed to fetch stats:', error);
     return null;
@@ -29,6 +21,8 @@ async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null>
 }
 
 const statsData = await fetchStatsInnovations();
+
+console.log('Stats Data:', statsData);
 
 const stats = [
   {
@@ -50,15 +44,15 @@ const stats = [
 ---
 
 <div class="container mx-auto flex justify-between text-4xl mt-10 p-0 xl:px-16 2xl:px-20">
-  <div class="uppercase text-[#0277A2] text-2xl font-bold max-w-[450px]">{texts.home.overviewStatsTitle}</div>
-  <div class="flex gap-7 items-center bg-gradient-to-r from-white to-[#E0EBED1A] rounded-lg p-4 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)]">
+  <div class="uppercase text-[#0277A2] text-xl font-bold max-w-[450px]">{texts.home.overviewStatsTitle}</div>
+  <div class="flex gap-8 items-center bg-gradient-to-r from-white to-[#E0EBED1A] rounded-lg p-4 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)]">
     {
       stats.map((stat, index) => (
         <>
           <div class="flex items-center gap-4">
-            {<Image height="35" src={stat.imagePath} alt={stat.title} />}
+            {<Image height="40" src={stat.imagePath} alt={stat.title} />}
             <div class="flex flex-col gap-1">
-              <div class="text-base font-600 -mb-1.5">{stat.value}</div>
+              <div class="text-lg font-600 -mb-1.5">{stat.value}</div>
               <div class="text-xs text-gray-400 font-light">{stat.title}</div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import Select from 'primevue/select';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
+import { useApi } from '~/composables/useApi';
 
 const { apiBaseUrl } = usePublicAPI();
 
@@ -37,19 +38,9 @@ const selectedSDG = computed(() => {
 
 const fetchSGDsData = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl.value}/sustainable-development-goals`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    dataSDGs.value = data;
-    console.log('SDGs data:', data);
+    const { getSustainableDevelopmentGoals } = useApi();
+    const response = await getSustainableDevelopmentGoals();
+    dataSDGs.value = response;
   } catch (error) {
     console.error('Error fetching SDGs data:', error);
   }
@@ -57,19 +48,9 @@ const fetchSGDsData = async () => {
 
 const fetchInnovationsTypeData = async () => {
   try {
-    const response = await fetch(`${apiBaseUrl.value}/innovations/innovation-types`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    dataInnovationTypes.value = data;
-    console.log('Innovation Types data:', data);
+    const { getInnovationTypes } = useApi();
+    const response = await getInnovationTypes();
+    dataInnovationTypes.value = response;
   } catch (error) {
     console.error('Error fetching Innovation Types data:', error);
   }
@@ -94,13 +75,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-max m-8">
+  <div class="flex flex-col h-max m-8 !ml-0">
     <div class="flex flex-col mb-4">
-      <h2 class="text-base xl:text-lg 2xl:text-2xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
+      <h2 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
       <p class="text-xs xl:text-base 2xl:text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
     </div>
 
-    <div class="text-sm xl:text-base 2xl:text-lg text-[#7D7D7D] font-medium mb-2">SELECTED OPTION:</div>
+    <div class="text-sm xl:text-base 2xl:text-base text-[#439255] font-medium mb-2">Scaling Readiness:</div>
     <div class="flex flex-1 gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white mb-5" :style="{ backgroundColor }">
       <div class="text-white border-7 w-[40px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">
         {{ value.scalingReadiness !== null && value.scalingReadiness !== undefined ? value.scalingReadiness : '' }}
@@ -116,14 +97,15 @@ onMounted(() => {
     <div class="flex flex-none gap-1 w-full">
       <!-- Innovation typology -->
       <div class="inline-flex items-center gap-2 flex-wrap flex-initial w-[58%]">
-        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology:</div>
+        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology</div>
         <Select
           :modelValue="selectedInnovationType"
           @update:modelValue="handleSelectInnovationTypeChange"
           :options="dataInnovationTypes"
           optionLabel="name"
           placeholder="All"
-          class="w-[50%]" />
+          class="w-[50%]"
+          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
       <!-- SDG -->
@@ -135,7 +117,8 @@ onMounted(() => {
           :options="dataSDGs"
           optionLabel="shortName"
           placeholder="All"
-          class="w-[75%]" />
+          class="w-[75%]"
+          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
       <!-- Clear button -->

@@ -237,3 +237,7 @@ export interface SdgResume {
   icon: string;
   description: string;
 }
+
+export interface PDFInfo {
+  pdfUrl: string;
+}
