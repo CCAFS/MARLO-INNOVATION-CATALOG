@@ -155,7 +155,7 @@ if (innovation.countries) {
     </section>
 
     <!-- Main Content -->
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid grid-cols-4 gap-4 mb-12">
       <section class="col-span-3">
         <!-- Key Metrics -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
@@ -218,8 +218,7 @@ if (innovation.countries) {
           <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
             {
               innovation.bundles == null || innovation.bundles.length === 0 ? (
-                /* <span class="text-gray-500">No bundle innovations available</span> */
-                <span class="text-gray-500">This innovation is not part of any bundle</span>
+                <span class="text-gray-500">No bundle innovations available</span>
               ) : (
                 innovation.bundles.map(bundle => (
                 <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
