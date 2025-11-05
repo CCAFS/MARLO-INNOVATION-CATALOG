@@ -141,8 +141,12 @@ const countryList = computed(() => {
     // Get color based on innovation count for this country
     if (getAmountByCountries.value && item.id) {
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
+      // Add innovation count to the country data
+      const countryData = getAmountByCountries.value.find(country => country.countryId === item.id);
+      item.innovationCount = countryData ? countryData.innovationCount : 0;
     } else {
       item.fill = '#ffffff'; // Default white color
+      item.innovationCount = 0;
     }
   });
 
@@ -163,6 +167,7 @@ const countryList = computed(() => {
       :fill="country.fill"
       :stroke="country.stroke"
       :isoCode="country.isoCode"
+      :innovation-count="country.innovationCount"
       :is-selected="isCountrySelected(country.id!)"
       @click="toggleCountrySelection(country.id!)" />
   </svg>

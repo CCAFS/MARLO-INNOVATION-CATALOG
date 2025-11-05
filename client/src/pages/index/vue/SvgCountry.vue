@@ -19,6 +19,13 @@ const strokeColor = computed(() => {
   return props.isSelected ? '#2E7D32' : props.stroke;
 });
 
+// Create tooltip text with country name and innovation count
+const tooltipText = computed(() => {
+  const count = props.innovationCount || 0;
+  const innovationText = count === 1 ? 'innovation' : 'innovations';
+  return `${props.title}: ${count} ${innovationText}`;
+});
+
 // Manejar el click
 const handleClick = () => {
   emit('click', props.id);
@@ -29,11 +36,13 @@ const handleClick = () => {
   <path
     :isoCode="props.isoCode"
     :d="props.pathD"
-    :title="props.title"
+    :title="tooltipText"
     :fill="fillColor"
     :stroke="strokeColor"
     :stroke-width="1"
     :id="props.id"
     class="cursor-pointer hover:opacity-80 transition-all duration-200"
-    @click="handleClick" />
+    @click="handleClick">
+    <title>{{ tooltipText }}</title>
+  </path>
 </template>

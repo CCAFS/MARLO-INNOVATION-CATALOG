@@ -6,4 +6,5 @@ export interface AfricaSvgProps {
   stroke?: string;
   isSelected?: boolean;
   isoCode: string;
+  innovationCount?: number;
 }

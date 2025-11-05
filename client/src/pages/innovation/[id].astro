@@ -250,7 +250,7 @@ if (innovation.countries) {
                   {innovation.references.map(reference => (
                     <li class="py-1 list-disc">
                       <p class="text-sm font-normal">{reference.reference}</p>
-                      <a class="text-xs text-text-500 underline text-primary-500 font-semibold">{reference.link}</a>
+                      <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link}>{reference.link}</a>
                     </li>
                   ))}
                 </ul>
@@ -314,7 +314,7 @@ if (innovation.countries) {
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Lead organization(s)</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionName}</p>
+                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
               ) : (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">No lead organizations available</p>
               )
@@ -340,7 +340,7 @@ if (innovation.countries) {
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
                   innovation.contributingOrganizations.map(org => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{org.institutionName}</li>
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{org.institutionAcronym ? org.institutionAcronym + ' - ' : ''}{org.institutionName}</li>
                   ))
                 ) : (
                   <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">No organizations available</li>
