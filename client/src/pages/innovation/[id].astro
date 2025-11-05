@@ -122,6 +122,8 @@ interface Props {
 
 const { innovation } = Astro.props;
 
+console.log('Innovation', innovation);
+
 // Add debugging for country data
 console.log('Innovation countries:', innovation.countries);
 console.log('Innovation regions:', innovation.regions);
@@ -143,7 +145,7 @@ if (innovation.countries) {
       <div class="flex flex-wrap items-start justify-between gap-4 mb-2.5">
         <h1 class="text-base xl:text-lg 2xl:text-xl font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
-          <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} />
+          <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
           <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
           <SocialShare title={innovation.title} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
@@ -193,7 +195,7 @@ if (innovation.countries) {
         <!-- Description -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-4">
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
                 <span class="text-gray-500">No expected outcomes available</span>
@@ -202,13 +204,57 @@ if (innovation.countries) {
               )
             }
           </p>
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-6">Intended beneficiaries/users</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-4">
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Intended beneficiaries/users</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
             {
               innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
                 <span class="text-gray-500">No intended beneficiaries/users available</span>
               ) : (
                 innovation.beneficiariesNarrative
+              )
+            }
+          </p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Bundle innovations</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+            {
+              innovation.bundles == null || innovation.bundles.length === 0 ? (
+                /* <span class="text-gray-500">No bundle innovations available</span> */
+                <span class="text-gray-500">This innovation is not part of any bundle</span>
+              ) : (
+                innovation.bundles.map(bundle => (
+                <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+                  {
+                    bundle.selectedInnovationReadinessScale == null ? (
+                      <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
+                          fill="#439255" />
+                      </svg>
+                      <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
+                    ) : <span class="text-sm">Internal</span>
+                  }
+                  <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{bundle.selectedInnovationName}</span>
+                </div>
+                ))
+              )
+            }
+          </p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Piece of evidence</p>
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+            {
+              innovation.references == null || innovation.references.length === 0 ? (
+                <span class="text-gray-500">No piece of evidence available</span>
+              ) : (
+                <ul class="pl-4">
+                  {innovation.references.map(reference => (
+                    <li class="py-1 list-disc">
+                      <p class="text-sm font-normal">{reference.reference}</p>
+                      <a class="text-xs text-text-500 underline text-primary-500 font-semibold">{reference.link}</a>
+                    </li>
+                  ))}
+                </ul>
               )
             }
           </p>
@@ -266,17 +312,31 @@ if (innovation.countries) {
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Quick information</p>
 
           <div class="mb-4">
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
+            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Lead organization(s)</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionName}</p>
               ) : (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">No key actors available</p>
+                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">No lead organizations available</p>
               )
             }
           </div>
           <div>
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Involved organizations</p>
+            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
+            <ul class="pl-2">
+              {
+                innovation.actors && innovation.actors.length > 0 ? (
+                  innovation.actors.map(actor => (
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo.name}</li>
+                  ))
+                ) : (
+                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">No key actors available</li>
+                )
+              }
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key organizations</p>
             <ul class="pl-2">
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
@@ -292,14 +352,42 @@ if (innovation.countries) {
         </div>
         <!-- Contact information -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Contact information</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-2">Contact information</p>
 
-          <div class="mb-4">
+          <div class="mb-2">
             <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">Get in touch with the responsible team</p>
-            <div class="mt-6">
+            <ul class="pl-2">
+              {
+                innovation.contactPersons && innovation.contactPersons.length > 0 ? (
+                  innovation.contactPersons.map(contact =>
+                    contact.contactPersons && contact.contactPersons.length > 0 ? (
+                      contact.contactPersons.map(person => (
+                        <>
+                          <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">
+                            {person.userName} -{' '}
+                            <a class="underline" href={`mailto:${person.userEmail}`}>
+                              {person.userEmail}
+                            </a>
+                          </li>
+                        </>
+                      ))
+                    ) : (
+                      <span>No contact persons available</span>
+                    )
+                  )
+                ) : (
+                  <span>No contact persons available</span>
+                )
+              }
+            </ul>
+            <div class="mt-2">
               <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Technical Support</p>
-              <a href="mailto:MARLOSupport@cgiar.org" class="text-[11px] xl:text-sm 2xl:text-base text-primary-300 hover:underline break-all"
-                >KDS Team - MARLOSupport@cgiar.org</a
+              <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
+                This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team
+              </p>
+              <a
+                href="mailto:MARLOSupport@cgiar.org"
+                class="text-[11px] xl:text-sm 2xl:text-base text-primary-300 underline hover:underline break-all">MARLOSupport@cgiar.org</a
               >
             </div>
           </div>
@@ -307,12 +395,12 @@ if (innovation.countries) {
         <!-- Share -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Share</p>
-          <BasicButton
+          <!--           <BasicButton
             text="Save to favorites"
             hasIcon
             icon="pi pi-bookmark"
             classList={'w-full justify-center border-primary-300 text-primary-300 mb-2 hover:bg-primary-300 '}
-          />
+          /> -->
           <div class="mb-2">
             <SocialShare title={innovation.title} className="!mb-0" />
           </div>

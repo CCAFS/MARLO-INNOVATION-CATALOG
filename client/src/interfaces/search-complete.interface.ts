@@ -77,6 +77,7 @@ export interface Innovation {
   organizations: any[];
   contactPersons: ContactPerson[];
   contributingOrganizations: ContributingOrganization[];
+  bundles: InnovationBundle[];
 }
 
 export interface Phase {
@@ -207,6 +208,20 @@ export interface ContributingOrganization {
   institutionId: number;
   institutionName: string;
   institutionAcronym?: string;
+}
+
+export interface InnovationBundle {
+  id: number;
+  projectInnovationId: number;
+  selectedInnovationId: number;
+  selectedInnovationName: string;
+  selectedInnovationReadinessScale: number;
+  phaseId: number;
+  isActive: boolean;
+  activeSince: string;
+  createdBy: number;
+  modifiedBy: number;
+  modificationJustification: string;
 }
 
 export interface AppliedFilters {
