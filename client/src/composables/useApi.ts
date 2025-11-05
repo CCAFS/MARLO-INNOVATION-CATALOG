@@ -51,12 +51,22 @@ export function useApi() {
     }) => makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params }),
 
     getInnovationPDFById: (id: string | number) =>
-      makeRequest<PDFInfo>('GET', `${apiBaseUrl}/innovations/pdf/url/custom?innovationId=${id}`, {
+      makeRequest<PDFInfo>('GET', `${apiBaseUrl}/innovations/pdf/url/custom`, {
         params: {
+          innovationId: id,
           cycle: 'Reporting',
           year: 2025
         }
       }),
+
+    postInnovationReport: (body: {
+      innovation_id: number;
+      user_name: string;
+      user_lastname: string;
+      user_email: string;
+      interest_narrative: string;
+      modification_justification: string;
+    }) => makeRequest('POST', `${apiBaseUrl}/innovation-reports`, { body }),
 
     getInnovationTypes: () => makeRequest<InnovationType[]>('GET', `${apiBaseUrl}/innovations/innovation-types`),
 

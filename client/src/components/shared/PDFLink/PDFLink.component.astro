@@ -15,55 +15,189 @@ const { id, isJustIcon, className } = Astro.props;
     {...isJustIcon ? {} : { text: 'Download PDF' }}
     hasIcon
     icon="pi pi-file-pdf"
-    classList={`w-full justify-center border-secondary-300 text-secondary-300 mb-2 hover:!bg-secondary-300 hover:!text-white ${className}`}
+    classList={`w-full justify-center border-secondary-300 text-secondary-300 mb-2 hover:!bg-secondary-300 hover:!text-white cursor-pointer ${className}`}
   />
+
+  <!-- Modal -->
+  <div class="pdf-modal fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">PDF Download Request</h3>
+        <button class="modal-close text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+      </div>
+
+      <form class="pdf-form space-y-4">
+        <div>
+          <label for="user-name" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+          <input
+            type="text"
+            id="user-name"
+            name="user_name"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:border-secondary-300"
+            placeholder="Enter your full name"
+          />
+        </div>
+
+        <div>
+          <label for="user-email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+          <input
+            type="email"
+            id="user-email"
+            name="user_email"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:border-secondary-300"
+            placeholder="Enter your email address"
+          />
+        </div>
+
+        <div>
+          <label for="interest-narrative" class="block text-sm font-medium text-gray-700 mb-1">Why are you interested in this innovation? *</label>
+          <textarea
+            id="interest-narrative"
+            name="interest_narrative"
+            required
+            rows="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-300 focus:border-secondary-300"
+            placeholder="Please describe your interest in this innovation"></textarea>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button
+            type="button"
+            class="modal-close flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-secondary-300">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex-1 px-4 py-2 bg-secondary-300 text-white rounded-md hover:bg-secondary-400 focus:outline-none focus:ring-2 focus:ring-secondary-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Download PDF
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </pdf-link>
 
 <script>
   import { useApi } from '~/composables/useApi';
+
   class PDFLink extends HTMLElement {
     connectedCallback() {
       const btnDownload = this.querySelector('button');
+      const modal = this.querySelector('.pdf-modal');
+      const form = this.querySelector('.pdf-form');
+      const closeButtons = this.querySelectorAll('.modal-close');
       const innovationId = this.getAttribute('data-id');
-      if (btnDownload && innovationId) {
-        document.addEventListener('DOMContentLoaded', () => {
-          const downloadBtn = btnDownload as HTMLButtonElement | null;
-          if (downloadBtn) {
-            downloadBtn.addEventListener('click', async () => {
-              try {
-                // Show loading state (optional)
-                downloadBtn.disabled = true;
 
-                // Call the generatePDF function defined in the Astro component
-                const response = await this.generatePDF(innovationId);
+      if (btnDownload && innovationId && modal && form) {
+        // Show modal when download button is clicked
+        btnDownload.addEventListener('click', () => {
+          modal.classList.remove('hidden');
+        });
 
-                if (response && response.pdfUrl) {
-                  window.open(response.pdfUrl, '_blank');
-                } else {
-                  alert('Failed to generate PDF. Please try again later.');
-                }
-              } catch (error) {
-                console.error('PDF generation failed:', error);
-                alert('Failed to generate PDF. Please try again later.');
-              } finally {
-                // Re-enable the button
-                downloadBtn.disabled = false;
-              }
+        // Close modal when close buttons are clicked
+        closeButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            this.resetForm();
+          });
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', e => {
+          if (e.target === modal) {
+            modal.classList.add('hidden');
+            this.resetForm();
+          }
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+
+          const formData = new FormData(form as HTMLFormElement);
+          const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+          try {
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+
+            // Get form values
+            const userName = formData.get('user_name') as string;
+            const userEmail = formData.get('user_email') as string;
+            const interestNarrative = formData.get('interest_narrative') as string;
+
+            // Split name into first and last name (assuming space-separated)
+            const nameParts = userName.trim().split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+
+            // Submit innovation report
+            await this.submitInnovationReport({
+              innovation_id: parseInt(innovationId),
+              user_name: firstName,
+              user_lastname: lastName,
+              user_email: userEmail,
+              interest_narrative: interestNarrative,
+              modification_justification: 'Initial stakeholder outreach'
             });
+
+            // Generate and download PDF
+            const response = await this.generatePDF(innovationId);
+
+            if (response && response.pdfUrl) {
+              window.open(response.pdfUrl, '_blank');
+              modal.classList.add('hidden');
+              this.resetForm();
+            } else {
+              alert('Failed to generate PDF. Please try again later.');
+            }
+          } catch (error) {
+            console.error('Process failed:', error);
+            alert('Failed to process your request. Please try again later.');
+          } finally {
+            // Reset button state
+            submitButton.disabled = false;
+            submitButton.textContent = 'Download PDF';
           }
         });
       }
     }
 
+    resetForm() {
+      const form = this.querySelector('.pdf-form') as HTMLFormElement;
+      if (form) {
+        form.reset();
+      }
+    }
+
+    async submitInnovationReport(data: {
+      innovation_id: number;
+      user_name: string;
+      user_lastname: string;
+      user_email: string;
+      interest_narrative: string;
+      modification_justification: string;
+    }) {
+      try {
+        const { postInnovationReport } = useApi();
+        await postInnovationReport(data);
+      } catch (error) {
+        console.error('Error submitting innovation report:', error);
+        throw error;
+      }
+    }
+
     async generatePDF(innovationId: string) {
-      // Dynamically import jsPDF to avoid loading it on the server side
       try {
         const { getInnovationPDFById } = useApi();
         const response = await getInnovationPDFById(innovationId);
         return response;
       } catch (error) {
         console.error('Error generating PDF:', error);
-        return null;
+        throw error;
       }
     }
   }
