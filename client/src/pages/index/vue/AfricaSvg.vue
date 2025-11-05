@@ -10,7 +10,7 @@ import { getAmountByCountry, getCountryColor } from '~/utils/map/getAmountByCoun
 // Estado reactivo para países seleccionados
 const selectedCountries = ref<string[]>([]);
 
-const { setValue } = useSharedValue();
+const { setValue, value } = useSharedValue();
 const { apiDataForCountry } = useInnovations(); // Now uses the same singleton instance
 
 // Make getAmountByCountries reactive using computed
@@ -38,21 +38,20 @@ const toggleCountrySelection = (countryId: string) => {
   const index = selectedCountries.value.indexOf(countryId);
   if (index > -1) {
     // Si ya está seleccionado, lo removemos
-    selectedCountries.value.splice(index, 1);
+    setValue({
+      countryIds: value.value.countryIds?.splice(index, 1)
+    });
   } else {
     // Si no está seleccionado, lo agregamos
-    selectedCountries.value.push(countryId);
+    setValue({
+      countryIds: [...(value.value.countryIds || []), parseInt(countryId)]
+    });
   }
-
-  // Update shared filters
-  setValue({
-    countryIds: selectedCountries.value.map(id => parseInt(id))
-  });
 };
 
 // Función para verificar si un país está seleccionado
 const isCountrySelected = (countryId: string): boolean => {
-  return selectedCountries.value.includes(countryId);
+  return value.value.countryIds?.includes(parseInt(countryId)) || false;
 };
 
 const countryList = computed(() => {
