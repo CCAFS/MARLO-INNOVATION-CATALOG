@@ -1,21 +1,19 @@
 // composables/useInnovations.ts
-import { ref, computed } from 'vue';
+import { ref, computed, readonly } from 'vue';
 import { useApi } from '~/composables/useApi';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 
+// Move state OUTSIDE the function to make it shared across all components
+const apiData = ref<InnovationCatalogV2 | null>(null);
+const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
+const isLoading = ref(false);
+const error = ref<Error | null>(null);
+const currentPage = ref(0);
+const rowsPerPage = ref(6);
+const totalRecords = ref(0);
+
 export function useInnovations() {
   const { getInnovations, getInnovationStats } = useApi();
-
-  // State
-  const apiData = ref<InnovationCatalogV2 | null>(null);
-  const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
-  const isLoading = ref(false);
-  const error = ref<Error | null>(null);
-
-  // Pagination
-  const currentPage = ref(0);
-  const rowsPerPage = ref(6);
-  const totalRecords = ref(0);
 
   // Computed
   const offset = computed(() => currentPage.value * rowsPerPage.value);
@@ -84,14 +82,14 @@ export function useInnovations() {
   };
 
   return {
-    // State
-    apiData,
-    apiDataStats,
-    isLoading,
-    error,
-    currentPage,
-    rowsPerPage,
-    totalRecords,
+    // State (now shared across all components)
+    apiData: readonly(apiData),
+    apiDataStats: readonly(apiDataStats),
+    isLoading: readonly(isLoading),
+    error: readonly(error),
+    currentPage: currentPage,
+    rowsPerPage: readonly(rowsPerPage),
+    totalRecords: readonly(totalRecords),
 
     // Computed
     offset,

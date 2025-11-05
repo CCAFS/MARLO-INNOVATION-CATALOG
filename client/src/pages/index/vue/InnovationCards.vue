@@ -25,11 +25,16 @@ const handleFetchInnovations = (pageOffset = 0, pageLimit = 6) => {
   fetchInnovations(value.value, pageOffset, pageLimit);
 };
 
+// Watch for filter changes and reset to first page
 watch(
   () => value.value,
-  () => {
-    currentPage.value = 0;
-    handleFetchInnovations(0, rowsPerPage.value);
+  (newValue, oldValue) => {
+    // Only reset if filters actually changed
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      console.log('Filters changed, fetching new data:', newValue);
+      currentPage.value = 0;
+      handleFetchInnovations(0, rowsPerPage.value);
+    }
   },
   { deep: true }
 );
@@ -149,7 +154,7 @@ onMounted(() => {
             <!-- Country chip -->
             <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
               <img src="icon-2.png" class="h-4" alt="" srcset="" />
-              <span class="text-sm">{{ getCountryTextStructured(innovation.countries, innovation.regions).text }}</span>
+              <span class="text-sm">{{ getCountryTextStructured([...innovation.countries], [...innovation.regions]).text }}</span>
             </div>
           </div>
           <!-- Title -->
