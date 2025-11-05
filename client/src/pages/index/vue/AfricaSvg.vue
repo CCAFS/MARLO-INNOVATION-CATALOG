@@ -10,20 +10,20 @@ import { getAmountByCountry, getCountryColor } from '~/utils/map/getAmountByCoun
 // Estado reactivo para países seleccionados
 const selectedCountries = ref<string[]>([]);
 
-const { setValue } = useSharedValue();
-const { apiData } = useInnovations(); // Now uses the same singleton instance
+const { setValue, value } = useSharedValue();
+const { apiDataForCountry } = useInnovations(); // Now uses the same singleton instance
 
 // Make getAmountByCountries reactive using computed
 const getAmountByCountries = computed(() => {
-  if (!apiData.value || !apiData.value.innovations) {
+  if (!apiDataForCountry.value || !apiDataForCountry.value.innovations) {
     console.log('No API data available yet');
     return null;
   }
-  console.log('Processing API data for map:', apiData.value);
+  console.log('Processing API data for map:', apiDataForCountry.value);
   // Create a deep mutable copy of the readonly data
   const mutableData = {
-    ...apiData.value,
-    innovations: apiData.value.innovations.map(innovation => ({
+    ...apiDataForCountry.value,
+    innovations: apiDataForCountry.value.innovations.map(innovation => ({
       ...innovation,
       sdgs: [...innovation.sdgs],
       countries: [...innovation.countries],
@@ -38,21 +38,20 @@ const toggleCountrySelection = (countryId: string) => {
   const index = selectedCountries.value.indexOf(countryId);
   if (index > -1) {
     // Si ya está seleccionado, lo removemos
-    selectedCountries.value.splice(index, 1);
+    setValue({
+      countryIds: value.value.countryIds?.splice(index, 1)
+    });
   } else {
     // Si no está seleccionado, lo agregamos
-    selectedCountries.value.push(countryId);
+    setValue({
+      countryIds: [...(value.value.countryIds || []), parseInt(countryId)]
+    });
   }
-
-  // Update shared filters
-  setValue({
-    countryIds: selectedCountries.value.map(id => parseInt(id))
-  });
 };
 
 // Función para verificar si un país está seleccionado
 const isCountrySelected = (countryId: string): boolean => {
-  return selectedCountries.value.includes(countryId);
+  return value.value.countryIds?.includes(parseInt(countryId)) || false;
 };
 
 const countryList = computed(() => {
@@ -142,8 +141,12 @@ const countryList = computed(() => {
     // Get color based on innovation count for this country
     if (getAmountByCountries.value && item.id) {
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
+      // Add innovation count to the country data
+      const countryData = getAmountByCountries.value.find(country => country.countryId === item.id);
+      item.innovationCount = countryData ? countryData.innovationCount : 0;
     } else {
       item.fill = '#ffffff'; // Default white color
+      item.innovationCount = 0;
     }
   });
 
@@ -164,6 +167,7 @@ const countryList = computed(() => {
       :fill="country.fill"
       :stroke="country.stroke"
       :isoCode="country.isoCode"
+      :innovation-count="country.innovationCount"
       :is-selected="isCountrySelected(country.id!)"
       @click="toggleCountrySelection(country.id!)" />
   </svg>
