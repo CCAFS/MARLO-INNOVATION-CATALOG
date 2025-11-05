@@ -5,6 +5,7 @@ import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces
 
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalogV2 | null>(null);
+const apiDataForCountry = ref<InnovationCatalogV2 | null>(null);
 const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
@@ -61,6 +62,38 @@ export function useInnovations() {
       }
     } finally {
       isLoading.value = false;
+
+      console.log('isLoading state set to false');
+
+      try {
+        const params: any = {
+          phase: '428',
+          offset: 0,
+          limit: 1000
+        };
+
+        if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
+          params.readinessScale = filters.scalingReadiness + 1;
+        }
+        if (filters.innovationTypeId) {
+          params.innovationTypeId = filters.innovationTypeId;
+        }
+        if (filters.sdgId) {
+          params.sdgId = filters.sdgId;
+        }
+        if (filters.countryIds && filters.countryIds.length > 0) {
+          params.countryIds = filters.countryIds;
+        }
+
+        const dataForCountry = await getInnovations(params);
+        apiDataForCountry.value = dataForCountry;
+      } catch (error: any) {
+        console.error('Error fetching data for country filter from API:', error);
+        error.value = error instanceof Error ? error : new Error(String(error));
+        if (error.message.includes('ETIMEDOUT') || error.message.includes('503')) {
+          error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
+        }
+      }
     }
   };
 
@@ -84,6 +117,7 @@ export function useInnovations() {
   return {
     // State (now shared across all components)
     apiData: readonly(apiData),
+    apiDataForCountry: readonly(apiDataForCountry),
     apiDataStats: readonly(apiDataStats),
     isLoading: readonly(isLoading),
     error: readonly(error),

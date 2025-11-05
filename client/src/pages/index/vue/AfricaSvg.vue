@@ -11,19 +11,19 @@ import { getAmountByCountry, getCountryColor } from '~/utils/map/getAmountByCoun
 const selectedCountries = ref<string[]>([]);
 
 const { setValue } = useSharedValue();
-const { apiData } = useInnovations(); // Now uses the same singleton instance
+const { apiDataForCountry } = useInnovations(); // Now uses the same singleton instance
 
 // Make getAmountByCountries reactive using computed
 const getAmountByCountries = computed(() => {
-  if (!apiData.value || !apiData.value.innovations) {
+  if (!apiDataForCountry.value || !apiDataForCountry.value.innovations) {
     console.log('No API data available yet');
     return null;
   }
-  console.log('Processing API data for map:', apiData.value);
+  console.log('Processing API data for map:', apiDataForCountry.value);
   // Create a deep mutable copy of the readonly data
   const mutableData = {
-    ...apiData.value,
-    innovations: apiData.value.innovations.map(innovation => ({
+    ...apiDataForCountry.value,
+    innovations: apiDataForCountry.value.innovations.map(innovation => ({
       ...innovation,
       sdgs: [...innovation.sdgs],
       countries: [...innovation.countries],
