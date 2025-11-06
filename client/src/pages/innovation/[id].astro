@@ -133,7 +133,7 @@ if (innovation.countries) {
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
-  <article class="container mx-auto m-auto my-auto p-0 xl:p-16 2xl:p-20">
+  <article class="container mx-auto m-auto my-auto p-0 xl:px-16 2xl:px-20">
     <!-- Return link -->
     <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
       <span class="pi pi-arrow-left"></span>
@@ -160,7 +160,7 @@ if (innovation.countries) {
         <!-- Key Metrics -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Key metrics</p>
-          <div class="flex flex-wrap gap-24 mt-4 justify-center">
+          <div class="flex flex-wrap gap-24 mt-4 justify-between px-12 xs:px-2 sm:px-4">
             <!-- Geoscope -->
             <div class="flex flex-col text-center items-center">
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
@@ -178,7 +178,7 @@ if (innovation.countries) {
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{innovation.innovationType?.name || 'N/A'}</span>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal w-[75%]">{innovation.innovationType?.name || 'N/A'}</span>
             </div>
             <!-- Scaling Readiness -->
             <div class="flex flex-col text-center items-center">
@@ -194,57 +194,59 @@ if (innovation.countries) {
         </div>
         <!-- Description -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
+          <!-- Expected outcomes -->
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2">
+            <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2 text-justify">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
-                <span class="text-gray-500">No expected outcomes available</span>
+              <span class="text-gray-500">No Information available yet</span>
               ) : (
-                innovation.knowledgeResultsNarrative
+              innovation.knowledgeResultsNarrative
               )
             }
-          </p>
+            </p>
+          <!-- Intended beneficiaries/users -->
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Intended beneficiaries/users</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2 text-justify">
             {
               innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
-                <span class="text-gray-500">No intended beneficiaries/users available</span>
+                <span class="text-gray-500">No Information available yet</span>
               ) : (
                 innovation.beneficiariesNarrative
               )
             }
           </p>
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Bundle innovations</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
-            {
-              innovation.bundles == null || innovation.bundles.length === 0 ? (
-                <span class="text-gray-500">No bundle innovations available</span>
-              ) : (
-                innovation.bundles.map(bundle => (
-                <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
-                  {
-                    bundle.selectedInnovationReadinessScale == null ? (
-                      <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
-                          fill="#439255" />
-                      </svg>
-                      <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
-                    ) : <span class="text-sm">Internal</span>
-                  }
-                  <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{bundle.selectedInnovationName}</span>
-                </div>
-                ))
-              )
-            }
-          </p>
+          <!-- Bundle innovations -->
+          {innovation.bundles != null && innovation.bundles.length > 0 && (
+          <>
+            <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Bundle innovations</p>
+            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+            {innovation.bundles.map(bundle => (
+              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+              {
+                bundle.selectedInnovationReadinessScale == null ? (
+                <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
+                  fill="#439255" />
+                </svg>
+                <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
+                ) : <span class="text-sm">Internal</span>
+              }
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{bundle.selectedInnovationName}</span>
+              </div>
+            ))}
+            </p>
+          </>
+          )}
+          <!-- Piece of evidence -->
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Piece of evidence</p>
           <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
             {
               innovation.references == null || innovation.references.length === 0 ? (
-                <span class="text-gray-500">No piece of evidence available</span>
+                <span class="text-gray-500">No Information available yet</span>
               ) : (
                 <ul class="pl-4">
                   {innovation.references.map(reference => (
