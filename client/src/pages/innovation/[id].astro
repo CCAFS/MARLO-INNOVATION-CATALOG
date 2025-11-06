@@ -318,11 +318,12 @@ if (innovation.countries) {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
               ) : (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">No lead organizations available</p>
+                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">This is yet to be determined.</p>
               )
             }
           </div>
-          <div>
+          <!-- Key actors -->
+          <div class="mb-4">
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
             <ul class="pl-2">
               {
@@ -331,11 +332,12 @@ if (innovation.countries) {
                     <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo.name}</li>
                   ))
                 ) : (
-                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">No key actors available</li>
+                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
                 )
               }
             </ul>
           </div>
+          <!-- Key organizations -->
           <div>
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key organizations</p>
             <ul class="pl-2">
@@ -388,7 +390,7 @@ if (innovation.countries) {
               </p>
               <a
                 href="mailto:MARLOSupport@cgiar.org"
-                class="text-[11px] xl:text-sm 2xl:text-base text-primary-300 underline hover:underline break-all">MARLOSupport@cgiar.org</a
+                class="text-[11px] xl:text-sm 2xl:text-base text-black underline hover:underline break-all">MARLOSupport@cgiar.org</a
               >
             </div>
           </div>
