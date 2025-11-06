@@ -329,7 +329,7 @@ if (innovation.countries) {
               {
                 innovation.actors && innovation.actors.length > 0 ? (
                   innovation.actors.map(actor => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo.name}</li>
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo?.name || 'Unknown Actor'}</li>
                   ))
                 ) : (
                   <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
