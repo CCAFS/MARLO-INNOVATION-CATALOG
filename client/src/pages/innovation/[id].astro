@@ -1,8 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import Icon4 from '../../images/icon-4.png';
-import Icon5 from '../../images/icon-5.png';
-import Icon6 from '../../images/icon-6.png';
+import Icon4 from '~/images/icon-4.png';
+import Icon5 from '~/images/icon-5.png';
+import Icon6 from '~/images/icon-6.png';
+import EmptyDataImg from '~/images/empty-data.png';
 
 import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
@@ -314,7 +315,8 @@ try {
                   </div>
                 ))
               ) : (
-                <div class="text-center py-4 text-gray-500">
+                <div class="text-center py-4 text-gray-500 bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 border border-border-light flex flex-col items-center gap-2">
+                  {(<Image height={100} quality="max" src={EmptyDataImg} alt="No Community Stories" class={'pb-1'} />)}
                   <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
                 </div>
               )
