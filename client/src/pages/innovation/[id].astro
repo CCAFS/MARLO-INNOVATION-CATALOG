@@ -257,12 +257,21 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                 <span class="text-gray-500">No Information available yet</span>
               ) : (
                 <ul class="pl-4">
-                  {innovation.references.map(reference => (
-                    <li class="py-1 list-disc">
-                      <p class="text-sm font-normal">{reference.reference}</p>
-                      <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link}>{reference.link}</a>
-                    </li>
-                  ))}
+                  {
+                  innovation.references.map(reference => 
+                    reference.hasEvidenceByDeliverable ? (
+                      <li class="py-1 list-disc">
+                        <p class="text-sm font-normal">{reference.deliverableName ? reference.deliverableName : "No Deliverable Name"}</p>
+                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : "No Link Available"}</a>
+                      </li>
+                    ) : (
+                      <li class="py-1 list-disc">
+                        <p class="text-sm font-normal">{reference.reference ? reference.reference : "No Reference Name"}</p>
+                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : "No Link Available"}</a>
+                      </li>
+                    )
+                  )
+                }
                 </ul>
               )
             }

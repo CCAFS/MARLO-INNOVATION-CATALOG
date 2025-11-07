@@ -169,6 +169,7 @@ export interface Reference {
   isExternalAuthor: boolean;
   hasEvidenceByDeliverable?: boolean;
   deliverableId?: number;
+  deliverableName?: string;
   typeId?: number;
   activeSince: string;
   createdBy: number;
