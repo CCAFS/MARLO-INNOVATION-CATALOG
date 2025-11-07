@@ -81,10 +81,36 @@ export function useApi() {
       modification_justification: string;
     }) => makeRequest('POST', `${apiBaseUrl}/innovation-comments`, { body }),
 
-    getCommunityStories: (params?: { limit?: number }) => makeRequest('GET', `${apiBaseUrl}/innovation-comments`, { params }),
+    getCommunityStories: (params?: { limit?: number }) =>
+      makeRequest<
+        {
+          id: number;
+          innovation_id: number;
+          innovation_name: string;
+          user_name: string;
+          user_lastname: string;
+          user_email: string;
+          comment: string;
+          is_active: boolean;
+          active_since: string;
+          modification_justification: string;
+        }[]
+      >('GET', `${apiBaseUrl}/innovation-comments`, { params }),
 
     getCommunityStoriesByInnovationId: (innovationId: number) =>
-      makeRequest('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`)
+      makeRequest<
+        {
+          id: number;
+          innovation_id: number;
+          user_name: string;
+          user_lastname: string;
+          user_email: string;
+          comment: string;
+          is_active: boolean;
+          active_since: string;
+          modification_justification: string;
+        }[]
+      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: 428 } })
   };
 }
 
