@@ -122,15 +122,6 @@ interface Props {
 
 const { innovation } = Astro.props;
 
-console.log('Innovation', innovation);
-
-// Add debugging for country data
-console.log('Innovation countries:', innovation.countries);
-console.log('Innovation regions:', innovation.regions);
-if (innovation.countries) {
-  console.log('Country text result:', getCountryTextStructured(innovation.countries, innovation.regions || [], true));
-}
-
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
 ---
 
@@ -303,7 +294,7 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           </div>
 
           <!-- Input container -->
-          <form class="mt-6" id="community-story-form">
+          <form class="mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
             <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Share your experience with this innovation or read what others have accomplished:</p>
             <!-- Content Form -->
             <div class="mt-2 ml-4 flex flex-col gap-1">
@@ -464,16 +455,27 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
   </article>
 </MainLayout>
 
-<script define:vars={{ innovationId: innovation.projectInnovationId }}>
+<script>
+
+  import { useApi } from '~/composables/useApi';
 
   document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('community-story-form');
+    const form = document.getElementById('community-story-form') as HTMLFormElement;
+    const innovationId = form?.getAttribute('data-innovation-id');
+    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
 
     if(!form) return;
 
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', async function (event) {
       event.preventDefault();
       event.stopPropagation();
+
+      // Show loading state
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Sending...';
+        submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+      }
 
       const formData = new FormData(form);
       const name = formData.get('name-input');
@@ -481,15 +483,56 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
       const story = formData.get('story-input');
       
       const commentData = {
-        user_name: name,
-        user_email: email,
-        comment: story,
-        innovation_id: innovationId.toString()
+        user_name: name?.toString() || '',
+        user_lastname: '',
+        user_email: email?.toString() || '',
+        comment: story?.toString() || '',
+        innovation_id: Number(innovationId?.toString() || ''),
+        modification_justification: 'User submitted community story'
       };
 
       console.log('Submitting comment data:', commentData);
-      alert('Thank you for sharing your experience! This feature is under development.');
+
+      try {
+        const response = await submitComment(commentData);
+
+        if (response) {
+          console.log('Comment submission response:', response);
+        }
+      } catch (error) {
+        console.error('Error submitting comment:', error);
+      } finally {
+        // Reset loading state
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.innerHTML = 'Send';
+          submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      }
+
       form.reset();
     });
   });
+
+  async function submitComment(data: {
+    user_name: string;
+    user_lastname: string;
+    user_email: string;
+    comment: string;
+    innovation_id: number;
+    modification_justification: string;
+
+  }) {
+    const { postInnovationComment } = useApi();
+
+    try {
+      const response = await postInnovationComment(data);
+      console.log('Comment submitted successfully:', response);
+      return response;
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    }
+  }
+
+
 </script>
