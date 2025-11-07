@@ -1,6 +1,10 @@
 ---
+import { Image } from 'astro:assets';
+
 import BgImgSolutionStories from '~/images/bg_img_solution_stories.png';
-import Tractor from '~/images/tractor.png';
+import { useApi } from '~/composables/useApi';
+import EmptyDataImg from '~/images/empty-data.png';
+
 
 const solutionStories = [
   {
@@ -23,6 +27,34 @@ const solutionStories = [
   }
 ];
 
+let fetchedStories: {
+          id: number;
+          innovation_id: number;
+          innovation_name: string;
+          user_name: string;
+          user_lastname: string;
+          user_email: string;
+          comment: string;
+          is_active: boolean;
+          active_since: string;
+          modification_justification: string;
+        }[] | [] | undefined = [];
+
+const getCommunityStories = async () => {
+  // Placeholder for fetching stories from an API
+  try {
+    const { getCommunityStories } = useApi();
+  const response = await getCommunityStories({ limit: 2 });
+    if (response) {
+      return response;
+    }
+  } catch (error) {
+    
+  }
+};
+
+fetchedStories = await getCommunityStories();
+
 ---
 
 <div class="relative w-full h-112 2xl:h-128 overflow-hidden">
@@ -38,44 +70,56 @@ const solutionStories = [
       <h1 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E] mb-8 text-left">Solution Stories</h1>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 mx-auto">
-        {solutionStories.map((story) => (
-          <article class="story-card bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-            <!-- Card Header -->
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-3">
-                <div class="flex flex-row items-center gap-1">
-                  <span class="text-sm font-bold text-gray-900">{story.author}</span>
-                  <div class="w-0.5 h-0.5 bg-gray-500 rounded-full mx-3"></div>
-                  <span class="text-sm text-gray-500">{story.date}</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 w-full">
+        {fetchedStories && fetchedStories.length > 0 ? (
+          fetchedStories.map((story) => (
+            <article class="story-card bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 w-full">
+              <!-- Card Header -->
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="flex flex-row items-center gap-1">
+                    <span class="text-sm font-bold text-gray-900">{story.user_name} {story.user_lastname}</span>
+                    <div class="w-0.5 h-0.5 bg-gray-500 rounded-full mx-3"></div>
+                    <span class="text-sm text-gray-500">{new Date(story.active_since).toLocaleDateString('en-GB', {
+                          day: '2-digit', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        })}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Content -->
-            <div class="mb-4">
-              <p class="text-sm text-gray-700 leading-relaxed line-clamp-3">
-                {story.content}
-              </p>
-            </div>
-            
-            <!-- Innovation Title -->
-            <div class="mb-4">
-              <p class="text-sm text-gray-600">
-                <span class="font-semibold">Innovation:</span> {story.innovation}
-              </p>
-            </div>
+              <!-- Content -->
+              <div class="mb-4">
+                <p class="text-sm text-gray-700 leading-relaxed line-clamp-3">
+                  {story.comment}
+                </p>
+              </div>
+              
+              <!-- Innovation Title -->
+              <div class="mb-4">
+                <p class="text-sm text-gray-600">
+                  <span class="font-semibold">Innovation:</span> {story.innovation_name ? story.innovation_name : 'N/A'}
+                </p>
+              </div>
 
-            <!-- Read More Link -->
-            <div class="flex justify-end">
-              <a 
-                href={story.readMoreLink}
-                class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
-                Read More
-              </a>
-            </div>
-          </article>
-        ))}
+              <!-- Read More Link -->
+              <div class="flex justify-end">
+                <a 
+                  href={`/innovation/${story.innovation_id}`}
+                  class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
+                  Read More
+                </a>
+              </div>
+            </article>
+          ))
+        ) : (
+          <div class="col-span-full flex flex-col items-center justify-center py-12">
+{(<Image height={100} quality="max" src={EmptyDataImg} alt="No Community Stories" class={'pb-1'} />)}
+            <p class="text-gray-500 text-lg mb-2">No solution stories available</p>
+            <p class="text-gray-400 text-sm">Check back later for new stories</p>
+          </div>
+        )}
     </div>
   </div>
 </div>

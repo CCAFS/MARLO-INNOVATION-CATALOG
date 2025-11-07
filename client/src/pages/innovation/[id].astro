@@ -125,6 +125,7 @@ const { innovation } = Astro.props;
 
 const getCommunitySolutionStories = async (innovationId: number) => {
   try {
+    console.log('Fetching community stories for innovation ID:', innovationId);
     const { getCommunityStoriesByInnovationId } = useApi();
     const response = await getCommunityStoriesByInnovationId(innovationId);
     console.log('Fetched community solution stories:', response);
