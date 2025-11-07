@@ -170,6 +170,7 @@ export interface Reference {
   hasEvidenceByDeliverable?: boolean;
   deliverableId?: number;
   deliverableName?: string;
+  disseminationUrl?: string;
   typeId?: number;
   activeSince: string;
   createdBy: number;

@@ -262,7 +262,7 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                     reference.hasEvidenceByDeliverable ? (
                       <li class="py-1 list-disc">
                         <p class="text-sm font-normal">{reference.deliverableName ? reference.deliverableName : "No Deliverable Name"}</p>
-                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : "No Link Available"}</a>
+                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.disseminationUrl ? reference.disseminationUrl : "#"}>{reference.disseminationUrl ? reference.disseminationUrl : "No Link Available"}</a>
                       </li>
                     ) : (
                       <li class="py-1 list-disc">
