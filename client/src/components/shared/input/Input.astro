@@ -3,9 +3,29 @@ interface Props {
   placeholder: string;
   id: string;
   name: string;
+  type?:
+    | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'tel'
+    | 'url'
+    | 'search'
+    | 'date'
+    | 'time'
+    | 'datetime-local'
+    | 'month'
+    | 'week'
+    | 'color'
+    | 'file'
+    | 'hidden'
+    | 'range'
+    | 'checkbox'
+    | 'radio';
   label?: string;
   value?: string;
   required?: boolean;
+  hasMaxLength?: boolean;
   maxLength?: number;
   hasBtnIcon?: boolean;
   btnIcon?: string;
@@ -18,8 +38,10 @@ const {
   label,
   id,
   name,
+  type = 'text',
   value = '',
   required = false,
+  hasMaxLength = false,
   maxLength = 100,
   hasBtnIcon = false,
   btnIcon,
@@ -28,17 +50,17 @@ const {
 } = Astro.props;
 ---
 
-<custom-input data-id={id} data-maxlength={maxLength} class="input-container w-full mx-auto min-w-[300px] mb-8">
+<custom-input data-id={id} data-maxlength={maxLength} class="input-container w-full mx-auto min-w-[300px] mb-2">
   {
     label && (
       <label for={id} class="block text-sm xl:text-base 2xl:text-lg font-medium text-gray-700 mb-1">
-        {label}
+        {label} {required ? <span class="text-red-500">*</span> : ''}
       </label>
     )
   }
   <div class="relative">
     <input
-      type="text"
+      type={type}
       class="peer block w-full rounded-md border border-gray-300 px-3 pt-1 pb-1 text-sm xl:text-base 2xl:text-lg text-gray-900 focus:border-primary-300 focus:outline-none focus:ring-1 focus:ring-primary-300"
       placeholder={placeholder}
       id={id}
@@ -76,7 +98,7 @@ const {
       )
     }
     {
-      maxLength > 0 && (
+      hasMaxLength && (
         <p id="word-count" class="flex items-end justify-end mt-2 text-xs text-slate-400">
           ({maxLength} words remaining of {maxLength})
         </p>

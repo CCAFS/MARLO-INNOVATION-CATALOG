@@ -70,7 +70,21 @@ export function useApi() {
 
     getInnovationTypes: () => makeRequest<InnovationType[]>('GET', `${apiBaseUrl}/innovations/innovation-types`),
 
-    getSustainableDevelopmentGoals: () => makeRequest<SdgResume[]>('GET', `${apiBaseUrl}/sustainable-development-goals`)
+    getSustainableDevelopmentGoals: () => makeRequest<SdgResume[]>('GET', `${apiBaseUrl}/sustainable-development-goals`),
+
+    postInnovationComment: (body: {
+      innovation_id: number;
+      user_name: string;
+      user_lastname: string;
+      user_email: string;
+      comment: string;
+      modification_justification: string;
+    }) => makeRequest('POST', `${apiBaseUrl}/innovation-comments`, { body }),
+
+    getCommunityStories: (params?: { limit?: number }) => makeRequest('GET', `${apiBaseUrl}/innovation-comments`, { params }),
+
+    getCommunityStoriesByInnovationId: (innovationId: number) =>
+      makeRequest('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`)
   };
 }
 
