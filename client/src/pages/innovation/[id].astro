@@ -130,6 +130,8 @@ console.log('Innovation regions:', innovation.regions);
 if (innovation.countries) {
   console.log('Country text result:', getCountryTextStructured(innovation.countries, innovation.regions || [], true));
 }
+
+const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
@@ -167,9 +169,15 @@ if (innovation.countries) {
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
               </div>
               <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Geoscope</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
-                >{getCountryTextStructured(innovation.countries, innovation.regions, true).text}
-                <em>{getCountryTextStructured(innovation.countries, innovation.regions, true).additionalText}</em>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
+                {
+                  countryText.hasMore ? (
+                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
+                    <em>{countryText.additionalText}</em>
+                  ) : (
+                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
+                  )
+                }
               </span>
             </div>
             <!-- Typology -->
