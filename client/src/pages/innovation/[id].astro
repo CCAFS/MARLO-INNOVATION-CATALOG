@@ -122,7 +122,28 @@ interface Props {
 
 const { innovation } = Astro.props;
 
+const getCommunitySolutionStories = async (innovationId: number) => {
+  try {
+    const { getCommunityStoriesByInnovationId } = useApi();
+    const response = await getCommunityStoriesByInnovationId(innovationId);
+    console.log('Fetched community solution stories:', response);
+    return response || [];
+  } catch (error) {
+    console.error('Error fetching community solution stories:', error);
+    return [];
+  }
+};
+
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
+
+let communityStories: any[] = [];
+try {
+  communityStories = await getCommunitySolutionStories(innovation.projectInnovationId);
+} catch (error) {
+  console.warn('Failed to fetch community stories during build:', error);
+  communityStories = [];
+}
+
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
@@ -275,22 +296,29 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                     <!-- Comment stories -->
           <div class="grid grid-cols-1 gap-4 mt-4">
             {
-              /* Note: comments property doesn't exist in InnovationDetail interface, using placeholder */
-              [].map((story: any, index: number) => (
-                <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
-                  <div class="flex items-center mb-2 gap-2">
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-semibold">{story.author}</span>
-                    <span class="w-[2px] h-[2px] rounded-full bg-text-800" />
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-500 font-normal">{story.date}</span>
+              Array.isArray(communityStories) && communityStories.length > 0 ? (
+                communityStories.map((story: any, index: number) => (
+                  <div class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex items-center mb-2 gap-2">
+                      <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-semibold">{story.user_name} {story.user_lastname ? story.user_lastname : ""}</span>
+                      <span class="w-[2px] h-[2px] rounded-full bg-text-800" />
+                      <span class="text-xs xl:text-sm 2xl:text-base text-text-500 font-normal">
+                        {new Date(story.active_since).toLocaleDateString('en-GB', { 
+                          day: '2-digit', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        })}
+                      </span>
+                    </div>
+                    <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{story.comment}</p>
                   </div>
-                  <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{story.text}</p>
+                ))
+              ) : (
+                <div class="text-center py-4 text-gray-500">
+                  <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
                 </div>
-              ))
+              )
             }
-            {/* Show message when no comments are available */}
-            <div class="text-center py-4 text-gray-500">
-              <p class="text-sm">No community stories available yet. Be the first to share your experience!</p>
-            </div>
           </div>
 
           <!-- Input container -->

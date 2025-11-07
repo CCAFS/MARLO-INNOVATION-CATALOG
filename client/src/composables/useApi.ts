@@ -79,7 +79,12 @@ export function useApi() {
       user_email: string;
       comment: string;
       modification_justification: string;
-    }) => makeRequest('POST', `${apiBaseUrl}/innovation-comments`, { body })
+    }) => makeRequest('POST', `${apiBaseUrl}/innovation-comments`, { body }),
+
+    getCommunityStories: (params?: { limit?: number }) => makeRequest('GET', `${apiBaseUrl}/innovation-comments`, { params }),
+
+    getCommunityStoriesByInnovationId: (innovationId: number) =>
+      makeRequest('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`)
   };
 }
 
