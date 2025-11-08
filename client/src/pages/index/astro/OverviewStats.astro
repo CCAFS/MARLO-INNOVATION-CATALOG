@@ -16,28 +16,32 @@ async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null>
     return response;
   } catch (error) {
     console.error('Failed to fetch stats:', error);
-    return null;
+    // Return fallback data instead of null
+    return {
+      innovationCount: 0,
+      countryCount: 0,
+      averageScalingReadiness: 0,
+      phaseId: 428
+    };
   }
 }
 
 const statsData = await fetchStatsInnovations();
 
-console.log('Stats Data:', statsData);
-
 const stats = [
   {
     title: 'Total innovations',
-    value: statsData?.innovationCount || 0,
+    value: statsData?.innovationCount ?? 0,
     imagePath: Icon1
   },
   {
     title: 'Countries',
-    value: statsData?.countryCount || 0,
+    value: statsData?.countryCount ?? 0,
     imagePath: Icon2
   },
   {
     title: 'Average scaling readiness',
-    value: statsData?.averageScalingReadiness || 0,
+    value: statsData?.averageScalingReadiness ?? 0,
     imagePath: Icon3
   }
 ];
