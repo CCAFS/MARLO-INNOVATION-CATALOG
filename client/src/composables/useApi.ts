@@ -38,7 +38,11 @@ export function useApi() {
     }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
 
     getInnovationStats: (params?: { phaseId?: string }) =>
-      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, { params }),
+      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, {
+        params,
+        retry: 2, // Retry up to 2 times (3 total attempts)
+        retryDelay: 2000 // Wait 2 seconds between retries
+      }),
 
     getInnovationsComplete: (params?: {
       phase?: string;
