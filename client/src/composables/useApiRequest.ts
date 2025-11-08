@@ -7,7 +7,7 @@ export function useApiRequest() {
   const makeRequest = async <T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
-    options?: { params?: Record<string, any>; body?: Record<string, any> }
+    options?: { params?: Record<string, any>; body?: Record<string, any>; timeout?: number }
   ) => {
     isLoading.value = true;
     error.value = null;
@@ -25,14 +25,22 @@ export function useApiRequest() {
         finalUrl = `${url}?${queryParams.toString()}`;
       }
 
+      // Create an AbortController for timeout
+      const controller = new AbortController();
+      const timeoutMs = options?.timeout || 30000; // Default 30 seconds
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
       const response = await fetch(finalUrl, {
         method,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
+        signal: controller.signal,
         ...(options?.body && { body: JSON.stringify(options.body) })
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,7 +49,11 @@ export function useApiRequest() {
       const data = await response.json();
       return data as T;
     } catch (err) {
-      error.value = err instanceof Error ? err : new Error(String(err));
+      if (err instanceof Error && err.name === 'AbortError') {
+        error.value = new Error('Request timeout - please try again later');
+      } else {
+        error.value = err instanceof Error ? err : new Error(String(err));
+      }
       throw error.value;
     } finally {
       isLoading.value = false;
