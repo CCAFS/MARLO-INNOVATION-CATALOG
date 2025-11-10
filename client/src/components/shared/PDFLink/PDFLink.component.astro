@@ -80,7 +80,7 @@ const { id, isJustIcon, className } = Astro.props;
 </pdf-link>
 
 <script>
-  import { useApi } from '~/composables/useApi';
+  import { useApi } from '~/composables/database-api/useApi';
 
   class PDFLink extends HTMLElement {
     connectedCallback() {
