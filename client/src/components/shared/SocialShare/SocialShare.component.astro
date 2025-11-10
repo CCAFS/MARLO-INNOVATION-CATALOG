@@ -11,37 +11,12 @@ interface Props {
 
 const { url, title, isJustIcon, className } = Astro.props;
 
-// Get the current page URL if not provided
-const shareUrl = url || Astro.url.href;
+// Get the current page URL - use pathname only to construct on client side
+const sharePath = url || Astro.url.pathname;
 const shareTitle = title || 'Check out this innovation';
-// Encode URL and title for sharing
-const encodedUrl = encodeURIComponent(shareUrl);
-const encodedTitle = encodeURIComponent(shareTitle);
-
-// Social media share URLs
-/* const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
-const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-const twitterUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`; */
-
-const linkedInUrl = getSharingLink({
-  url: shareUrl,
-  network: 'linkedin'
-});
-
-const facebookUrl = getSharingLink({
-  url: shareUrl,
-  network: 'facebook'
-});
-
-const twitterUrl = getSharingLink({
-  url: shareUrl,
-  title: shareTitle,
-  network: 'twitter',
-  hashtags: 'Innovation,Research,AICCRA'
-});
 ---
 
-<div class="social-share-container group relative overflow-visible">
+<div class="social-share-container group relative overflow-visible" data-share-path={sharePath} data-share-title={shareTitle}>
   <BasicButton
     {...isJustIcon ? {} : { text: 'Share to social network' }}
     hasIcon
@@ -54,30 +29,27 @@ const twitterUrl = getSharingLink({
       class={`social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg ${isJustIcon ? 'w-max absolute right-0' : 'overflow-hidden w-full'}`}>
       <!-- LinkedIn -->
       <a
-        href={linkedInUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
+        href="#"
+        data-network="linkedin"
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
         <i class="pi pi-linkedin text-[#0A66C2] text-base"></i>
         <span>Share on LinkedIn</span>
       </a>
 
       <!-- Facebook -->
       <a
-        href={facebookUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        href="#"
+        data-network="facebook"
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
         <i class="pi pi-facebook text-[#1877F2] text-base"></i>
         <span>Share on Facebook</span>
       </a>
 
       <!-- Twitter/X -->
       <a
-        href={twitterUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        href="#"
+        data-network="twitter"
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
         <i class="pi pi-twitter text-[#000000] text-base"></i>
         <span>Share on X (Twitter)</span>
       </a>
@@ -85,8 +57,7 @@ const twitterUrl = getSharingLink({
       <!-- Copy Link -->
       <button
         type="button"
-        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left"
-        data-url={shareUrl}>
+        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left">
         <i class="pi pi-link text-accent-300 text-base"></i>
         <span class="copy-link-text">Copy hyperlink</span>
       </button>
@@ -95,34 +66,77 @@ const twitterUrl = getSharingLink({
 </div>
 
 <script>
-  // Handle copy link functionality
+  import getSharingLink from '~/utils/share-link/getSharingLink';
+
   document.addEventListener('DOMContentLoaded', () => {
-    const copyButtons = document.querySelectorAll('.copy-link-btn');
+    // Get the actual current URL from the browser
+    const currentUrl = window.location.href;
 
-    copyButtons.forEach(button => {
-      button.addEventListener('click', async e => {
-        e.preventDefault();
-        const url = button.getAttribute('data-url');
-        const textSpan = button.querySelector('.copy-link-text');
+    console.log('🔍 Social Share Debug - Current Location:', {
+      href: window.location.href,
+      origin: window.location.origin,
+      pathname: window.location.pathname
+    });
 
-        if (url && textSpan) {
-          try {
-            await navigator.clipboard.writeText(url);
-            const originalText = textSpan.textContent;
-            textSpan.textContent = 'Copied!';
+    // Update all share links with the correct URL
+    document.querySelectorAll('.social-share-container').forEach(container => {
+      const sharePath = container.getAttribute('data-share-path') || '';
+      const shareTitle = container.getAttribute('data-share-title') || 'Check out this innovation';
 
-            setTimeout(() => {
-              textSpan.textContent = originalText;
-            }, 2000);
-          } catch (err) {
-            console.error('Failed to copy:', err);
-            textSpan.textContent = 'Failed to copy';
-            setTimeout(() => {
-              textSpan.textContent = 'Copy hyperlink';
-            }, 2000);
-          }
-        }
+      // Construct full URL - use sharePath if it's already a full URL, otherwise combine with origin
+      const shareUrl = sharePath.startsWith('http') ? sharePath : `${window.location.origin}${sharePath}`;
+
+      console.log('📍 Constructed Share URL:', {
+        sharePath,
+        shareUrl,
+        isFullUrl: sharePath.startsWith('http')
       });
+
+      // Update social share links
+      container.querySelectorAll('.share-link').forEach(link => {
+        const network = link.getAttribute('data-network') as 'linkedin' | 'facebook' | 'twitter';
+
+        const shareParams: any = { url: shareUrl, network };
+        if (network === 'twitter') {
+          shareParams.title = shareTitle;
+          shareParams.hashtags = 'Innovation,Research,AICCRA';
+        }
+
+        const shareLink = getSharingLink(shareParams);
+        link.setAttribute('href', shareLink);
+
+        console.log(`🔗 ${network.toUpperCase()} link:`, shareLink);
+      });
+
+      // Update copy link button
+      const copyButton = container.querySelector('.copy-link-btn');
+      if (copyButton) {
+        console.log('📋 Copy link URL:', shareUrl);
+
+        copyButton.addEventListener('click', async e => {
+          e.preventDefault();
+          const textSpan = copyButton.querySelector('.copy-link-text');
+
+          if (textSpan) {
+            try {
+              await navigator.clipboard.writeText(shareUrl);
+              const originalText = textSpan.textContent;
+              textSpan.textContent = 'Copied!';
+              console.log('✅ Copied to clipboard:', shareUrl);
+
+              setTimeout(() => {
+                textSpan.textContent = originalText;
+              }, 2000);
+            } catch (err) {
+              console.error('❌ Failed to copy:', err);
+              textSpan.textContent = 'Failed to copy';
+              setTimeout(() => {
+                textSpan.textContent = 'Copy hyperlink';
+              }, 2000);
+            }
+          }
+        });
+      }
     });
   });
 </script>
