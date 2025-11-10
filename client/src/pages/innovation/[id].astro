@@ -16,7 +16,7 @@ import type { Innovation as InnovationComplete } from '~/interfaces/search-compl
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
-import { useApi } from '~/composables/database-api/useApi';
+import { useApi } from '../../composables/database-api/useApi';
 
 interface staticPaths {
   params: { id: string };
@@ -488,7 +488,7 @@ try {
 
 <script>
 
-  import { useApi } from '~/composables/database-api/useApi';
+  import { useApi } from '../../composables/database-api/useApi';
 
   document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('community-story-form') as HTMLFormElement;
