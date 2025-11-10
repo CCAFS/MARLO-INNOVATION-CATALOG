@@ -16,7 +16,7 @@ import type { Innovation as InnovationComplete } from '~/interfaces/search-compl
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
-import { useApi } from '../../composables/database-api/useApi';
+import { useApi } from '~/composables/database-api/useApi';
 
 interface staticPaths {
   params: { id: string };
@@ -356,9 +356,11 @@ try {
                 maxLength={50}
                 required
               />
+
               <!-- Submit Button with reCAPTCHA -->
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4">
-                
+              <!-- Cloudflare Turnstile CAPTCHA -->
+              <div class="cf-turnstile mt-2 mr-2" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-size="flexible" data-theme="light"></div>
                 <BasicButton 
                   text='Send' 
                   type="submit" 
@@ -486,10 +488,10 @@ try {
   </article>
 </MainLayout>
 
+<!-- Cloudflare Turnstile Script -->
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <script>
-
-  import { useApi } from '../../composables/database-api/useApi';
-
   document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('community-story-form') as HTMLFormElement;
     const innovationId = form?.getAttribute('data-innovation-id');
@@ -500,6 +502,15 @@ try {
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       event.stopPropagation();
+
+      // Get Turnstile token
+      const turnstileWidget = document.querySelector('.cf-turnstile');
+      const turnstileResponse = (window as any).turnstile.getResponse();
+
+      if (!turnstileResponse) {
+        alert('Please complete the CAPTCHA verification');
+        return;
+      }
 
       // Show loading state
       if (submitButton) {
@@ -525,13 +536,32 @@ try {
       console.log('Submitting comment data:', commentData);
 
       try {
-        const response = await submitComment(commentData);
+        const response = await fetch('/api/submit-comment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: turnstileResponse,
+            commentData: commentData
+          }),
+        });
 
-        if (response) {
-          console.log('Comment submission response:', response);
+        const result = await response.json();
+
+        if (response.ok) {
+          console.log('Comment submitted successfully:', result);
+          alert('Thank you for sharing your story!');
+          form.reset();
+          // Reset Turnstile widget
+          (window as any).turnstile.reset();
+        } else {
+          console.error('Error submitting comment:', result);
+          alert(result.error || 'Failed to submit comment. Please try again.');
         }
       } catch (error) {
         console.error('Error submitting comment:', error);
+        alert('An error occurred. Please try again later.');
       } finally {
         // Reset loading state
         if (submitButton) {
@@ -540,30 +570,7 @@ try {
           submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
         }
       }
-
-      form.reset();
     });
   });
-
-  async function submitComment(data: {
-    user_name: string;
-    user_lastname: string;
-    user_email: string;
-    comment: string;
-    innovation_id: number;
-    modification_justification: string;
-
-  }) {
-    const { postInnovationComment } = useApi();
-
-    try {
-      const response = await postInnovationComment(data);
-      console.log('Comment submitted successfully:', response);
-      return response;
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-    }
-  }
-
 
 </script>
