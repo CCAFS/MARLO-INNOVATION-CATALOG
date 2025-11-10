@@ -357,16 +357,20 @@ try {
                 required
               />
 
-              <!-- Submit Button with reCAPTCHA -->
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4">
-              <!-- Cloudflare Turnstile CAPTCHA -->
-              <div class="cf-turnstile mt-2 mr-2" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-size="flexible" data-theme="light"></div>
+              <!-- Submit Button with CAPTCHA -->
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4 gap-2">
+                <!-- Cloudflare Turnstile CAPTCHA -->
+                <div 
+                  class="cf-turnstile" 
+                  data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+                  data-theme="light"
+                ></div>
                 <BasicButton 
                   text='Send' 
                   type="submit" 
                   classList="!bg-lime-500 text-white px-10 py-3 rounded hover:!bg-lime-800 transition-colors duration-300" 
                 />
-            </div>
+              </div>
           </form>
 
           <!-- Blur overlay with under construction message -->
@@ -489,88 +493,78 @@ try {
 </MainLayout>
 
 <!-- Cloudflare Turnstile Script -->
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('community-story-form') as HTMLFormElement;
-    const innovationId = form?.getAttribute('data-innovation-id');
-    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+  import { useApiRequest } from '~/composables/database-api/useApiRequest';
 
-    if(!form) return;
+  // Only initialize once
+  if (!(window as any).__formInitialized) {
+    (window as any).__formInitialized = true;
 
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      // Get Turnstile token
-      const turnstileWidget = document.querySelector('.cf-turnstile');
-      const turnstileResponse = (window as any).turnstile.getResponse();
-
-      if (!turnstileResponse) {
-        alert('Please complete the CAPTCHA verification');
-        return;
-      }
-
-      // Show loading state
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.innerHTML = 'Sending...';
-        submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-      }
-
-      const formData = new FormData(form);
-      const name = formData.get('name-input');
-      const email = formData.get('email-input');
-      const story = formData.get('story-input');
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('community-story-form') as HTMLFormElement;
       
-      const commentData = {
-        user_name: name?.toString() || '',
-        user_lastname: '',
-        user_email: email?.toString() || '',
-        comment: story?.toString() || '',
-        innovation_id: Number(innovationId?.toString() || ''),
-        modification_justification: 'User submitted community story'
-      };
+      if (!form) return;
 
-      console.log('Submitting comment data:', commentData);
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      try {
-        const response = await fetch('/api/submit-comment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token: turnstileResponse,
-            commentData: commentData
-          }),
-        });
+        const innovationId = form.getAttribute('data-innovation-id');
+        const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
-        const result = await response.json();
+        // Get Turnstile token
+        const turnstileResponse = (window as any).turnstile?.getResponse?.();
 
-        if (response.ok) {
-          console.log('Comment submitted successfully:', result);
+        if (!turnstileResponse) {
+          alert('Please complete the CAPTCHA verification');
+          return;
+        }
+
+        // Show loading state
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Sending...';
+        }
+
+        const formData = new FormData(form);
+        const commentData = {
+          user_name: formData.get('name-input')?.toString() || '',
+          user_lastname: '',
+          user_email: formData.get('email-input')?.toString() || '',
+          comment: formData.get('story-input')?.toString() || '',
+          innovation_id: Number(innovationId || 0),
+          modification_justification: 'User submitted community story'
+        };
+
+        try {
+          const { makeRequest } = useApiRequest();
+          
+          await makeRequest('POST', '/api/submit-comment', {
+            body: {
+              token: turnstileResponse,
+              commentData: commentData
+            }
+          });
+
           alert('Thank you for sharing your story!');
           form.reset();
-          // Reset Turnstile widget
-          (window as any).turnstile.reset();
-        } else {
-          console.error('Error submitting comment:', result);
-          alert(result.error || 'Failed to submit comment. Please try again.');
+          (window as any).turnstile?.reset?.();
+          
+          // Reload page to show new comment
+          setTimeout(() => window.location.reload(), 1000);
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to submit. Please try again.');
+          (window as any).turnstile?.reset?.();
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send';
+          }
         }
-      } catch (error) {
-        console.error('Error submitting comment:', error);
-        alert('An error occurred. Please try again later.');
-      } finally {
-        // Reset loading state
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.innerHTML = 'Send';
-          submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-      }
+      });
     });
-  });
-
+  }
 </script>
