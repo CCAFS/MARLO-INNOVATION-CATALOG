@@ -5,7 +5,7 @@ import Icon2 from '../../../images/icon-2.png';
 import Icon3 from '../../../images/icon-3.png';
 import { texts } from '../../../content/texts';
 import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
-import { useApi } from '~/composables/useApi';
+import { useApi } from '~/composables/database-api/useApi';
 
 async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
   const { getInnovationStats } = useApi();

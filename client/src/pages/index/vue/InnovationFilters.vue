@@ -7,7 +7,7 @@ import Select from 'primevue/select';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
-import { useApi } from '~/composables/useApi';
+import { useApi } from '~/composables/database-api/useApi';
 
 const { apiBaseUrl } = usePublicAPI();
 
