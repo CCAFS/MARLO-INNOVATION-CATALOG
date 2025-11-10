@@ -1,6 +1,6 @@
 // composables/useInnovations.ts
 import { ref, computed, readonly } from 'vue';
-import { useApi } from '~/composables/useApi';
+import { useApi } from '~/composables/database-api/useApi';
 import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
 
 // Move state OUTSIDE the function to make it shared across all components

@@ -8,10 +8,26 @@ import '../styles/global.css';
 import SolutionStories from '~/pages/index/astro/SolutionStories.astro';
 
 const link = Astro.url.href;
+console.log('env exaple');
+console.log(import.meta.env.GA_ID);
+const gaId = import.meta.env.GA_ID;
 ---
 
 <html lang="en">
   <head>
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+    <script>
+      // @ts-ignore
+      window.dataLayer = window.dataLayer || [];
+      // @ts-ignore
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      // @ts-ignore
+      gtag('js', new Date());
+      // @ts-ignore
+      gtag('config', { gaId });
+    </script>
     <meta charset="utf-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
