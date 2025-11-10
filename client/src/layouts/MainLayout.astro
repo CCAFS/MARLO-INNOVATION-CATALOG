@@ -16,8 +16,8 @@ const clarityId = import.meta.env.CLARITY_ID;
 
 <html lang="en">
   <head>
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-    <script>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+    <script is:inline>
       // @ts-ignore
       window.dataLayer = window.dataLayer || [];
       // @ts-ignore
@@ -29,7 +29,7 @@ const clarityId = import.meta.env.CLARITY_ID;
       // @ts-ignore
       gtag('config', { gaId });
     </script>
-    <script type="text/javascript">
+    <script is:inline type="text/javascript">
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||
