@@ -534,13 +534,28 @@ try {
         };
 
         try {
-          const { makeRequest } = useApiRequest();
-          
-          await makeRequest('POST', '/api/submit-comment', {
-            body: {
-              token: turnstileResponse,
-              commentData: commentData
+          // Verify Turnstile token with Cloudflare
+          const turnstileSecretKey = import.meta.env.PUBLIC_TURNSTILE_SECRET_KEY;
+          if (turnstileSecretKey) {
+            const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+            const verifyResponse = await fetch(verifyUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                secret: turnstileSecretKey,
+                response: turnstileResponse
+              })
+            });
+            const verifyResult = await verifyResponse.json();
+            if (!verifyResult.success) {
+              throw new Error('Turnstile verification failed');
             }
+          }
+
+          // Submit directly to backend API
+          const { makeRequest } = useApiRequest();
+          await makeRequest('POST', '/innovation-comments', {
+            body: commentData
           });
 
           alert('Thank you for sharing your story!');
