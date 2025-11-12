@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import { Image } from 'astro:assets';
 import Icon4 from '~/images/icon-4.png';
 import Icon5 from '~/images/icon-5.png';
@@ -78,12 +80,6 @@ export const getStaticPaths = (async () => {
     if (apiData && apiData.length > 0) {
       console.log(`Building paths from API data: ${apiData.length} innovations`);
 
-      // Log the innovation IDs we're processing
-      console.log(
-        'Innovation IDs being processed:',
-        apiData.map(i => i.projectInnovationId)
-      );
-
       // Create paths directly from complete innovation data (no mapping needed)
       const paths = apiData.map(innovation => {
         console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
@@ -128,7 +124,6 @@ const getCommunitySolutionStories = async (innovationId: number) => {
     console.log('Fetching community stories for innovation ID:', innovationId);
     const { getCommunityStoriesByInnovationId } = useApi();
     const response = await getCommunityStoriesByInnovationId(innovationId);
-    console.log('Fetched community solution stories:', response);
     return response || [];
   } catch (error) {
     console.error('Error fetching community solution stories:', error);
