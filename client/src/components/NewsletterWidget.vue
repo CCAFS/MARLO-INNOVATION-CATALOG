@@ -255,7 +255,7 @@ async function handleSubmit() {
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #007694;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   margin: 0.1rem 0;
 }
 
