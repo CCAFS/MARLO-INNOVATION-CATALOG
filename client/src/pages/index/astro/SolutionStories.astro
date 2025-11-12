@@ -90,7 +90,7 @@ fetchedStories = await getCommunityStories();
               </div>
 
               <!-- Content -->
-              <div class="mb-4">
+              <div >
                 <p class="text-sm text-gray-700 leading-relaxed line-clamp-3">
                   {story.comment}
                 </p>
@@ -98,7 +98,7 @@ fetchedStories = await getCommunityStories();
               
               <!-- Innovation Title -->
               <div class="mb-4">
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-gray-600 line-clamp-1">
                   <span class="font-semibold">Innovation:</span> {story.innovation_name ? story.innovation_name : 'N/A'}
                 </p>
               </div>

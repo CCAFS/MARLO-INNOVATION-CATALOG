@@ -16,7 +16,7 @@ import type { Innovation as InnovationComplete } from '~/interfaces/search-compl
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
-import { useApi } from '../../composables/database-api/useApi';
+import { useApi } from '~/composables/database-api/useApi';
 
 interface staticPaths {
   params: { id: string };
@@ -356,15 +356,21 @@ try {
                 maxLength={50}
                 required
               />
-              <!-- Submit Button with reCAPTCHA -->
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4">
-                
+
+              <!-- Submit Button with CAPTCHA -->
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4 gap-2">
+                <!-- Cloudflare Turnstile CAPTCHA -->
+                <div 
+                  class="cf-turnstile" 
+                  data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+                  data-theme="light"
+                ></div>
                 <BasicButton 
                   text='Send' 
                   type="submit" 
                   classList="!bg-lime-500 text-white px-10 py-3 rounded hover:!bg-lime-800 transition-colors duration-300" 
                 />
-            </div>
+              </div>
           </form>
 
           <!-- Blur overlay with under construction message -->
@@ -486,84 +492,79 @@ try {
   </article>
 </MainLayout>
 
+<!-- Cloudflare Turnstile Script -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <script>
+  import { useApiRequest } from '~/composables/database-api/useApiRequest';
 
-  import { useApi } from '../../composables/database-api/useApi';
+  // Only initialize once
+  if (!(window as any).__formInitialized) {
+    (window as any).__formInitialized = true;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('community-story-form') as HTMLFormElement;
-    const innovationId = form?.getAttribute('data-innovation-id');
-    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
-
-    if(!form) return;
-
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      // Show loading state
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.innerHTML = 'Sending...';
-        submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-      }
-
-      const formData = new FormData(form);
-      const name = formData.get('name-input');
-      const email = formData.get('email-input');
-      const story = formData.get('story-input');
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('community-story-form') as HTMLFormElement;
       
-      const commentData = {
-        user_name: name?.toString() || '',
-        user_lastname: '',
-        user_email: email?.toString() || '',
-        comment: story?.toString() || '',
-        innovation_id: Number(innovationId?.toString() || ''),
-        modification_justification: 'User submitted community story'
-      };
+      if (!form) return;
 
-      console.log('Submitting comment data:', commentData);
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      try {
-        const response = await submitComment(commentData);
+        const innovationId = form.getAttribute('data-innovation-id');
+        const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
-        if (response) {
-          console.log('Comment submission response:', response);
+        // Get Turnstile token
+        const turnstileResponse = (window as any).turnstile?.getResponse?.();
+
+        if (!turnstileResponse) {
+          alert('Please complete the CAPTCHA verification');
+          return;
         }
-      } catch (error) {
-        console.error('Error submitting comment:', error);
-      } finally {
-        // Reset loading state
+
+        // Show loading state
         if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.innerHTML = 'Send';
-          submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+          submitButton.disabled = true;
+          submitButton.textContent = 'Sending...';
         }
-      }
 
-      form.reset();
+        const formData = new FormData(form);
+        const commentData = {
+          user_name: formData.get('name-input')?.toString() || '',
+          user_lastname: '',
+          user_email: formData.get('email-input')?.toString() || '',
+          comment: formData.get('story-input')?.toString() || '',
+          innovation_id: Number(innovationId || 0),
+          modification_justification: 'User submitted community story'
+        };
+
+        try {
+          const { makeRequest } = useApiRequest();
+          
+          await makeRequest('POST', '/api/submit-comment', {
+            body: {
+              token: turnstileResponse,
+              commentData: commentData
+            }
+          });
+
+          alert('Thank you for sharing your story!');
+          form.reset();
+          (window as any).turnstile?.reset?.();
+          
+          // Reload page to show new comment
+          setTimeout(() => window.location.reload(), 1000);
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to submit. Please try again.');
+          (window as any).turnstile?.reset?.();
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send';
+          }
+        }
+      });
     });
-  });
-
-  async function submitComment(data: {
-    user_name: string;
-    user_lastname: string;
-    user_email: string;
-    comment: string;
-    innovation_id: number;
-    modification_justification: string;
-
-  }) {
-    const { postInnovationComment } = useApi();
-
-    try {
-      const response = await postInnovationComment(data);
-      console.log('Comment submitted successfully:', response);
-      return response;
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-    }
   }
-
-
 </script>

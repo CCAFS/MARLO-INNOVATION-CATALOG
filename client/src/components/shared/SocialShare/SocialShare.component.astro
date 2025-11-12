@@ -71,12 +71,6 @@ const shareTitle = title || 'Check out this innovation';
     // Get the actual current URL from the browser
     const currentUrl = window.location.href;
 
-    console.log('🔍 Social Share Debug - Current Location:', {
-      href: window.location.href,
-      origin: window.location.origin,
-      pathname: window.location.pathname
-    });
-
     // Update all share links with the correct URL
     document.querySelectorAll('.social-share-container').forEach(container => {
       const sharePath = container.getAttribute('data-share-path') || '';
@@ -84,12 +78,6 @@ const shareTitle = title || 'Check out this innovation';
 
       // Construct full URL - use sharePath if it's already a full URL, otherwise combine with origin
       const shareUrl = sharePath.startsWith('http') ? sharePath : `${window.location.origin}${sharePath}`;
-
-      console.log('📍 Constructed Share URL:', {
-        sharePath,
-        shareUrl,
-        isFullUrl: sharePath.startsWith('http')
-      });
 
       // Update social share links
       container.querySelectorAll('.share-link').forEach(link => {
@@ -103,15 +91,11 @@ const shareTitle = title || 'Check out this innovation';
 
         const shareLink = getSharingLink(shareParams);
         link.setAttribute('href', shareLink);
-
-        console.log(`🔗 ${network.toUpperCase()} link:`, shareLink);
       });
 
       // Update copy link button
       const copyButton = container.querySelector('.copy-link-btn');
       if (copyButton) {
-        console.log('📋 Copy link URL:', shareUrl);
-
         copyButton.addEventListener('click', async e => {
           e.preventDefault();
           const textSpan = copyButton.querySelector('.copy-link-text');
