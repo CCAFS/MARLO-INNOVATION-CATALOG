@@ -40,41 +40,7 @@ const clarityScript = `
   })(window, document, 'clarity', 'script', '${clarityId}');
 `;
 
-const analyticsSources = ['https://www.googletagmanager.com', 'https://www.google-analytics.com'];
-const claritySources = ['https://www.clarity.ms'];
-const cspScriptSrc = new Set([
-  "'self'",
-  "'unsafe-inline'",
-  "'unsafe-eval'",
-  ...analyticsSources,
-  ...claritySources,
-  'https://challenges.cloudflare.com'
-]);
-const cspConnectSrc = new Set([
-  "'self'",
-  'https://challenges.cloudflare.com',
-  ...analyticsSources,
-  ...claritySources
-]);
 
-const publicApi = import.meta.env.PUBLIC_API;
-if (publicApi) {
-  try {
-    cspConnectSrc.add(new URL(publicApi).origin);
-  } catch {
-    // Ignore malformed PUBLIC_API values when building the CSP.
-  }
-}
-
-const cspLines = [
-  "default-src 'self';",
-  `script-src ${Array.from(cspScriptSrc).join(' ')};`,
-  "frame-src 'self' https://challenges.cloudflare.com;",
-  "style-src 'self' 'unsafe-inline';",
-  `connect-src ${Array.from(cspConnectSrc).join(' ')};`
-];
-
-const contentSecurityPolicy = cspLines.join(' ');
 ---
 
 <html lang="en">
@@ -107,7 +73,6 @@ const contentSecurityPolicy = cspLines.join(' ');
     <meta name="twitter:image" content={domain + '/logo.png'} />
     <meta
       http-equiv="Content-Security-Policy"
-      content={contentSecurityPolicy}
     />
     <title>{title}</title>
   </head>
