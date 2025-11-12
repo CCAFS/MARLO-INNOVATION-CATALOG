@@ -226,10 +226,20 @@ async function handleSubmit() {
 .envelope-icon {
   width: 28px;
   height: 28px;
+  aspect-ratio: 1 / 1;
   background-color: #007694;
   border-radius: 50%;
   display: grid;
   place-items: center;
+  flex-shrink: 0;
+}
+
+.arrow-icon {
+  margin-bottom: 0.4rem;
+}
+
+.envelope-icon {
+  margin-top: 0.3rem;
 }
 
 .arrow-icon svg,
@@ -246,6 +256,7 @@ async function handleSubmit() {
   letter-spacing: 0.1em;
   color: #007694;
   font-size: 0.85rem;
+  margin: 0.1rem 0;
 }
 
 @media (max-width: 768px) {
