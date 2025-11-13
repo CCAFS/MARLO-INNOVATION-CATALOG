@@ -22,6 +22,8 @@ const shareTitle = title || 'Check out this innovation';
     icon="pi pi-share-alt"
     classList={`w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white cursor-pointer ${className}`}
   />
+  <!-- Invisible hover area extension for isJustIcon mode -->
+  {isJustIcon && <div class="invisible-hover-extension absolute top-0 -bottom-4 -left-3 w-8 z-0" />}
   <!-- Dropdown wrapper with padding to bridge the gap -->
   <div class={`dropdown-wrapper hidden group-hover:block absolute top-full w-full pt-1 z-10`}>
     <div
@@ -30,7 +32,7 @@ const shareTitle = title || 'Check out this innovation';
       <a
         href="#"
         data-network="linkedin"
-        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200">
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-200 transition-colors duration-200">
         <i class="pi pi-linkedin text-[#0A66C2] text-base"></i>
         <span>Share on LinkedIn</span>
       </a>
@@ -39,7 +41,7 @@ const shareTitle = title || 'Check out this innovation';
       <a
         href="#"
         data-network="facebook"
-        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-200 transition-colors duration-200 border-t border-border-light">
         <i class="pi pi-facebook text-[#1877F2] text-base"></i>
         <span>Share on Facebook</span>
       </a>
@@ -48,7 +50,7 @@ const shareTitle = title || 'Check out this innovation';
       <a
         href="#"
         data-network="twitter"
-        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light">
+        class="share-link flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-200 transition-colors duration-200 border-t border-border-light">
         <i class="pi pi-twitter text-[#000000] text-base"></i>
         <span>Share on X (Twitter)</span>
       </a>
@@ -56,7 +58,7 @@ const shareTitle = title || 'Check out this innovation';
       <!-- Copy Link -->
       <button
         type="button"
-        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-50 transition-colors duration-200 border-t border-border-light text-left">
+        class="copy-link-btn w-full flex items-center gap-3 px-4 py-3 text-xs text-text-800 hover:bg-gray-200 transition-colors duration-200 border-t border-border-light text-left cursor-pointer">
         <i class="pi pi-link text-accent-300 text-base"></i>
         <span class="copy-link-text">Copy hyperlink</span>
       </button>
