@@ -152,6 +152,7 @@ async function handleSubmit() {
   font-size: 0.85rem;
   color: #264653;
   margin-bottom: 1rem;
+  text-align: justify;
 }
 
 .form {
@@ -170,7 +171,7 @@ async function handleSubmit() {
 .input {
   border: 1px solid #b7c5cf;
   border-radius: 6px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.65rem;
   font-size: 0.95rem;
 }
 
@@ -181,7 +182,7 @@ async function handleSubmit() {
 
 .submit {
   align-self: center;
-  padding: 0.35rem 3.8rem;
+  padding: 0.35rem 3.2rem;
   background-color: #008bb0;
   color: #ffffff;
   border: none;
