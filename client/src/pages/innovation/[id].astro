@@ -241,7 +241,7 @@ try {
             {innovation.bundles.map(bundle => (
               <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
               {
-                bundle.selectedInnovationReadinessScale == null ? (
+                (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
                 <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                   fill-rule="evenodd"
@@ -252,8 +252,8 @@ try {
                 <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
                 ) : <span class="text-sm">Internal</span>
               }
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{bundle.selectedInnovationName}</span>
               </div>
+              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
             ))}
             </p>
           </>
