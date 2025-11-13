@@ -22,6 +22,8 @@ const shareTitle = title || 'Check out this innovation';
     icon="pi pi-share-alt"
     classList={`w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white cursor-pointer ${className}`}
   />
+  <!-- Invisible hover area extension for isJustIcon mode -->
+  {isJustIcon && <div class="invisible-hover-extension absolute top-0 -bottom-4 -left-3 w-8 z-0" />}
   <!-- Dropdown wrapper with padding to bridge the gap -->
   <div class={`dropdown-wrapper hidden group-hover:block absolute top-full w-full pt-1 z-10`}>
     <div
