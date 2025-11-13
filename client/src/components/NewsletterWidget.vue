@@ -52,9 +52,9 @@ async function handleSubmit() {
           <path d="M2 2l10 10m0-10L2 12" stroke-width="2" stroke-linecap="round" />
         </svg>
       </button>
-      <p class="widget-title">Newsletter</p>
+      <p class="widget-title">Don't Miss Out!</p>
       <p class="widget-description">
-        Subscribe to receive updates on new innovations, stories, and opportunities from the AICCRA network.
+        Discover the latest innovations, inspiring stories, and exclusive opportunities within the AICCRA ecosystem. Subscribe to our newsletter and be the first to receive valuable content that will help you stay ahead of the curve.
       </p>
       <form class="form" @submit.prevent="handleSubmit">
         <label class="label" for="newsletter-email">E-mail:</label>
@@ -68,7 +68,7 @@ async function handleSubmit() {
         />
         <button class="submit" type="submit" :disabled="isSubmitting">
           <span v-if="isSubmitting">Sending…</span>
-          <span v-else>Subscribe</span>
+          <span v-else>I Want To Stay Informed</span>
         </button>
       </form>
       <p v-if="statusMessage" class="status" :class="statusType">{{ statusMessage }}</p>
