@@ -70,6 +70,7 @@ async function handleSubmit() {
           <span v-if="isSubmitting">Sending…</span>
           <span v-else>I Want To Stay Informed</span>
         </button>
+        <p class="form-note">Connect with our community of innovators!</p>
       </form>
       <p v-if="statusMessage" class="status" :class="statusType">{{ statusMessage }}</p>
     </div>
@@ -101,20 +102,20 @@ async function handleSubmit() {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 280px;
+  width: 460px;
   transition: width 0.25s ease, box-shadow 0.25s ease;
   z-index: 40;
   font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .newsletter-widget.collapsed {
-  width: 52px;
+  width: 43px;
 }
 
 .widget-panel {
   background-color: #ffffff;
   border-radius: 12px 0 0 12px;
-  border: 1px solid #c9d6df;
+  border: 1px solid rgba(0, 118, 148, 0.45);
   box-shadow: 0 8px 24px rgb(15 39 64 / 20%);
   padding: 1.5rem 1.25rem 1.25rem;
   position: relative;
@@ -148,7 +149,7 @@ async function handleSubmit() {
 }
 
 .widget-description {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #264653;
   margin-bottom: 1rem;
 }
@@ -157,6 +158,7 @@ async function handleSubmit() {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .label {
@@ -178,19 +180,28 @@ async function handleSubmit() {
 }
 
 .submit {
-  align-self: flex-start;
-  padding: 0.45rem 1.1rem;
+  align-self: center;
+  padding: 0.35rem 3.8rem;
   background-color: #008bb0;
   color: #ffffff;
   border: none;
-  border-radius: 20px;
-  font-weight: 600;
+  border-radius: 9px;
+  font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
 .submit:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.form-note {
+  margin: 0;
+  text-align: center;
+  color: #7a7a7a;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .status {
@@ -207,10 +218,10 @@ async function handleSubmit() {
 }
 
 .collapsed-tab {
-  width: 52px;
-  height: 200px;
-  border-radius: 12px 0 0 12px;
-  border: 1px solid #c9d6df;
+  width: 48px;
+  height: 219px;
+  border-radius: 9px 0 0 12px;
+  border: 1px solid rgba(0, 118, 148, 0.45);
   border-right: none;
   background-color: #ffffff;
   box-shadow: -4px 6px 18px rgb(15 39 64 / 15%);
