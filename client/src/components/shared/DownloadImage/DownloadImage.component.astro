@@ -21,7 +21,7 @@ const { isJustIcon, className } = Astro.props;
 </download-image>
 
 <script>
-  import { domToJpeg } from 'modern-screenshot';
+  import { domToBlob } from 'modern-screenshot';
 
   class DownloadImage extends HTMLElement {
     connectedCallback() {
@@ -35,26 +35,59 @@ const { isJustIcon, className } = Astro.props;
                 // Show loading state (optional)
                 downloadBtn.disabled = true;
 
-                // Capture screenshot of the entire article
-                const bodyElement = document.querySelector('body');
+                // Get the screenshot area container
+                const screenshotArea = document.querySelector('#screenshot-area') as HTMLElement;
+                const bodyElement = document.querySelector('body') as HTMLElement;
 
-                if (bodyElement) {
-                  const dataUrl = await domToJpeg(bodyElement, {
-                    quality: 0.95,
-                    width: bodyElement.scrollWidth,
-                    height: bodyElement.scrollHeight
-                  });
-
-                  // Create download link
-                  const link = document.createElement('a');
-                  link.download = `innovation-${Date.now()}.jpg`;
-                  link.href = dataUrl;
-
-                  // Trigger download
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                if (!screenshotArea || !bodyElement) {
+                  throw new Error('Screenshot area not found');
                 }
+
+                // Store original styles
+                const originalBodyOverflow = bodyElement.style.overflow;
+                const originalBodyHeight = bodyElement.style.height;
+                const originalBodyMinHeight = bodyElement.style.minHeight;
+
+                // Apply temporary styles to prevent extra whitespace
+                bodyElement.style.overflow = 'hidden';
+                bodyElement.style.height = 'auto';
+                bodyElement.style.minHeight = 'auto';
+
+                // Get scale factor for high-DPI screens
+                const scale = window.devicePixelRatio || 1;
+
+                // Capture only the screenshot area
+                const dataUrl = await domToBlob(screenshotArea, {
+                  width: screenshotArea.offsetWidth * scale,
+                  height: screenshotArea.offsetHeight * scale,
+                  style: {
+                    transform: `scale(${scale})`,
+                    transformOrigin: 'top left',
+                    width: `${screenshotArea.offsetWidth}px`,
+                    height: `${screenshotArea.offsetHeight}px`
+                  },
+                  features: {
+                    // Remove extra whitespace and control characters
+                    removeControlCharacter: true
+                  }
+                }).then(blob => {
+                  return URL.createObjectURL(blob);
+                });
+
+                // Restore original styles
+                bodyElement.style.overflow = originalBodyOverflow;
+                bodyElement.style.height = originalBodyHeight;
+                bodyElement.style.minHeight = originalBodyMinHeight;
+
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `innovation-${Date.now()}.jpg`;
+                link.href = dataUrl;
+
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
               } catch (error) {
                 console.error('Screenshot failed:', error);
                 alert('Failed to generate screenshot');

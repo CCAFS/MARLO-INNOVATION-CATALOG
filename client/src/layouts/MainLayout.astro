@@ -70,11 +70,13 @@ const clarityScript = `
 
     <title>{title}</title>
   </head>
-  <body class="bg-white overflow-x-hidden">
-    <TopBar />
-    <div class="max-w-screen-2xl mx-auto">
-      <slot />
+  <body class="bg-white overflow-x-hidden overflow-y-auto min-h-[100vh] m-0 p-0">
+    <div id="screenshot-area" class="bg-white">
+      <TopBar />
+      <div class="max-w-screen-2xl mx-auto">
+        <slot />
+      </div>
+      <Footer />
     </div>
-    <Footer />
   </body>
 </html>
