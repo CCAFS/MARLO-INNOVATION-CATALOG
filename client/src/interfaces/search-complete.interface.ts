@@ -210,6 +210,7 @@ export interface ContributingOrganization {
   institutionId: number;
   institutionName: string;
   institutionAcronym?: string;
+  city?: string;
 }
 
 export interface InnovationBundle {
