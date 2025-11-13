@@ -251,6 +251,7 @@ async function handleSubmit() {
 
 .vertical-text {
   writing-mode: vertical-rl;
+  transform: rotate(180deg);
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.1em;
