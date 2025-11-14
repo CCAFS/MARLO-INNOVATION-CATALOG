@@ -114,7 +114,12 @@ export function useApi() {
           active_since: string;
           modification_justification: string;
         }[]
-      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: 428 } })
+      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: 428 } }),
+
+    postNewsletterSubscription: (email: string) =>
+      makeRequest('POST', `${apiBaseUrl}/innovations/subscriptions`, {
+        body: { email }
+      })
   };
 }
 
