@@ -131,16 +131,7 @@ onMounted(() => {
       <div class="text-center py-8 border-1 border-gray-200 rounded-xl p-4 md:p-4 shadow-sm bg-white flex flex-col items-center">
         <img :src="EmptyDataImg.src" :alt="imgEmptyDataStats.title" width="150" height="100" class="pb-2" />
         <p class="text-gray-500 text-lg">No innovations found.</p>
-      </div>
-    </div>
-
-    <!-- Error State -->
-    <div v-if="error && !isLoading" class="mb-8 mt-4">
-      <div class="text-center py-8">
-        <p class="text-red-500 text-lg">{{ error.message }}</p>
-        <button @click="handleFetchInnovations()" class="mt-4 px-4 py-2 bg-[#439255] text-white rounded hover:bg-green-600 transition-colors">
-          Try Again
-        </button>
+        <p v-if="error && !isLoading" class="text-red-500 text-lg mt-2">A problem occurred while fetching innovations. Please try again later.</p>
       </div>
     </div>
 
