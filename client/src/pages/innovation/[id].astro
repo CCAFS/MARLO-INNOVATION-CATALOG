@@ -3,7 +3,7 @@ export const prerender = true;
 
 import { Image } from 'astro:assets';
 import Icon4 from '~/images/icon-4.png';
-import Icon5 from '~/images/icon-5.png';
+import Icon1 from '~/images/icon-1.png';
 import Icon6 from '~/images/icon-6.png';
 import EmptyDataImg from '~/images/empty-data.png';
 
@@ -35,7 +35,7 @@ const stats = [
   {
     title: 'Innovation typology',
     value: 25,
-    imagePath: Icon5,
+    imagePath: Icon1,
     quality: 'max'
   },
   {
@@ -177,7 +177,7 @@ try {
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Geoscope</span>
+              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Location</span>
               <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
                 {
                   countryText.hasMore ? (
@@ -212,7 +212,7 @@ try {
         <!-- Description -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
           <!-- Expected outcomes -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Expected outcomes</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Realized/expected outcomes</p>
             <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2 text-justify">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
@@ -259,7 +259,7 @@ try {
           </>
           )}
           <!-- Piece of evidence -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Piece of evidence</p>
+          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Evidence</p>
           <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
             {
               innovation.references == null || innovation.references.length === 0 ? (
@@ -402,7 +402,7 @@ try {
               {
                 innovation.actors && innovation.actors.length > 0 ? (
                   innovation.actors.map(actor => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo?.name || 'Unknown Actor'}</li>
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo?.prmsNameEquivalent || 'Unknown Actor'}</li>
                   ))
                 ) : (
                   <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
