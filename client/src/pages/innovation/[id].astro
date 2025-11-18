@@ -355,11 +355,11 @@ try {
               <!-- Submit Button with CAPTCHA -->
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4 gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
-                <!-- <div 
+                <div 
                   class="cf-turnstile" 
                   data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
                   data-theme="light"
-                ></div> -->
+                ></div>
                 <BasicButton 
                   text='Send' 
                   type="submit" 
@@ -495,7 +495,6 @@ try {
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
-  import { useApiRequest } from '~/composables/database-api/useApiRequest';
   import { useApi } from '~/composables/database-api/useApi';
 
   // Only initialize once
@@ -515,12 +514,12 @@ try {
         const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
         // Get Turnstile token
-        //const turnstileResponse = (window as any).turnstile?.getResponse?.();
+        const turnstileResponse = (window as any).turnstile?.getResponse?.();
 
-        /*         if (!turnstileResponse) {
+        if (!turnstileResponse) {
           alert('Please complete the CAPTCHA verification');
           return;
-        } */
+        }
 
         // Show loading state
         if (submitButton) {
@@ -540,7 +539,7 @@ try {
 
         // Submit the comment data with CAPTCHA token
         // Disable CAPTCHA verification for now
-        /*         try {
+          try {
           // Verify Turnstile token with Cloudflare
           const turnstileSecretKey = import.meta.env.PUBLIC_TURNSTILE_SECRET_KEY;
           if (turnstileSecretKey) {
@@ -560,10 +559,8 @@ try {
           }
 
           // Submit directly to backend API
-          const { makeRequest } = useApiRequest();
-          await makeRequest('POST', '/innovation-comments', {
-            body: commentData
-          });
+          const { postInnovationComment } = useApi();
+          await postInnovationComment(commentData);
 
           alert('Thank you for sharing your story!');
           form.reset();
@@ -572,33 +569,16 @@ try {
           // Reload page to show new comment
           // setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
-          console.error('Error:', error);
-          alert('Failed to submit. Please try again.');
+          
+          alert('Failed to submit. Please try again.' + error);
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {
             submitButton.disabled = false;
             submitButton.textContent = 'Send';
           }
-        } */
-
-        // Submit directly to backend API without CAPTCHA verification
-        try {
-          const { postInnovationComment } = useApi();
-          await postInnovationComment(commentData);
-
-          alert('Thank you for sharing your story!');
-          form.reset();
-
-        } catch (error) {
-          console.error('Error:', error);
-          alert('Failed to submit. Please try again.');
-        } finally {
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send';
-          }
         }
+
       });
     });
   }
