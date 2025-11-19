@@ -5,6 +5,7 @@ import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
+import NewsletterWidget from '~/components/NewsletterWidget.vue';
 
 const link = Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
@@ -67,7 +68,6 @@ const clarityScript = `
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={domain + '/logo.png'} />
-
     <title>{title}</title>
   </head>
   <body class="bg-white overflow-x-hidden overflow-y-auto min-h-[100vh] m-0 p-0">
@@ -78,5 +78,6 @@ const clarityScript = `
       </div>
       <Footer />
     </div>
+    <NewsletterWidget client:load />
   </body>
 </html>
