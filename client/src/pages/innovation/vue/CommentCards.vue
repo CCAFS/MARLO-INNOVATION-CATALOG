@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 import Skeleton from 'primevue/skeleton';
 import EmptyDataImg from '~/images/empty-data.png';
@@ -21,37 +22,64 @@ const getCommunitySolutionStories = async (innovationId: number) => {
   }
 };
 
-let communityStories: any[] = [];
-let isLoading = true;
-
 // Define props
 const props = defineProps<{
   innovationId: number;
 }>();
 
-try {
-  communityStories = await getCommunitySolutionStories(props.innovationId);
-  isLoading = false;
-} catch (error) {
-  console.warn('Failed to fetch community stories during build:', error);
-  communityStories = [];
-  isLoading = false;
-}
+// Use refs for reactive data
+const communityStories = ref<any[]>([]);
+const isLoading = ref(true);
+
+// Initial load
+const loadStories = async () => {
+  isLoading.value = true;
+  try {
+    communityStories.value = await getCommunitySolutionStories(props.innovationId);
+  } catch (error) {
+    console.warn('Failed to fetch community stories:', error);
+    communityStories.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Event handler for refresh
+const handleRefreshEvent = () => {
+  console.log('Refresh event received, reloading stories...');
+  loadStories();
+};
+
+// Initial load
+onMounted(() => {
+  loadStories();
+  // Listen for custom event
+  window.addEventListener('refresh-comments', handleRefreshEvent);
+});
+
+// Cleanup
+onUnmounted(() => {
+  window.removeEventListener('refresh-comments', handleRefreshEvent);
+});
+
+// Expose refresh method
+defineExpose({
+  refreshStories: loadStories
+});
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-4 mt-4">
     <!-- Skeleton -->
-    <div
-      v-if="isLoading"
-      class="text-center py-4 text-gray-500 bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 border border-border-light flex flex-col items-center gap-2">
-      <div v-for="n in 3" :key="n" class="border-l-primary-400 border border-border-light border-l-4 w-full p-4 mb-4">
+    <div v-if="isLoading" class="grid grid-cols-1 gap-4">
+      <div v-for="n in 3" :key="n" class="border-l-primary-400 border border-border-light border-l-4 w-full p-4">
         <div class="flex items-center mb-2 gap-2">
-          <Skeleton width="8rem" height="1rem" />
-          <span class="w-[2px] h-[2px] rounded-full bg-gray-300" />
-          <Skeleton width="6rem" height="1rem" />
+          <Skeleton width="8rem" height=".75rem" borderRadius="2px" class="mb-2"></Skeleton>
+          <span class="w-[2px] h-[2px] rounded-full bg-text-800"></span>
+          <Skeleton width="6rem" height=".75rem" borderRadius="2px" class="mb-2"></Skeleton>
         </div>
-        <Skeleton width="100%" height="3rem" />
+        <Skeleton width="100%" height=".75rem" borderRadius="2px" class="mb-2"></Skeleton>
+        <Skeleton width="100%" height=".75rem" borderRadius="2px" class="mb-2"></Skeleton>
       </div>
     </div>
     <!-- Community Stories -->
@@ -81,3 +109,14 @@ try {
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(.p-skeleton) {
+  --p-skeleton-background: rgba(0, 0, 0, 0.08);
+  --p-skeleton-animation-background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+}
+
+:deep(.p-skeleton::after) {
+  background: var(--p-skeleton-animation-background);
+}
+</style>

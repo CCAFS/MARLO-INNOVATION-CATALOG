@@ -273,7 +273,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Community solution stories</p>
 
           <!-- Comment stories -->
-          <CommentCards innovationId={innovation.projectInnovationId} client:load />
+          <div data-comment-cards>
+            <CommentCards innovationId={innovation.projectInnovationId} client:load />
+          </div>
           
           <!-- Input container -->
           <form class="mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
@@ -513,8 +515,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           form.reset();
           (window as any).turnstile?.reset?.();
           
-          // Reload page to show new comment
-          // setTimeout(() => window.location.reload(), 1000);
+          // Dispatch custom event to refresh comments
+          window.dispatchEvent(new CustomEvent('refresh-comments'));
+          console.log('Refresh event dispatched');
         } catch (error) {
           
           alert('Failed to submit. Please try again.' + error);
