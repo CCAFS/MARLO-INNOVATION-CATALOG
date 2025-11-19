@@ -171,7 +171,7 @@ try {
         <!-- Key Metrics -->
         <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
           <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Key metrics</p>
-          <div class="flex flex-wrap gap-24 mt-4 justify-between px-12 xs:px-2 sm:px-4">
+          <div class="flex flex-wrap gap-24 mt-4 justify-around px-24 xs:px-4 sm:px-8">
             <!-- Geoscope -->
             <div class="flex flex-col text-center items-center">
               <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
@@ -182,7 +182,11 @@ try {
                 {
                   countryText.hasMore ? (
                     <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                    <em>{countryText.additionalText}</em>
+                    <em class="tooltip">
+                      {countryText.additionalText}
+                      <span class="tooltiptext">{countryText.additionalInfo}</span>
+                    </em>
+                    
                   ) : (
                     <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
                   )
@@ -591,7 +595,6 @@ try {
           form.reset();
 
         } catch (error) {
-          console.error('Error:', error);
           alert('Failed to submit. Please try again.');
         } finally {
           if (submitButton) {
