@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
 import Paginator from 'primevue/paginator';
