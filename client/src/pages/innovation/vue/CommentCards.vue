@@ -54,12 +54,12 @@ const handleRefreshEvent = () => {
 onMounted(() => {
   loadStories();
   // Listen for custom event
-  window.addEventListener('refresh-comments', handleRefreshEvent);
+  globalThis.addEventListener('refresh-comments', handleRefreshEvent);
 });
 
 // Cleanup
 onUnmounted(() => {
-  window.removeEventListener('refresh-comments', handleRefreshEvent);
+  globalThis.removeEventListener('refresh-comments', handleRefreshEvent);
 });
 
 // Expose refresh method

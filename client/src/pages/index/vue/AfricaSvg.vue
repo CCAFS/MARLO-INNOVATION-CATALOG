@@ -19,7 +19,6 @@ const getAmountByCountries = computed(() => {
     console.log('No API data available yet');
     return null;
   }
-  console.log('Processing API data for map:', apiDataForCountry.value);
   // Create a deep mutable copy of the readonly data
   const mutableData = {
     ...apiDataForCountry.value,
@@ -35,16 +34,20 @@ const getAmountByCountries = computed(() => {
 
 // Función para manejar la selección de países
 const toggleCountrySelection = (countryId: string) => {
-  const index = selectedCountries.value.indexOf(countryId);
+  const currentCountries = value.value.countryIds || [];
+  const countryIdNum = parseInt(countryId);
+  const index = currentCountries.indexOf(countryIdNum);
+
   if (index > -1) {
     // Si ya está seleccionado, lo removemos
+    const updatedCountries = currentCountries.filter(id => id !== countryIdNum);
     setValue({
-      countryIds: value.value.countryIds?.splice(index, 1)
+      countryIds: updatedCountries.length > 0 ? updatedCountries : undefined
     });
   } else {
     // Si no está seleccionado, lo agregamos
     setValue({
-      countryIds: [...(value.value.countryIds || []), parseInt(countryId)]
+      countryIds: [...currentCountries, countryIdNum]
     });
   }
 };
