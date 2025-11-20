@@ -30,7 +30,12 @@ export function useApiRequest() {
           const queryParams = new URLSearchParams();
           Object.entries(options.params).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
-              queryParams.append(key, value.toString());
+              if (Array.isArray(value)) {
+                const concatVal = value.map(v => encodeURIComponent(v)).join(',');
+                queryParams.append(key, concatVal);
+              } else {
+                queryParams.append(key, value.toString());
+              }
             }
           });
           finalUrl = `${url}?${queryParams.toString()}`;
