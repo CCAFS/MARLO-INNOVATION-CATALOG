@@ -42,6 +42,10 @@
   visibility: visible;
 }
 
+.tooltip:focus .tooltiptext {
+  visibility: visible;
+}
+
 .tooltiptext::after {
   content: ' ';
   position: absolute;

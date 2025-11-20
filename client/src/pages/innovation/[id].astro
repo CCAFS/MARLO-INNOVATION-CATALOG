@@ -164,11 +164,10 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                 {
                   countryText.hasMore ? (
                     <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                    <em class="tooltip">
+                    <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
                       {countryText.additionalText}
                       <span class="tooltiptext">{countryText.additionalInfo}</span>
                     </em>
-                    
                   ) : (
                     <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
                   )

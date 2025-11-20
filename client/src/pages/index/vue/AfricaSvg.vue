@@ -35,7 +35,7 @@ const getAmountByCountries = computed(() => {
 // Función para manejar la selección de países
 const toggleCountrySelection = (countryId: string) => {
   const currentCountries = value.value.countryIds || [];
-  const countryIdNum = parseInt(countryId);
+  const countryIdNum = Number.parseInt(countryId);
   const index = currentCountries.indexOf(countryIdNum);
 
   if (index > -1) {
@@ -54,7 +54,7 @@ const toggleCountrySelection = (countryId: string) => {
 
 // Función para verificar si un país está seleccionado
 const isCountrySelected = (countryId: string): boolean => {
-  return value.value.countryIds?.includes(parseInt(countryId)) || false;
+  return value.value.countryIds?.includes(Number.parseInt(countryId)) || false;
 };
 
 const countryList = computed(() => {

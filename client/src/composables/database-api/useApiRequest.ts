@@ -31,7 +31,7 @@ export function useApiRequest() {
           Object.entries(options.params).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
               if (Array.isArray(value)) {
-                const concatVal = value.map(v => encodeURIComponent(v)).join(',');
+                const concatVal = value.join(',');
                 queryParams.append(key, concatVal);
               } else {
                 queryParams.append(key, value.toString());
