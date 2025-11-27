@@ -126,17 +126,20 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
-  <article class="container mx-auto m-auto my-auto p-0 xl:px-16 2xl:px-20">
-    <!-- Return link -->
-    <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
-      <span class="pi pi-arrow-left"></span>
+  <!-- Mobile: padding lateral | Desktop (lg+): diseño original -->
+  <article class="container mx-auto m-auto my-auto px-4 lg:p-0 xl:px-16 2xl:px-20">
+    <!-- Return link - Mobile: margin reducido, texto más pequeño | Desktop (lg+): diseño original -->
+    <a href="/" class="my-6 mb-4 text-primary-300 text-xs font-semibold flex items-center gap-2 hover:underline lg:my-12 lg:mb-8 lg:text-sm xl:text-sm 2xl:text-base">
+      <span class="pi pi-arrow-left text-xs lg:text-sm"></span>
       <p>Go back to innovations catalog</p>
     </a>
 
     <!-- Title and main options -->
     <section class="max-width">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-2.5">
-        <h1 class="text-base xl:text-lg 2xl:text-xl font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
+      <!-- Mobile: stack vertical en pantallas pequeñas | Desktop (lg+): horizontal con gap -->
+      <div class="flex flex-col gap-3 mb-2.5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-4">
+        <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+        <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
           <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
@@ -144,61 +147,72 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
-      <p class="text-sm xl:text-base 2xl:text-lg font-[400] mb-6 text-text-600 text-justify">{innovation.narrative}</p>
+      <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+      <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative}</p>
     </section>
 
-    <!-- Main Content -->
-    <div class="grid grid-cols-4 gap-4 mb-12">
-      <section class="col-span-3">
-        <!-- Key Metrics -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Key metrics</p>
-          <div class="flex flex-wrap gap-24 mt-4 justify-around px-24 xs:px-4 sm:px-8">
-            <!-- Geoscope -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
+    <!-- Main Content - Mobile: 1 columna stack | Desktop (lg+): grid 4 columnas original -->
+    <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-4 lg:mb-12">
+      <!-- Mobile: col-span-1 (full width) | Desktop (lg+): col-span-3 -->
+      <section class="col-span-1 lg:col-span-3">
+        <!-- Key Metrics - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Key metrics</p>
+          <!-- Mobile: flex column stack, gap reducido | Desktop (md+): flex row con gap | Desktop (lg+): justify around con padding -->
+          <div class="flex flex-col gap-4 mt-3 lg:flex-row lg:flex-wrap lg:gap-12 lg:mt-4 lg:justify-around lg:px-12 xl:px-24">
+            <!-- Geoscope - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Location</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
-                {
-                  countryText.hasMore ? (
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                    <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
-                      {countryText.additionalText}
-                      <span class="tooltiptext">{countryText.additionalInfo}</span>
-                    </em>
-                  ) : (
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                  )
-                }
-              </span>
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Location</span>
+                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
+                  {
+                    countryText.hasMore ? (
+                      <>
+                        <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
+                        <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
+                          {countryText.additionalText}
+                          <span class="tooltiptext">{countryText.additionalInfo}</span>
+                        </em>
+                      </>
+                    ) : (
+                      <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
+                    )
+                  }
+                </span>
+              </div>
             </div>
-            <!-- Typology -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
+            <!-- Typology - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal w-[75%]">{innovation.innovationType?.name || 'N/A'}</span>
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Innovation typology</span>
+                <span class="text-xs text-text-800 font-normal w-full lg:w-[75%] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
+              </div>
             </div>
-            <!-- Scaling Readiness -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
+            <!-- Scaling Readiness - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Scaling readiness</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
-                >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
-              >
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Scaling readiness</span>
+                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base"
+                  >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
+                >
+              </div>
             </div>
           </div>
         </div>
-        <!-- Description -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <!-- Expected outcomes -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Realized/expected outcomes</p>
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2 text-justify">
+        <!-- Description - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
+            <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
               <span class="text-gray-500">No Information available yet</span>
@@ -208,8 +222,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
             </p>
           <!-- Intended beneficiaries/users -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Intended beneficiaries/users</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2 text-justify">
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Intended beneficiaries/users</p>
+          <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
                 <span class="text-gray-500">No Information available yet</span>
@@ -221,8 +235,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <!-- Bundle innovations -->
           {innovation.bundles != null && innovation.bundles.length > 0 && (
           <>
-            <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Bundle innovations</p>
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+            <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Bundle innovations</p>
+            <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
             {innovation.bundles.map(bundle => (
               <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
               {
@@ -244,8 +258,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           </>
           )}
           <!-- Piece of evidence -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Evidence</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Evidence</p>
+          <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.references == null || innovation.references.length === 0 ? (
                 <span class="text-gray-500">No Information available yet</span>
@@ -271,9 +285,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
           </p>
         </div>
-        <!-- Community solution stories -->
-        <section class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300 relative">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Community solution stories</p>
+        <!-- Community solution stories - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <section class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 relative lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Community solution stories</p>
 
           <!-- Comment stories -->
           <div data-comment-cards>
@@ -281,10 +295,10 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           </div>
           
           <!-- Input container -->
-          <form class="mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Share your experience with this innovation or read what others have accomplished:</p>
-            <!-- Content Form -->
-            <div class="mt-2 ml-4 flex flex-col gap-1">
+          <form class="mt-4 lg:mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Share your experience with this innovation or read what others have accomplished:</p>
+            <!-- Content Form - Mobile: sin margin izquierdo | Desktop (lg+): margin original -->
+            <div class="mt-2 flex flex-col gap-1 lg:ml-4">
               <!-- Name Input -->
               <Input
                 label="Name:"
@@ -313,32 +327,33 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                 required
               />
 
-              <!-- Submit Button with CAPTCHA -->
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4 gap-2">
+              <!-- Submit Button with CAPTCHA - Mobile: stack vertical | Desktop (sm+): horizontal -->
+              <div class="flex flex-col gap-3 mt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
-                <div 
-                  class="cf-turnstile" 
+                <div
+                  class="cf-turnstile"
                   data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
                   data-theme="light"
                 ></div>
-                <BasicButton 
-                  text='Send' 
-                  type="submit" 
-                  classList="!bg-lime-500 text-white px-10 py-3 rounded hover:!bg-lime-800 transition-colors duration-300" 
+                <BasicButton
+                  text='Send'
+                  type="submit"
+                  classList="!bg-lime-500 text-white px-8 py-2.5 rounded hover:!bg-lime-800 transition-colors duration-300 sm:px-10 sm:py-3"
                 />
               </div>
           </form>
         </section>
       </section>
-      <aside class="col-span-1">
-        <!-- Download PDF button -->
-        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-6" />
-        <!-- Quick Information -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Quick information</p>
+      <!-- Aside Sidebar - Mobile: col-span-1 (full width), order first | Desktop (lg+): col-span-1, order last -->
+      <aside class="col-span-1 order-first lg:order-last">
+        <!-- Download PDF button - Mobile: margin bottom reducido | Desktop (lg+): margin original -->
+        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-4 lg:mb-6" />
+        <!-- Quick Information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Quick information</p>
 
-          <div class="mb-4">
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Lead organization(s)</p>
+          <div class="mb-3 lg:mb-4">
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Lead organization(s)</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
@@ -348,8 +363,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
           </div>
           <!-- Key actors -->
-          <div class="mb-4">
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
+          <div class="mb-3 lg:mb-4">
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key actors</p>
             <ul class="pl-2">
               {
                 innovation.actors && innovation.actors.length > 0 ? (
@@ -364,7 +379,7 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           </div>
           <!-- Key organizations -->
           <div>
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key organizations</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key organizations</p>
             <ul class="pl-2">
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
@@ -382,12 +397,12 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             </ul>
           </div>
         </div>
-        <!-- Contact information -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-2">Contact information</p>
+        <!-- Contact information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">Contact information</p>
 
           <div class="mb-2">
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">Get in touch with the responsible team</p>
+            <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">Get in touch with the responsible team</p>
             <ul class="pl-2">
               {
                 innovation.contactPersons && innovation.contactPersons.length > 0 ? (
@@ -413,8 +428,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
               }
             </ul>
             <div class="mt-2">
-              <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Technical Support</p>
-              <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
+              <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Technical Support</p>
+              <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
                 This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team
               </p>
               <a
@@ -424,9 +439,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             </div>
           </div>
         </div>
-        <!-- Share -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Share</p>
+        <!-- Share - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Share</p>
           <!--           <BasicButton
             text="Save to favorites"
             hasIcon

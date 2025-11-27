@@ -4,21 +4,24 @@ import Tractor from '~/images/tractor.png';
 ---
 
 <footer class="text-white relative mb-0">
-  <div class="flex justify-center absolute -top-4 md:-top-10 w-full">
-    <img src={Tractor.src} alt="Tractor" />
+  <!-- Mobile: tractor más pequeño, top reducido | Desktop (md+): tamaño y posición original -->
+  <div class="flex justify-center absolute -top-3 w-full md:-top-4 lg:-top-10">
+    <img src={Tractor.src} alt="Tractor" class="w-16 h-auto md:w-20 lg:w-auto" />
   </div>
-  <div class="bg-primary-500 py-6">
-    <div class="container mx-auto py-5 px-4 md:p-0 xl:px-16 2xl:px-20">
-      <div class="grid grid-cols-[1fr_0.5fr_0.5fr] pb-10">
+  <!-- Mobile: padding vertical reducido | Desktop (lg+): padding original -->
+  <div class="bg-primary-500 py-4 lg:py-6">
+    <div class="container mx-auto py-4 px-4 lg:py-5 lg:px-0 xl:px-16 2xl:px-20">
+      <!-- Mobile: 1 columna, gap entre secciones | Desktop (lg+): 3 columnas layout original -->
+      <div class="grid grid-cols-1 gap-6 pb-6 lg:grid-cols-[1fr_0.5fr_0.5fr] lg:gap-0 lg:pb-10">
         <!-- Contact Information -->
-        <div class="h-fit text-left text-sm">
+        <div class="h-fit text-left text-xs lg:text-sm">
           <strong class="text-medium">Contact</strong>
           <ul>
             <li class="opacity-70"><a class="hover:underline" href="mailto:MARLOSupport@cgiar.org">MARLOSupport@cgiar.org</a></li>
           </ul>
         </div>
         <!-- Legal Information -->
-        <div class="h-fit text-left text-sm">
+        <div class="h-fit text-left text-xs lg:text-sm">
           <strong class="text-medium">Legal</strong>
           <ul>
             <li class="opacity-70">
@@ -32,7 +35,7 @@ import Tractor from '~/images/tractor.png';
           </ul>
         </div>
         <!-- Glossary -->
-        <div class="h-fit text-left text-sm">
+        <div class="h-fit text-left text-xs lg:text-sm">
           <strong class="text-medium">Others</strong>
           <ul>
             <li class="opacity-70">
@@ -44,9 +47,11 @@ import Tractor from '~/images/tractor.png';
 
       <!-- Copyright -->
       <div class="text-xs copyRight">
-        <hr class="mb-5" />
+        <!-- Mobile: margin bottom reducido | Desktop (lg+): margin original -->
+        <hr class="mb-3 lg:mb-5" />
         <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
-        <div class="flex justify-between">
+        <!-- Mobile: stack vertical | Desktop (lg+): horizontal justify-between -->
+        <div class="flex flex-col gap-3 lg:flex-row lg:justify-between lg:gap-0">
           <span class="opacity-70"
             >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
               ><br />
