@@ -5,7 +5,7 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="m-8 mb-5"
+    class="m-0 mt-2.5 -ml-2.5 mb-2.5 md:m-8 md:mb-5"
     shape-rendering="geometricPrecision">
     <g filter="url(#filter0_d_532_106)">
       <g filter="url(#filter1_i_532_106)">
