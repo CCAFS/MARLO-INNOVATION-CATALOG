@@ -75,7 +75,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full m-8 !ml-0 justify-center">
+  <div class="flex flex-col h-full m-2.5 md:m-8 md:!ml-0 justify-center">
     <div class="flex flex-col mb-4">
       <h2 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
       <p class="text-xs xl:text-base 2xl:text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>

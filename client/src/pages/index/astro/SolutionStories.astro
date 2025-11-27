@@ -65,12 +65,12 @@ fetchedStories = await getCommunityStories();
   </div>
   
   <!-- Content layer - full opacity -->
-  <div class="relative z-10 h-full flex flex-col justify-start items-center container mx-auto p-0 xl:px-16 2xl:px-20 !pt-20">
-    <div class="w-full mx-auto ">
+  <div class="relative z-10 h-full flex flex-col justify-start items-center container mx-auto p-0 xl:px-16 2xl:px-20 pt-4 md:!pt-20">
+    <div class="w-full mx-auto px-4 md:px-0">
       <h1 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E] mb-8 text-left">Solution Stories</h1>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 px-4 md:px-0 gap-6 w-full">
         {fetchedStories && fetchedStories.length > 0 ? (
           fetchedStories.map((story) => (
             <article class="story-card bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 w-full">

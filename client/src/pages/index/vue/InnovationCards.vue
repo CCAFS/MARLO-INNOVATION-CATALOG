@@ -46,7 +46,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="container mx-auto p-0 xl:px-16 2xl:px-20 mt-4 pt-4">
+  <section class="container mx-auto px-4 md:p-0 xl:px-16 2xl:px-20 mt-4 pt-4">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
