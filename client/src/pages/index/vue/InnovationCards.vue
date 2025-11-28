@@ -46,13 +46,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="container mx-auto px-4 md:p-0 xl:px-16 2xl:px-20 mt-4 pt-4">
+  <!-- Mobile: padding lateral | Desktop (lg+): diseño original -->
+  <section class="container mx-auto px-4 mt-4 pt-4 lg:px-0 xl:px-16 2xl:px-20">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 md:p-4 shadow-sm bg-white flex flex-col">
+      <!-- Mobile: 1 columna | Tablet (md): 2 columnas | Desktop (lg+): 3 columnas -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+        <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
           <!-- Badges Skeleton -->
-          <div class="flex items-center gap-2 mb-2">
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
             <Skeleton width="4rem" height="1.5rem" borderRadius="16px" />
             <Skeleton width="5rem" height="1.5rem" borderRadius="16px" />
           </div>
@@ -79,16 +81,17 @@ onMounted(() => {
     </div>
     <!-- V2 Innovations Cards from API -->
     <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Mobile: 1 columna | Tablet (md): 2 columnas | Desktop (lg+): 3 columnas -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
         <article
           v-for="innovation in apiData.innovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
-          <a :href="`/innovation/${innovation.projectInnovationId}`" class="block p-4 md:p-4 flex flex-col h-full text-inherit no-underline">
-            <!-- Badges -->
-            <div class="flex items-center gap-2 mb-2">
+          <a :href="`/innovation/${innovation.projectInnovationId}`" class="block p-4 flex flex-col h-full text-inherit no-underline">
+            <!-- Badges - Mobile: wrap permitido | Desktop: mantener en línea -->
+            <div class="flex items-center gap-2 mb-2 flex-wrap">
               <!-- Trending chip -->
-              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
                 <svg height="14" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fill-rule="evenodd"
@@ -99,22 +102,22 @@ onMounted(() => {
                 <span class="text-sm">{{ innovation.readinessScale ? innovation.readinessScale - 1 : 'N/A' }}</span>
               </div>
               <!-- Country chip -->
-              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
                 <img src="icon-2.png" class="h-4" alt="" srcset="" />
                 <span class="text-sm">{{ getCountryTextStructured([...innovation.countries], [...innovation.regions]).text }}</span>
               </div>
               <!-- Year chip -->
-              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
                 <i class="pi pi-calendar w-3.75 h-3.75" style="font-size: 14px"></i>
                 <span class="text-sm">{{ innovation.year || 'N/A' }}</span>
               </div>
             </div>
-            <!-- Title -->
-            <h3 class="text-md md:text-md font-semibold leading-tight text-[#1E1E1E] mb-2 line-clamp-2">
+            <!-- Title - Mobile: texto base | Desktop: mantener tamaño md -->
+            <h3 class="text-base font-semibold leading-tight text-[#1E1E1E] mb-2 line-clamp-2 md:text-md">
               {{ innovation.title ?? 'No Title Available' }}
             </h3>
             <!-- Summary -->
-            <p class="text-[#1E1E1E] text-sm md:sm leading-5 mb-2 flex-grow text-justify line-clamp-3">
+            <p class="text-[#1E1E1E] text-sm leading-5 mb-2 flex-grow text-justify line-clamp-3">
               {{ innovation.narrative ?? 'No summary available for this innovation.' }}
             </p>
             <!-- View more -->

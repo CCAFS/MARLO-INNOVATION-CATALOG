@@ -1,12 +1,14 @@
 <template>
+  <!-- Mobile: altura reducida, padding adaptado | Desktop (md+): diseño original -->
   <svg
     height="440"
     viewBox="0 0 457 401"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="m-0 mt-2.5 -ml-2.5 mb-2.5 md:m-8 md:mb-5"
-    shape-rendering="geometricPrecision">
+    class="w-full h-auto max-h-[300px] mx-auto my-4 md:max-h-none md:m-8 md:mb-5 md:-ml-2.5 md:mt-2.5"
+    shape-rendering="geometricPrecision"
+    preserveAspectRatio="xMidYMid meet">
     <g filter="url(#filter0_d_532_106)">
       <g filter="url(#filter1_i_532_106)">
         <circle cx="204" cy="196" r="182" fill="white"></circle>

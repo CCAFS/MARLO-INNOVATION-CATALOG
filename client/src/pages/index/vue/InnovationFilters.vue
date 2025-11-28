@@ -75,62 +75,68 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full m-2.5 md:m-8 md:!ml-0 justify-center">
+  <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
+  <div class="flex flex-col h-full m-4 justify-center md:m-8 md:!ml-0">
     <div class="flex flex-col mb-4">
-      <h2 class="text-base xl:text-lg 2xl:text-xl font-bold text-[#1E1E1E]">{{ texts.home.ReadinessExplorerTitle }}</h2>
-      <p class="text-xs xl:text-base 2xl:text-md font-light leading-5 mt-3" v-html="texts.home.ReadinessExplorerDescription"></p>
+      <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
+      <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.ReadinessExplorerTitle }}</h2>
+      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md" v-html="texts.home.ReadinessExplorerDescription"></p>
     </div>
 
     <div
       v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
-      class="text-sm xl:text-base 2xl:text-base text-[#439255] font-medium mb-2">
+      class="text-xs text-[#439255] font-medium mb-2 lg:text-sm xl:text-base 2xl:text-base">
       Scaling Readiness:
     </div>
+    <!-- Mobile: altura reducida, gap reducido, padding reducido | Desktop (lg+): diseño original -->
     <div
       v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
-      class="flex gap-8 transition-all duration-300 rounded-lg items-center p-6 text-white mb-5 h-[130px]"
+      class="flex gap-4 transition-all duration-300 rounded-lg items-center p-4 text-white mb-4 h-auto min-h-[100px] lg:gap-8 lg:p-6 lg:mb-5 lg:h-[130px]"
       :style="{ backgroundColor }">
-      <div class="text-white border-7 w-[40px] h-[40px] text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip">
+      <!-- Mobile: círculo más pequeño | Desktop (lg+): tamaño original -->
+      <div class="text-white border-4 w-[32px] h-[32px] text-sm text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip lg:border-7 lg:w-[40px] lg:h-[40px] lg:text-base">
         {{ value.scalingReadiness }}
       </div>
-      <div class="flex flex-col gap-5 flex-1 w-full">
-        <div class="text-base xl:text-lg 2xl:text-xl font-semibold">{{ readinessText.text }}</div>
-        <div class="text-sm xl:text-base 2xl:text-lg font-light">
+      <div class="flex flex-col gap-2 flex-1 w-full lg:gap-5">
+        <!-- Mobile: textos más pequeños | Desktop (lg+): tamaños originales -->
+        <div class="text-sm font-semibold lg:text-base xl:text-lg 2xl:text-xl">{{ readinessText.text }}</div>
+        <div class="text-xs font-light lg:text-sm xl:text-base 2xl:text-lg">
           {{ readinessText.description }}
         </div>
       </div>
     </div>
 
-    <div class="flex flex-none gap-1 w-full">
-      <!-- Innovation typology -->
-      <div class="inline-flex items-center gap-2 flex-wrap flex-initial w-[58%]">
-        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology</div>
+    <!-- Mobile: stack vertical, full width | Desktop (lg+): horizontal layout original -->
+    <div class="flex flex-col gap-3 w-full lg:flex-row lg:flex-none lg:gap-1">
+      <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
+      <div class="flex flex-col gap-2 w-full lg:inline-flex lg:flex-row lg:items-center lg:flex-wrap lg:flex-initial lg:w-[58%]">
+        <div class="font-bold text-xs lg:whitespace-nowrap xl:text-sm 2xl:text-base">Innovation typology</div>
         <Select
           :modelValue="selectedInnovationType"
           @update:modelValue="handleSelectInnovationTypeChange"
           :options="dataInnovationTypes"
           optionLabel="name"
           placeholder="All"
-          class="w-[50%]"
+          class="w-full lg:w-[50%]"
           :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
-      <!-- SDG -->
-      <div class="inline-flex items-center gap-2 flex-wrap w-[35%]">
-        <div class="whitespace-nowrap font-bold text-xs xl:text-sm 2xl:text-base">SDG</div>
+      <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
+      <div class="flex flex-col gap-2 w-full lg:inline-flex lg:flex-row lg:items-center lg:flex-wrap lg:w-[35%]">
+        <div class="font-bold text-xs lg:whitespace-nowrap xl:text-sm 2xl:text-base">SDG</div>
         <Select
           :modelValue="selectedSDG"
           @update:modelValue="handleSelectSDGChange"
           :options="dataSDGs"
           optionLabel="shortName"
           placeholder="All"
-          class="w-[75%]"
+          class="w-full lg:w-[75%]"
           :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
       </div>
 
-      <!-- Clear button -->
-      <div class="flex items-center flex-auto">
-        <button class="pi pi-eraser bg-primary-400 rounded-full text-white p-1 hover:bg-primary-500" @click="clearFilters"></button>
+      <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
+      <div class="flex items-center justify-center lg:flex-auto lg:justify-start">
+        <button class="pi pi-eraser bg-primary-400 rounded-full text-white p-2 hover:bg-primary-500 lg:p-1" @click="clearFilters"></button>
       </div>
     </div>
   </div>
