@@ -16,6 +16,7 @@
       <circle cx="204" cy="196" r="179" stroke="white" stroke-width="6"></circle>
       <rect x="65.9663" y="53.3652" width="275.201" height="285.27" rx="137.601" fill="url(#pattern0_532_106)"></rect>
     </g>
+    <!-- Scaling Readiness Circle -->
     <SvgCircle
       v-for="(circle, index) in circleList"
       :key="index"
@@ -27,6 +28,18 @@
       :activeIndex="selectedIndex"
       :index="index"
       :pathD="circle.pathD"
+      @click="handleClick" />
+    <!-- Info point Circle -->
+    <!-- Unique circle with #1E1E1E color and an inner svg icon -->
+    <SvgCircle
+      class="cursor-pointer"
+      filter="url(#filter0_d_1853_130)"
+      :x="75"
+      :y="1"
+      fill="#1E1E1E"
+      :pathD="'M101.1149 20.2308C100.0981 19.1848 98.7425 18.4692 97.3303 18.1939C96.709 18.0288 96.0876 17.9187 95.4663 17.8636C97.0479 16.0469 96.7655 13.2944 94.9014 11.753C93.0374 10.2116 90.2131 10.4868 88.6315 12.3035C87.0499 14.1202 87.3324 16.8727 89.1964 18.4141C89.5353 18.6894 89.8742 18.9096 90.2131 19.0197V20.2308L89.3094 19.405C88.5186 18.6343 87.2194 18.6343 86.3721 19.405C85.5813 20.1757 85.5248 21.3869 86.3156 22.1576L88.914 25.1303C89.0269 25.901 89.3094 26.6167 89.7048 27.2773C89.9872 27.7727 90.3826 28.2682 90.778 28.6535V29.6995C90.778 30.0298 91.0039 30.25 91.3428 30.25H99.0249C99.3073 30.25 99.5898 29.9747 99.5898 29.6995V28.2682C100.663 27.002 101.2278 25.4056 101.2278 23.8091V20.6161C101.2843 20.3959 101.2278 20.2858 101.1149 20.2308ZM88.688 15.056C88.688 13.2394 90.2131 11.8081 92.0772 11.8631C93.9412 11.8631 95.4098 13.3495 95.3533 15.1661C95.3533 16.157 94.9014 17.0379 94.1106 17.6434V14.8909C94.0542 13.9 93.2069 13.1293 92.1901 13.1293C91.1734 13.0742 90.2696 13.9 90.2696 14.8909V17.7535C89.3094 17.203 88.7445 16.157 88.688 15.056ZM100.1546 23.754C100.2111 25.1853 99.7027 26.5616 98.7425 27.6626C98.6295 27.7727 98.5165 27.8828 98.5165 28.048V29.204H91.9642V28.4333C91.9642 28.2682 91.8512 28.103 91.7382 27.9929C91.3428 27.6626 91.0039 27.2773 90.7215 26.7818C90.3826 26.2313 90.1566 25.5707 90.0437 24.9101C90.0437 24.8 89.9872 24.6899 89.9307 24.5798L87.2194 21.4419C87.0499 21.2768 86.937 21.0566 86.937 20.7813C86.937 20.5611 87.0499 20.2858 87.2194 20.1207C87.6148 19.7904 88.1796 19.7904 88.575 20.1207L90.2131 21.7172V23.3687L91.2864 22.8182V14.8909C91.3428 14.5055 91.6818 14.1752 92.1336 14.2303C92.529 14.2303 92.9244 14.5055 92.9244 14.8909V21.2217L94.0542 21.4419V18.9096C94.1106 18.8545 94.1671 18.8545 94.2236 18.7995C94.619 18.7995 95.0144 18.8545 95.4098 18.9096V21.7172L96.3136 21.8823V19.0197L96.9914 19.1848C97.2738 19.2399 97.5563 19.35 97.8387 19.4601V22.2126L98.7425 22.3778V19.8454C99.2508 20.0656 99.7027 20.3959 100.0981 20.7813L100.1546 23.754Z'"
+      :index="-1"
+      :activeIndex="selectedIndex"
       @click="handleClick" />
     <defs>
       <filter id="filter0_d_532_106" x="18" y="14" width="372" height="372" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
@@ -186,8 +199,19 @@
         <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_532_106"></feBlend>
         <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_532_106" result="shape"></feBlend>
       </filter>
+      <filter id="filter0_d_1853_130" x="75" y="1" width="45" height="45" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+        <feOffset dy="4" />
+        <feGaussianBlur stdDeviation="2" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1853_130" />
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1853_130" result="shape" />
+      </filter>
       <!-- <image id="image0_532_106" width="410" height="425" preserveAspectRatio="none" xlink:href="map.png" /> -->
     </defs>
+    <!-- Africa Map -->
     <AfricaSvg />
   </svg>
 </template>
