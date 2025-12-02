@@ -13,10 +13,11 @@ import BasicButton from '~/components/shared/button/BasicButton/BasicButton.comp
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
+import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
 import type { Innovation as InnovationComplete } from '~/interfaces/search-complete.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
+import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
 
@@ -121,6 +122,8 @@ const { innovation } = Astro.props;
 
 
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
+
+const actorsInfo = getActorsByGroup(innovation.actors);
 
 ---
 
@@ -377,17 +380,36 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <!-- Key actors -->
           <div class="mb-3 lg:mb-4">
             <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key actors</p>
-            <ul class="pl-2">
-              {
-                innovation.actors && innovation.actors.length > 0 ? (
-                  innovation.actors.map(actor => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo?.prmsNameEquivalent || 'Unknown Actor'}</li>
-                  ))
-                ) : (
-                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
-                )
-              }
-            </ul>
+            
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                {
+                  actorsInfo.length > 0 ? (
+                    actorsInfo.map(actor => (
+                        <div class="relative flex items-center justify-center">
+                          <Image
+                          src={actor.imgUrl}
+                          alt={actor.actorInfoName || 'Actor Icon'}
+                          quality={'max'}
+                          class="w-full"
+                          title={`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
+                          />
+                          <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
+                            <ul>
+                              <p class="text-[9px] font-semibold text-text-800 mb-1">{actor.actorInfoName}</p>
+                              {actor.actorsNames.map(name => (
+                                <li class="text-[7px] text-text-800 font-normal list-disc list-inside">{name}</li>
+                              ))}
+                            </ul>
+                          </div>
+                      </div>
+                    ))
+                  ) : (
+                    <ul class="pl-2 col-span-3">
+                      <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                    </ul>
+                  )
+                }
+              </div>
           </div>
           <!-- Key organizations -->
           <div>
@@ -413,7 +435,7 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base mb-2">Sustainable Development Goals contribution</p>
               {
                 innovation.sdgs && innovation.sdgs.length > 0 ? (
-                  <div class="grid grid-cols-3 lg:grid-cols-4 gap-2">
+                  <div class="grid grid-cols-4 lg:grid-cols-3 gap-2">
                     {innovation.sdgs.map(sdg => (
                       sdg.sdgId && (
                         <img 
