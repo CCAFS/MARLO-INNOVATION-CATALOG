@@ -18,7 +18,14 @@ const getActorsByGroup = (actors: Actor[]) => {
     return [];
   }
 
-  const baseActors = [...actors];
+  // Filter out actors with null or undefined actorInfo
+  const validActors = actors.filter(actor => actor && actor.actorInfo);
+
+  if (validActors.length === 0) {
+    return [];
+  }
+
+  const baseActors = [...validActors];
 
   const imgMap: Record<string, ImageMetadata> = {
     Agricultural: Agricultural,
@@ -29,8 +36,8 @@ const getActorsByGroup = (actors: Actor[]) => {
     Researchers: Researchers
   };
 
-  const groupedActors: Actor[] = actors.reduce((acc: Actor[], actor) => {
-    const isAlreadyAdded = acc.some(a => a.actorInfo.name === actor.actorInfo.name);
+  const groupedActors: Actor[] = validActors.reduce((acc: Actor[], actor) => {
+    const isAlreadyAdded = acc.some(a => a.actorInfo && a.actorInfo.name === actor.actorInfo.name);
 
     if (!isAlreadyAdded) {
       acc.push(actor);
@@ -40,7 +47,7 @@ const getActorsByGroup = (actors: Actor[]) => {
 
   const result: FilterGroupedActors[] = groupedActors.map(groupedActor => {
     const actorsNames = baseActors
-      .filter(actor => actor.actorInfo.name === groupedActor.actorInfo.name)
+      .filter(actor => actor.actorInfo && actor.actorInfo.name === groupedActor.actorInfo.name)
       .map(actor => {
         if (actor.actorInfo.name === 'Other') {
           return actor.other || 'Others';
