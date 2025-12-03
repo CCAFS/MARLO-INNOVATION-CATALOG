@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 
-const isCollapsed = ref(true);
+const isCollapsed = ref(false);
 const email = ref('');
 const statusMessage = ref('');
 const statusType = ref<'success' | 'error' | ''>('');
@@ -92,7 +92,7 @@ async function handleSubmit() {
 <style scoped>
 .newsletter-widget {
   position: fixed;
-  top: 50%;
+  top: 25%;
   right: 0;
   transform: translateY(-50%);
   width: 460px;
@@ -101,7 +101,6 @@ async function handleSubmit() {
   transition: width 0.3s cubic-bezier(0.47, 0, 0.23, 1.38);
   z-index: 40;
   font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
-  overflow: hidden;
 }
 
 .newsletter-widget.collapsed {
@@ -115,7 +114,8 @@ async function handleSubmit() {
   background-color: #ffffff;
   border-radius: 12px 0 0 12px;
   border: 1px solid rgba(0, 118, 148, 0.45);
-  box-shadow: 0 8px 24px rgb(15 39 64 / 20%);
+  box-shadow: 0 8px 24px rgb(15 39 64 / 20%), 0 0 20px rgba(15, 39, 64, 0.1);
+  backdrop-filter: blur(2px);
   padding: 1.5rem 1.25rem 1.25rem;
   position: relative;
 }
@@ -225,7 +225,8 @@ async function handleSubmit() {
   border: 1px solid rgba(0, 118, 148, 0.45);
   border-right: none;
   background-color: #ffffff;
-  box-shadow: -4px 6px 18px rgb(15 39 64 / 15%);
+  box-shadow: 0 8px 24px rgb(15 39 64 / 20%), 0 0 20px rgba(15, 39, 64, 0.1);
+  backdrop-filter: blur(2px);
   display: flex;
   flex-direction: column;
   align-items: center;

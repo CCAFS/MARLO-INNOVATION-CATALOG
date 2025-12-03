@@ -459,7 +459,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
 
           <div class="mb-2">
             <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">Get in touch with the responsible team</p>
-            <ul class="pl-2">
+            <ul>
               {
                 innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                   innovation.contactPersons.map(contact =>
@@ -475,11 +475,11 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                         </>
                       ))
                     ) : (
-                      <span>This is yet to be determined.</span>
+                      <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
                     )
                   )
                 ) : (
-                  <span>This is yet to be determined.</span>
+                  <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
                 )
               }
             </ul>

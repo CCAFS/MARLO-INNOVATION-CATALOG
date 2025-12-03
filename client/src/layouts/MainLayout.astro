@@ -6,6 +6,7 @@ import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
 import NewsletterWidget from '~/components/NewsletterWidget.vue';
+import FeedbackWidget from '~/components/FeedbackWidget.vue';
 
 const link = Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
@@ -79,5 +80,6 @@ const clarityScript = `
       <Footer />
     </div>
     <NewsletterWidget client:load />
+    <FeedbackWidget client:load />
   </body>
 </html>
