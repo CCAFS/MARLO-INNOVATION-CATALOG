@@ -11,7 +11,7 @@ function toggleWidget() {
 }
 
 function openFeedbackForm() {
-  window.open(feedbackFormUrl, '_blank');
+  window.open(feedbackFormUrl, '_blank', 'noopener,noreferrer');
 }
 </script>
 
