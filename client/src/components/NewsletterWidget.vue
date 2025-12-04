@@ -182,13 +182,17 @@ async function handleSubmit() {
 .submit {
   align-self: center;
   padding: 0.35rem 3.2rem;
-  background-color: #008bb0;
+  background-color: #007694;
   color: #ffffff;
   border: none;
   border-radius: 9px;
   font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
+}
+
+.submit:hover {
+  background-color: #006b8a;
 }
 
 .submit:disabled {

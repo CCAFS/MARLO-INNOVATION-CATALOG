@@ -19,7 +19,7 @@ const getActorsByGroup = (actors: Actor[]) => {
   }
 
   // Filter out actors with null or undefined actorInfo
-  const validActors = actors.filter(actor => actor && actor.actorInfo);
+  const validActors = actors.filter(actor => actor?.actorInfo);
 
   if (validActors.length === 0) {
     return [];

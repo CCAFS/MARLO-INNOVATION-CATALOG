@@ -112,7 +112,7 @@ function openFeedbackForm() {
 .submit {
   align-self: center;
   padding: 0.35rem 2rem;
-  background-color: #008bb0;
+  background-color: #007694;
   color: #ffffff;
   border: none;
   border-radius: 9px;
