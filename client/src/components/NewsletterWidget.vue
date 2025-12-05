@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 
-const isCollapsed = ref(false);
+// Get href to check if there is honepage or other page
+const currentPath = window.location.pathname;
+
+const isCollapsed = ref(currentPath !== '/' ? true : false);
 const email = ref('');
 const statusMessage = ref('');
 const statusType = ref<'success' | 'error' | ''>('');
