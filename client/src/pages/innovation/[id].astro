@@ -193,7 +193,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               </div>
               <div class="flex flex-col items-start lg:items-center">
                 <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Innovation typology</span>
-                <span class="text-xs text-text-800 font-normal w-full lg:w-[75%] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
+                <span class="text-xs text-text-800 font-normal w-full md:w-[150px] lg:w-[250px] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
               </div>
             </div>
             <!-- Scaling Readiness - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
@@ -251,24 +251,28 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           {innovation.bundles != null && innovation.bundles.length > 0 && (
           <>
             <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Bundle innovations</p>
-            <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
-            {innovation.bundles.map(bundle => (
-              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
-              {
-                (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
-                <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
-                  fill="#439255" />
-                </svg>
-                <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
-                ) : <span class="text-sm">Internal</span>
-              }
+            <p class="text-xs text-text-800 w-max font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
+            <div class="w-full pb-1">
+              {innovation.bundles.map(bundle => (
+                <div class="mb-2">
+                  <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+                  {
+                    (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
+                    <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
+                      fill="#439255" />
+                    </svg>
+                    <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
+                    ) : <span class="text-sm">Internal</span>
+                  }
+                </div>
+                <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
               </div>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
-            ))}
+              ))}
+              </div>
             </p>
           </>
           )}
@@ -381,18 +385,20 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           <div class="mb-3 lg:mb-4">
             <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key actors</p>
             
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-1">
                 {
                   actorsInfo.length > 0 ? (
                     actorsInfo.map(actor => (
-                        <div class="relative flex items-center justify-center">
+                        <div class="relative tooltip not-underline flex items-center justify-center">
                           <Image
                           src={actor.imgUrl}
                           alt={actor.actorInfoName || 'Actor Icon'}
                           quality={'max'}
                           class="w-full"
-                          title={`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
                           />
+                          <span class="tooltiptext wide hidden md:block">
+                            {`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
+                          </span>
                           <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
                             <ul>
                               <p class="text-[9px] font-semibold text-text-800 mb-1">{actor.actorInfoName}</p>
@@ -436,7 +442,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               {
                 innovation.sdgs && innovation.sdgs.length > 0 ? (
                   <div class="grid grid-cols-4 lg:grid-cols-3 gap-2">
-                    {innovation.sdgs.map(sdg => (
+                    {innovation.sdgs.sort((a, b) => a.sdgId - b.sdgId).map(sdg => (
                       sdg.sdgId && (
                         <img 
                           src={`https://marlo-pdf-resources-dev.s3.us-east-1.amazonaws.com/sdg/E-WEB-Goal-${sdg.sdgId}.png`}

@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 
-const isCollapsed = ref(false);
+// Get href to check if there is honepage or other page
+const currentPath = window.location.pathname;
+
+const isCollapsed = ref(currentPath !== '/' ? true : false);
 const email = ref('');
 const statusMessage = ref('');
 const statusType = ref<'success' | 'error' | ''>('');
@@ -182,13 +185,17 @@ async function handleSubmit() {
 .submit {
   align-self: center;
   padding: 0.35rem 3.2rem;
-  background-color: #008bb0;
+  background-color: #007694;
   color: #ffffff;
   border: none;
   border-radius: 9px;
   font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
+}
+
+.submit:hover {
+  background-color: #006b8a;
 }
 
 .submit:disabled {

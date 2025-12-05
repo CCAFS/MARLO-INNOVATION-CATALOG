@@ -21,6 +21,10 @@
   cursor: pointer;
 }
 
+.tooltip.not-underline {
+  border-bottom: none; /* No underline variant */
+}
+
 /* Tooltip text */
 .tooltiptext {
   visibility: hidden; /* Hidden by default */
@@ -35,6 +39,17 @@
   top: 100%;
   left: 50%;
   margin-left: -65px;
+}
+
+/* Variant tooltiptet with more width and shorter text-size */
+.tooltiptext.wide {
+  width: 250px;
+  max-width: 250px;
+  padding: 4px;
+  font-size: 0.75rem; /* 12px */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  margin-left: calc(250px / -2);
 }
 
 /* Show the tooltip text on hover */
