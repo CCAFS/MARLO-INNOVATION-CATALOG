@@ -6,6 +6,7 @@ import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
 import NewsletterWidget from '~/components/NewsletterWidget.vue';
+import FeedbackWidget from '~/components/FeedbackWidget.vue';
 
 const link = Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
@@ -46,7 +47,7 @@ const clarityScript = `
     <script is:inline set:html={gaScript} />
     <script is:inline type="text/javascript" set:html={clarityScript} />
     <meta charset="utf-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon-aiccra.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <!-- Basic SEO  -->
@@ -78,6 +79,7 @@ const clarityScript = `
       </div>
       <Footer />
     </div>
-    <NewsletterWidget client:load />
+    <NewsletterWidget client:only />
+    <FeedbackWidget client:only />
   </body>
 </html>

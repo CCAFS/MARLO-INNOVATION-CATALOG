@@ -1,10 +1,16 @@
 ---
 import { Image } from 'astro:assets';
+import Logo from '../images/logo_aiccra_minimize.svg';
 import AiccraLogo from '../images/AICCRALogo.png';
 ---
 
-<div class="pt-2 pb-3 px-2">
-  <Image format="png" src={AiccraLogo} height="75" alt="AICCRA Logo" />
+<!-- Mobile: padding más pequeño, logo responsive | Desktop (lg+): diseño original -->
+<div class="pt-2 pb-2 px-4 lg:pt-2 lg:pb-3 lg:px-2">
+  <div class="flex items-left">
+    <!-- Mobile: logo más pequeño (120px) | Desktop (lg+): tamaño original (182px) -->
+    <Logo width={'120px'} height={'49px'} class="mr-2 lg:w-[182px] lg:h-[75px]" />
+  </div>
 </div>
 
-<div class="h-[35px] bg-[#0277A2]"></div>
+<!-- Mobile: altura reducida | Desktop (lg+): altura original -->
+<div class="h-[25px] lg:h-[35px] bg-[#0277A2]"></div>

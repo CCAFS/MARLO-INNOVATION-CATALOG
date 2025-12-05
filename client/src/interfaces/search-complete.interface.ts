@@ -36,6 +36,7 @@ export interface Innovation {
   innovationNatureId: number;
   hasCgiarContribution?: boolean;
   reasonNotCgiarContribution: any;
+  reasonKnowledgePotential?: string;
   beneficiariesNarrative: string;
   knowledgeResultsNarrative: string;
   intellectualPropertyInstitutionId?: number;

@@ -1,12 +1,14 @@
 <template>
+  <!-- Mobile: altura reducida, padding adaptado | Desktop (md+): diseño original -->
   <svg
     height="440"
     viewBox="0 0 457 401"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="m-8 mb-5"
-    shape-rendering="geometricPrecision">
+    class="w-full h-auto max-h-[300px] mx-auto my-4 md:max-h-none md:m-8 md:mb-5 md:-ml-2.5 md:mt-2.5"
+    shape-rendering="geometricPrecision"
+    preserveAspectRatio="xMidYMid meet">
     <g filter="url(#filter0_d_532_106)">
       <g filter="url(#filter1_i_532_106)">
         <circle cx="204" cy="196" r="182" fill="white"></circle>
@@ -14,6 +16,7 @@
       <circle cx="204" cy="196" r="179" stroke="white" stroke-width="6"></circle>
       <rect x="65.9663" y="53.3652" width="275.201" height="285.27" rx="137.601" fill="url(#pattern0_532_106)"></rect>
     </g>
+    <!-- Scaling Readiness Circle -->
     <SvgCircle
       v-for="(circle, index) in circleList"
       :key="index"
@@ -26,6 +29,18 @@
       :index="index"
       :pathD="circle.pathD"
       @click="handleClick" />
+    <!-- Info point Circle -->
+    <!-- Unique circle with #1E1E1E color and an inner svg icon -->
+    <SvgCircle
+      class="cursor-pointer"
+      filter="url(#filter0_d_1853_130)"
+      :x="75"
+      :y="1"
+      fill="#1E1E1E"
+      :pathD="'M101.1149 20.2308C100.0981 19.1848 98.7425 18.4692 97.3303 18.1939C96.709 18.0288 96.0876 17.9187 95.4663 17.8636C97.0479 16.0469 96.7655 13.2944 94.9014 11.753C93.0374 10.2116 90.2131 10.4868 88.6315 12.3035C87.0499 14.1202 87.3324 16.8727 89.1964 18.4141C89.5353 18.6894 89.8742 18.9096 90.2131 19.0197V20.2308L89.3094 19.405C88.5186 18.6343 87.2194 18.6343 86.3721 19.405C85.5813 20.1757 85.5248 21.3869 86.3156 22.1576L88.914 25.1303C89.0269 25.901 89.3094 26.6167 89.7048 27.2773C89.9872 27.7727 90.3826 28.2682 90.778 28.6535V29.6995C90.778 30.0298 91.0039 30.25 91.3428 30.25H99.0249C99.3073 30.25 99.5898 29.9747 99.5898 29.6995V28.2682C100.663 27.002 101.2278 25.4056 101.2278 23.8091V20.6161C101.2843 20.3959 101.2278 20.2858 101.1149 20.2308ZM88.688 15.056C88.688 13.2394 90.2131 11.8081 92.0772 11.8631C93.9412 11.8631 95.4098 13.3495 95.3533 15.1661C95.3533 16.157 94.9014 17.0379 94.1106 17.6434V14.8909C94.0542 13.9 93.2069 13.1293 92.1901 13.1293C91.1734 13.0742 90.2696 13.9 90.2696 14.8909V17.7535C89.3094 17.203 88.7445 16.157 88.688 15.056ZM100.1546 23.754C100.2111 25.1853 99.7027 26.5616 98.7425 27.6626C98.6295 27.7727 98.5165 27.8828 98.5165 28.048V29.204H91.9642V28.4333C91.9642 28.2682 91.8512 28.103 91.7382 27.9929C91.3428 27.6626 91.0039 27.2773 90.7215 26.7818C90.3826 26.2313 90.1566 25.5707 90.0437 24.9101C90.0437 24.8 89.9872 24.6899 89.9307 24.5798L87.2194 21.4419C87.0499 21.2768 86.937 21.0566 86.937 20.7813C86.937 20.5611 87.0499 20.2858 87.2194 20.1207C87.6148 19.7904 88.1796 19.7904 88.575 20.1207L90.2131 21.7172V23.3687L91.2864 22.8182V14.8909C91.3428 14.5055 91.6818 14.1752 92.1336 14.2303C92.529 14.2303 92.9244 14.5055 92.9244 14.8909V21.2217L94.0542 21.4419V18.9096C94.1106 18.8545 94.1671 18.8545 94.2236 18.7995C94.619 18.7995 95.0144 18.8545 95.4098 18.9096V21.7172L96.3136 21.8823V19.0197L96.9914 19.1848C97.2738 19.2399 97.5563 19.35 97.8387 19.4601V22.2126L98.7425 22.3778V19.8454C99.2508 20.0656 99.7027 20.3959 100.0981 20.7813L100.1546 23.754Z'"
+      :index="-1"
+      :activeIndex="selectedIndex"
+      @click="handleInfoPoint" />
     <defs>
       <filter id="filter0_d_532_106" x="18" y="14" width="372" height="372" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
         <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
@@ -184,10 +199,32 @@
         <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_532_106"></feBlend>
         <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_532_106" result="shape"></feBlend>
       </filter>
+      <filter id="filter0_d_1853_130" x="75" y="1" width="45" height="45" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+        <feOffset dy="4" />
+        <feGaussianBlur stdDeviation="2" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1853_130" />
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1853_130" result="shape" />
+      </filter>
       <!-- <image id="image0_532_106" width="410" height="425" preserveAspectRatio="none" xlink:href="map.png" /> -->
     </defs>
+    <!-- Africa Map -->
     <AfricaSvg />
   </svg>
+  <!-- Overlay Info Note Circle of how interact with the map-->
+  <div
+    class="absolute w-[260px] h-[260px] md:w-[280px] md:h-[280px] lg:w-[400px] lg:h-[400px] top-8 left-[16.75%] sm:left-[25.5%] md:left-3 md:top-6 lg:top-10 lg:left-6.5 flex flex-col justify-center text-center items-center bg-gray-900/50 text-white text-sm md:text-base px-3 py-1 rounded-full gap-4 hidden"
+    id="info-note">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40" fill="none">
+      <path
+        d="M30.7298 18.9616C28.6962 16.8697 25.985 15.4383 23.1606 14.8878C21.918 14.5575 20.6752 14.3373 19.4326 14.2272C22.5958 10.5939 22.031 5.08884 18.3029 2.006C14.5748 -1.07683 8.92626 -0.526322 5.76306 3.10702C2.59986 6.74036 3.16472 12.2454 6.89276 15.3282C7.5706 15.8788 8.24842 16.3192 8.92626 16.5394V18.9616L7.11872 17.3101C5.53712 15.7687 2.93876 15.7687 1.2442 17.3101C-0.3374 18.8515 -0.450374 21.2737 1.13122 22.8152L6.32792 28.7606C6.55386 30.302 7.11872 31.7334 7.90952 33.0546C8.47436 34.0455 9.26516 35.0364 10.056 35.807V37.899C10.056 38.5596 10.5079 39 11.1857 39H26.5498C27.1146 39 27.6796 38.4494 27.6796 37.899V35.0364C29.826 32.504 30.9556 29.1414 30.9556 26.1182V19.7323C31.0686 19.2919 30.9556 19.0717 30.7298 18.9616ZM5.87608 8.61208C5.87608 4.97874 8.92626 2.1161 12.6543 2.2262C16.3824 2.2262 19.3196 5.19894 19.2067 8.83228C19.2067 10.8141 18.3029 12.5757 16.7213 13.7868V8.28168C16.6083 6.29992 14.9137 4.75854 12.8801 4.75854C10.8468 4.64844 9.03922 6.29992 9.03922 8.28168V14.0069C7.11872 12.9061 5.98956 10.8141 5.87608 8.61208ZM28.8092 26.008C28.9222 28.8707 27.9054 31.6232 25.985 33.8252C25.759 34.0454 25.533 34.2656 25.533 34.596V36.908H12.4286V35.3666C12.4286 35.0364 12.2024 34.706 11.9764 34.4858C11.1857 33.8252 10.5079 33.0546 9.943 32.0636C9.26516 31.0726 8.81328 29.6413 8.58734 28.3202C8.58734 28.1 8.47436 27.8798 8.36139 27.6596L2.93876 21.3838C2.59986 21.0536 2.37392 20.6132 2.37392 20.0626C2.37392 19.6222 2.59986 19.0717 2.93876 18.7414C3.72956 18.0808 4.85872 18.0808 5.65008 18.7414L8.92626 21.9344V25.2374L11.0729 24.1364V8.28168C11.1857 7.5111 11.8636 6.85046 12.7673 6.96056C13.558 6.96056 14.3489 7.5111 14.3489 8.28168V20.9434L16.6083 21.3838V16.3192C16.7213 16.2091 16.8343 16.2091 16.9472 16.099C17.738 16.099 18.5288 16.2091 19.3196 16.3192V21.9344L21.1272 22.2646V16.5394L22.4828 16.8697C23.0476 16.9798 23.6126 17.2 24.1774 17.4202V22.9252L25.985 23.2556V18.1909C27.0016 18.6313 27.9054 19.2919 28.6962 20.0626L28.8092 26.008Z"
+        fill="white" />
+    </svg>
+    <span>Click on a country to see how many and which AICCRA innovations are being implemented there</span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -299,4 +336,60 @@ const handleClick = (index: number) => {
     scalingReadiness: index
   });
 };
+const handleInfoPoint = () => {
+  const infoNote = document.getElementById('info-note');
+  if (infoNote) {
+    infoNote.style.display = 'flex';
+  }
+
+  setTimeout(() => {
+    if (infoNote) {
+      infoNote.classList.add('fade-out');
+      setTimeout(() => {
+        infoNote.style.display = 'none';
+        infoNote.classList.remove('fade-out');
+      }, 2000);
+    }
+  }, 8000);
+};
 </script>
+
+<style scoped>
+#info-note {
+  transform-origin: center;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+  animation-name: fadeInExpand;
+  animation-duration: 2s;
+}
+
+#info-note.fade-out {
+  animation-name: fadeOutShrink;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes fadeInExpand {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOutShrink {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+</style>
