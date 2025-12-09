@@ -2,9 +2,9 @@
 import { ref } from 'vue';
 
 // Get href to check if there is honepage or other page
-const currentPath = window.location.pathname;
+const currentPath = globalThis.location.pathname;
 
-const isCollapsed = ref(currentPath !== '/' ? true : false);
+const isCollapsed = ref(currentPath !== '/');
 
 const feedbackFormUrl =
   'https://forms.office.com/Pages/ResponsePage.aspx?id=AA76ahT6t0CKLiKn-MNX1cKOFRD40kNLiWEhC_u7oVxUQkJQUjE2UEsyN0RXTUY5RUFSRjJSSUVBMS4u';
