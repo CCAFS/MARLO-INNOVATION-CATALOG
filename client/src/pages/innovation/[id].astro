@@ -212,17 +212,6 @@ const actorsInfo = getActorsByGroup(innovation.actors);
         </div>
         <!-- Description - Mobile: padding reducido | Desktop (lg+): padding original -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
-          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
-            <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
-            {
-              innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
-              <span class="text-gray-500">No Information available yet</span>
-              ) : (
-              innovation.knowledgeResultsNarrative
-              )
-            }
-            </p>
           <!-- Adapted and scaled context / What needs to be adapted? -->
           {
             innovation.reasonKnowledgePotential == null || innovation.reasonKnowledgePotential === '' ? (
@@ -236,6 +225,17 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               </>
             )
           }
+          <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
+            <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
+            {
+              innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
+              <span class="text-gray-500">No Information available yet</span>
+              ) : (
+              innovation.knowledgeResultsNarrative
+              )
+            }
+            </p>
           <!-- Intended beneficiaries/users -->
           <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Intended beneficiaries/users</p>
           <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
