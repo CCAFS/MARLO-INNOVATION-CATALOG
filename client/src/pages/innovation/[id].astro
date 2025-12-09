@@ -2,9 +2,9 @@
 export const prerender = true;
 
 import { Image } from 'astro:assets';
-import Icon4 from '~/images/icon-4.png';
-import Icon1 from '~/images/icon-1.png';
-import Icon6 from '~/images/icon-6.png';
+import Icon4 from '~/images/icon-4.svg';
+import Icon1 from '~/images/icon-1.svg';
+import Icon6 from '~/images/icon-6.svg';
 
 import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
@@ -13,10 +13,11 @@ import BasicButton from '~/components/shared/button/BasicButton/BasicButton.comp
 import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
+import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
 import type { Innovation as InnovationComplete } from '~/interfaces/search-complete.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
+import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
 
@@ -120,23 +121,27 @@ interface Props {
 const { innovation } = Astro.props;
 
 
-
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
+
+const actorsInfo = getActorsByGroup(innovation.actors);
 
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
-  <article class="container mx-auto m-auto my-auto p-0 xl:px-16 2xl:px-20">
-    <!-- Return link -->
-    <a href="/" class="my-12 mb-8 text-primary-300 text-sm font-semibold flex items-center gap-2 text-xs xl:text-sm 2xl:text-base hover:underline">
-      <span class="pi pi-arrow-left"></span>
+  <!-- Mobile: padding lateral | Desktop (lg+): diseño original -->
+  <article class="container mx-auto m-auto my-auto px-4 lg:p-0 xl:px-16 2xl:px-20">
+    <!-- Return link - Mobile: margin reducido, texto más pequeño | Desktop (lg+): diseño original -->
+    <a href="/" class="my-6 mb-4 text-primary-300 text-xs font-semibold flex items-center gap-2 hover:underline lg:my-12 lg:mb-8 lg:text-sm xl:text-sm 2xl:text-base">
+      <span class="pi pi-arrow-left text-xs lg:text-sm"></span>
       <p>Go back to innovations catalog</p>
     </a>
 
     <!-- Title and main options -->
     <section class="max-width">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-2.5">
-        <h1 class="text-base xl:text-lg 2xl:text-xl font-bold mb-4 flex-1 min-w-0">{innovation.title}</h1>
+      <!-- Mobile: stack vertical en pantallas pequeñas | Desktop (lg+): horizontal con gap -->
+      <div class="flex flex-col gap-3 mb-2.5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-4">
+        <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+        <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
           <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
@@ -144,61 +149,85 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
-      <p class="text-sm xl:text-base 2xl:text-lg font-[400] mb-6 text-text-600 text-justify">{innovation.narrative}</p>
+      <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+      <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative}</p>
     </section>
 
-    <!-- Main Content -->
-    <div class="grid grid-cols-4 gap-4 mb-12">
-      <section class="col-span-3">
-        <!-- Key Metrics -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Key metrics</p>
-          <div class="flex flex-wrap gap-24 mt-4 justify-around px-24 xs:px-4 sm:px-8">
-            <!-- Geoscope -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1'} />)}
+    <!-- Main Content - Mobile: 1 columna stack | Desktop (lg+): grid 4 columnas original -->
+    <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-4 lg:mb-12">
+      <!-- Mobile: col-span-1 (full width) | Desktop (lg+): col-span-3 -->
+      <section class="col-span-1 lg:col-span-3">
+        <!-- Key Metrics - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Key metrics</p>
+          <!-- Mobile: flex column stack, gap reducido | Desktop (md+): flex row con gap | Desktop (lg+): justify around con padding -->
+          <div class="flex flex-col gap-4 mt-3 lg:flex-row lg:flex-wrap lg:gap-12 lg:mt-4 lg:justify-around lg:px-12 xl:px-24">
+            <!-- Geoscope - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Location</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
-                {
-                  countryText.hasMore ? (
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                    <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
-                      {countryText.additionalText}
-                      <span class="tooltiptext">{countryText.additionalInfo}</span>
-                    </em>
-                  ) : (
-                    <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">{countryText.text}</span>
-                  )
-                }
-              </span>
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Location</span>
+                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
+                  {
+                    countryText.hasMore ? (
+                      <>
+                        <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
+                        <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
+                          {countryText.additionalText}
+                          <span class="tooltiptext">{countryText.additionalInfo}</span>
+                        </em>
+                      </>
+                    ) : (
+                      <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
+                    )
+                  }
+                </span>
+              </div>
             </div>
-            <!-- Typology -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1'} />)}
+            <!-- Typology - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Innovation typology</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal w-[75%]">{innovation.innovationType?.name || 'N/A'}</span>
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Innovation typology</span>
+                <span class="text-xs text-text-800 font-normal w-full md:w-[150px] lg:w-[250px] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
+              </div>
             </div>
-            <!-- Scaling Readiness -->
-            <div class="flex flex-col text-center items-center">
-              <div class="w-[40px] h-[40px] mb-1 flex items-center justify-center">
-                {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1'} />)}
+            <!-- Scaling Readiness - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
+              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
+                {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
-              <span class="text-[10px] xl:text-xs 2xl:text-sm text-primary-300 font-bold">Scaling readiness</span>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal"
-                >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
-              >
+              <div class="flex flex-col items-start lg:items-center">
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Scaling readiness</span>
+                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base"
+                  >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
+                >
+              </div>
             </div>
           </div>
         </div>
-        <!-- Description -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <!-- Expected outcomes -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300">Realized/expected outcomes</p>
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-900 font-normal mt-2 text-justify">
+        <!-- Description - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <!-- Adapted and scaled context / What needs to be adapted? -->
+          {
+            innovation.reasonKnowledgePotential == null || innovation.reasonKnowledgePotential === '' ? (
+              <></>
+            ) : (
+              <>
+                <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Adapted and scaled context / What needs to be adapted?</p>
+                <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
+                  {innovation.reasonKnowledgePotential}
+                </p>
+              </>
+            )
+          }
+          <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
+            <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
               <span class="text-gray-500">No Information available yet</span>
@@ -208,8 +237,8 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
             </p>
           <!-- Intended beneficiaries/users -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Intended beneficiaries/users</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2 text-justify">
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Intended beneficiaries/users</p>
+          <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
                 <span class="text-gray-500">No Information available yet</span>
@@ -221,31 +250,35 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           <!-- Bundle innovations -->
           {innovation.bundles != null && innovation.bundles.length > 0 && (
           <>
-            <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Bundle innovations</p>
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
-            {innovation.bundles.map(bundle => (
-              <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
-              {
-                (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
-                <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
-                  fill="#439255" />
-                </svg>
-                <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
-                ) : <span class="text-sm">Internal</span>
-              }
+            <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Bundle innovations</p>
+            <p class="text-xs text-text-800 w-max font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
+            <div class="w-full pb-1">
+              {innovation.bundles.map(bundle => (
+                <div class="mb-2">
+                  <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
+                  {
+                    (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
+                    <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
+                      fill="#439255" />
+                    </svg>
+                    <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
+                    ) : <span class="text-sm">Internal</span>
+                  }
+                </div>
+                <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
               </div>
-              <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
-            ))}
+              ))}
+              </div>
             </p>
           </>
           )}
           <!-- Piece of evidence -->
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mt-4">Evidence</p>
-          <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal mt-2">
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Evidence</p>
+          <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.references == null || innovation.references.length === 0 ? (
                 <span class="text-gray-500">No Information available yet</span>
@@ -271,9 +304,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
           </p>
         </div>
-        <!-- Community solution stories -->
-        <section class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300 relative">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Community solution stories</p>
+        <!-- Community solution stories - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <section class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 relative lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Community solution stories</p>
 
           <!-- Comment stories -->
           <div data-comment-cards>
@@ -281,10 +314,10 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
           </div>
           
           <!-- Input container -->
-          <form class="mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Share your experience with this innovation or read what others have accomplished:</p>
-            <!-- Content Form -->
-            <div class="mt-2 ml-4 flex flex-col gap-1">
+          <form class="mt-4 lg:mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Share your experience with this innovation or read what others have accomplished:</p>
+            <!-- Content Form - Mobile: sin margin izquierdo | Desktop (lg+): margin original -->
+            <div class="mt-2 flex flex-col gap-1 lg:ml-4">
               <!-- Name Input -->
               <Input
                 label="Name:"
@@ -313,32 +346,33 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                 required
               />
 
-              <!-- Submit Button with CAPTCHA -->
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end mt-4 gap-2">
+              <!-- Submit Button with CAPTCHA - Mobile: stack vertical | Desktop (sm+): horizontal -->
+              <div class="flex flex-col gap-3 mt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
-                <div 
-                  class="cf-turnstile" 
+                <div
+                  class="cf-turnstile"
                   data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
                   data-theme="light"
                 ></div>
-                <BasicButton 
-                  text='Send' 
-                  type="submit" 
-                  classList="!bg-lime-500 text-white px-10 py-3 rounded hover:!bg-lime-800 transition-colors duration-300" 
+                <BasicButton
+                  text='Send'
+                  type="submit"
+                  classList="!bg-lime-500 text-white px-8 py-2.5 rounded hover:!bg-lime-800 transition-colors duration-300 sm:px-10 sm:py-3"
                 />
               </div>
           </form>
         </section>
       </section>
-      <aside class="col-span-1">
-        <!-- Download PDF button -->
-        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-6" />
-        <!-- Quick Information -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Quick information</p>
+      <!-- Aside Sidebar - Mobile: col-span-1 (full width), order first | Desktop (lg+): col-span-1, order last -->
+      <aside class="col-span-1 order-first lg:order-last">
+        <!-- Download PDF button - Mobile: margin bottom reducido | Desktop (lg+): margin original -->
+        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-4 lg:mb-6" />
+        <!-- Quick Information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Quick information</p>
 
-          <div class="mb-4">
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Lead organization(s)</p>
+          <div class="mb-3 lg:mb-4">
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Lead organization(s)</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
@@ -348,23 +382,44 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             }
           </div>
           <!-- Key actors -->
-          <div class="mb-4">
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key actors</p>
-            <ul class="pl-2">
-              {
-                innovation.actors && innovation.actors.length > 0 ? (
-                  innovation.actors.map(actor => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside break-all">{actor.actorInfo?.prmsNameEquivalent || 'Unknown Actor'}</li>
-                  ))
-                ) : (
-                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
-                )
-              }
-            </ul>
+          <div class="mb-3 lg:mb-4">
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key actors</p>
+            
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-1">
+                {
+                  actorsInfo.length > 0 ? (
+                    actorsInfo.map(actor => (
+                        <div class="relative tooltip not-underline flex items-center justify-center">
+                          <Image
+                          src={actor.imgUrl}
+                          alt={actor.actorInfoName || 'Actor Icon'}
+                          quality={'max'}
+                          class="w-full"
+                          />
+                          <span class="tooltiptext wide hidden md:block">
+                            {`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
+                          </span>
+                          <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
+                            <ul>
+                              <p class="text-[9px] font-semibold text-text-800 mb-1">{actor.actorInfoName}</p>
+                              {actor.actorsNames.map(name => (
+                                <li class="text-[7px] text-text-800 font-normal list-disc list-inside">{name}</li>
+                              ))}
+                            </ul>
+                          </div>
+                      </div>
+                    ))
+                  ) : (
+                    <ul class="pl-2 col-span-3">
+                      <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                    </ul>
+                  )
+                }
+              </div>
           </div>
           <!-- Key organizations -->
           <div>
-            <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Key organizations</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key organizations</p>
             <ul class="pl-2">
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
@@ -381,14 +436,36 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
               }
             </ul>
           </div>
+          <!-- SDGs: Sustainable Development Goals contribution -->
+          <div class="mt-3 lg:mt-4">
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base mb-2">Sustainable Development Goals contribution</p>
+              {
+                innovation.sdgs && innovation.sdgs.length > 0 ? (
+                  <div class="grid grid-cols-4 lg:grid-cols-3 gap-2">
+                    {innovation.sdgs.sort((a, b) => a.sdgId - b.sdgId).map(sdg => (
+                      sdg.sdgId && (
+                        <img 
+                          src={`https://marlo-pdf-resources-dev.s3.us-east-1.amazonaws.com/sdg/E-WEB-Goal-${sdg.sdgId}.png`}
+                          alt={sdg.sdgShortName}
+                          class="w-full h-auto object-contain"
+                        />
+                      )
+                    ))}
+                  </div>) : (
+                  <ul>
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                  </ul>
+                )
+              }
+          </div>
         </div>
-        <!-- Contact information -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-2">Contact information</p>
+        <!-- Contact information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">Contact information</p>
 
           <div class="mb-2">
-            <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">Get in touch with the responsible team</p>
-            <ul class="pl-2">
+            <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">Get in touch with the responsible team</p>
+            <ul>
               {
                 innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                   innovation.contactPersons.map(contact =>
@@ -404,17 +481,17 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
                         </>
                       ))
                     ) : (
-                      <span>This is yet to be determined.</span>
+                      <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
                     )
                   )
                 ) : (
-                  <span>This is yet to be determined.</span>
+                  <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
                 )
               }
             </ul>
             <div class="mt-2">
-              <p class="text-xs xl:text-sm 2xl:text-base font-semibold text-text-800">Technical Support</p>
-              <p class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal">
+              <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Technical Support</p>
+              <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
                 This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team
               </p>
               <a
@@ -424,9 +501,9 @@ const countryText = getCountryTextStructured(innovation.countries, innovation.re
             </div>
           </div>
         </div>
-        <!-- Share -->
-        <div class="w-full p-4 mb-6 border border-border-light rounded-xl bg-white-100 text-text-300">
-          <p class="text-sm xl:text-base 2xl:text-lg font-semibold text-primary-300 mb-4">Share</p>
+        <!-- Share - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Share</p>
           <!--           <BasicButton
             text="Save to favorites"
             hasIcon
