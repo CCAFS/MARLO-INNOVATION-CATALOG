@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 
-const isCollapsed = ref(true);
+// Get href to check if there is honepage or other page
+const currentPath = globalThis.location.pathname;
+
+const isCollapsed = ref(currentPath !== '/');
 const email = ref('');
 const statusMessage = ref('');
 const statusType = ref<'success' | 'error' | ''>('');
@@ -31,7 +34,7 @@ async function handleSubmit() {
   try {
     isSubmitting.value = true;
     await postNewsletterSubscription(trimmedEmail);
-    statusMessage.value = "Thank you for subscribing! You'll start receiving our updates soon.";
+    statusMessage.value = 'Thank you for subscribing!';
     statusType.value = 'success';
     email.value = '';
   } catch (err) {
@@ -54,23 +57,17 @@ async function handleSubmit() {
       </button>
       <p class="widget-title">Don't Miss Out!</p>
       <p class="widget-description">
-        Discover the latest innovations, inspiring stories, and exclusive opportunities within the AICCRA ecosystem. Subscribe to our newsletter and be the first to receive valuable content that will help you stay ahead of the curve.
+        Discover the latest innovations, inspiring stories, and exclusive opportunities within the AICCRA ecosystem. Subscribe to our newsletter and
+        be the first to receive valuable content that will help you stay ahead of the curve.
       </p>
       <form class="form" @submit.prevent="handleSubmit">
         <label class="label" for="newsletter-email">E-mail:</label>
-        <input
-          id="newsletter-email"
-          v-model="email"
-          class="input"
-          type="email"
-          placeholder="name@email.com"
-          :disabled="isSubmitting"
-        />
+        <input id="newsletter-email" v-model="email" class="input" type="email" placeholder="name@email.com" :disabled="isSubmitting" />
         <button class="submit" type="submit" :disabled="isSubmitting">
           <span v-if="isSubmitting">Sending…</span>
-          <span v-else>I Want To Stay Informed</span>
+          <span v-else>Stay connected</span>
         </button>
-        <p class="form-note">Connect with our community of innovators!</p>
+        <p class="form-note">Be part of our community of innovators.</p>
       </form>
       <p v-if="statusMessage" class="status" :class="statusType">{{ statusMessage }}</p>
     </div>
@@ -87,8 +84,7 @@ async function handleSubmit() {
           <path
             d="M1 3.5A2.5 2.5 0 0 1 3.5 1h13A2.5 2.5 0 0 1 19 3.5v9A2.5 2.5 0 0 1 16.5 15h-13A2.5 2.5 0 0 1 1 12.5v-9z"
             stroke-width="1.5"
-            fill="none"
-          />
+            fill="none" />
           <path d="M2 2l8 6 8-6" stroke-width="1.5" fill="none" />
         </svg>
       </span>
@@ -99,24 +95,30 @@ async function handleSubmit() {
 <style scoped>
 .newsletter-widget {
   position: fixed;
-  top: 50%;
+  top: 25%;
   right: 0;
   transform: translateY(-50%);
   width: 460px;
-  transition: width 0.25s ease, box-shadow 0.25s ease;
+  height: 310px;
+  max-height: 310px;
+  transition: width 0.3s cubic-bezier(0.47, 0, 0.23, 1.38);
   z-index: 40;
   font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .newsletter-widget.collapsed {
   width: 43px;
+  height: 219px;
+  max-height: 219px;
+  transition: width 0.1s linear;
 }
 
 .widget-panel {
   background-color: #ffffff;
   border-radius: 12px 0 0 12px;
   border: 1px solid rgba(0, 118, 148, 0.45);
-  box-shadow: 0 8px 24px rgb(15 39 64 / 20%);
+  box-shadow: 0 8px 24px rgb(15 39 64 / 20%), 0 0 20px rgba(15, 39, 64, 0.1);
+  backdrop-filter: blur(2px);
   padding: 1.5rem 1.25rem 1.25rem;
   position: relative;
 }
@@ -183,13 +185,17 @@ async function handleSubmit() {
 .submit {
   align-self: center;
   padding: 0.35rem 3.2rem;
-  background-color: #008bb0;
+  background-color: #007694;
   color: #ffffff;
   border: none;
   border-radius: 9px;
   font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
+}
+
+.submit:hover {
+  background-color: #006b8a;
 }
 
 .submit:disabled {
@@ -221,11 +227,13 @@ async function handleSubmit() {
 .collapsed-tab {
   width: 48px;
   height: 219px;
+  max-height: 219px;
   border-radius: 9px 0 0 12px;
   border: 1px solid rgba(0, 118, 148, 0.45);
   border-right: none;
   background-color: #ffffff;
-  box-shadow: -4px 6px 18px rgb(15 39 64 / 15%);
+  box-shadow: 0 8px 24px rgb(15 39 64 / 20%), 0 0 20px rgba(15, 39, 64, 0.1);
+  backdrop-filter: blur(2px);
   display: flex;
   flex-direction: column;
   align-items: center;
