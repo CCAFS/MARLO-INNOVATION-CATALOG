@@ -2,12 +2,13 @@
 import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
-import ToggleButton from 'primevue/togglebutton';
 import { computed, onMounted, ref } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
 import { useApi } from '~/composables/database-api/useApi';
+
+import { Banks, Farmers, Agricultural, Researchers, Policy, Others } from '~/images/actors-icons';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
@@ -15,13 +16,13 @@ const { value, setValue, clearFilters } = useSharedValue();
 const isFiltersActive = ref<boolean>(true);
 
 //Provsional Array for Actors Type Chips
-const actorsType = ref<Array<{ id: number; name: string; color: string }>>([
-  { id: 1, name: 'Bank/Investors', color: '#FF6242' },
-  { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58' },
-  { id: 3, name: 'Agricultural extension agents', color: '#FF8A14' },
-  { id: 4, name: 'Researchers', color: '#89AE57' },
-  { id: 5, name: 'Policy actors (public or private)', color: '#85B1CD' },
-  { id: 6, name: 'Others', color: '#214994' }
+const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
+  { id: 1, name: 'Bank/Investors', color: '#FF6242', imgUrl: Banks },
+  { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58', imgUrl: Farmers },
+  { id: 3, name: 'Agricultural extension agents', color: '#FF8A14', imgUrl: Agricultural },
+  { id: 4, name: 'Researchers', color: '#89AE57', imgUrl: Researchers },
+  { id: 5, name: 'Policy actors (public or private)', color: '#85B1CD', imgUrl: Policy },
+  { id: 6, name: 'Others', color: '#214994', imgUrl: Others }
 ]);
 
 const dataSDGs = ref<SdgResume[]>([]);
@@ -149,9 +150,15 @@ onMounted(() => {
           <div
             v-for="actor in actorsType"
             :key="actor.id"
-            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium text-ellipsis whitespace-nowrap line-clamp-1 cursor-pointer"
+            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium cursor-pointer flex items-center justify-between"
             :style="{ backgroundColor: actor.color + '70', color: '#FFF' }">
-            {{ actor.name }}
+            <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
+            <component
+              :is="actor.imgUrl"
+              viewBox="0 0 863 863"
+              height="20"
+              width="20"
+              class="w-5 h-5 [&_path]:fill-white [&_path]:stroke-white [&_g]:stroke-white [&_g_path]:fill-white" />
           </div>
         </div>
       </div>
