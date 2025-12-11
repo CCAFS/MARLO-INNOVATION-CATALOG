@@ -5,7 +5,6 @@ import { texts } from '../../../content/texts';
 import { circleColors } from './colors';
 
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import { usePublicAPI } from '~/pages/composables/usePublicAPI';
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
 import { useApi } from '~/composables/database-api/useApi';
 
@@ -53,6 +52,11 @@ onMounted(() => {
 <template>
   <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
   <div class="flex flex-col h-full m-4 justify-center md:m-8 md:!ml-0">
+    <div class="flex flex-col mb-4">
+      <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
+      <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.responsibleScalingTitle }}</h2>
+      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md" v-html="texts.home.responsibleScalingDescription"></p>
+    </div>
     <div class="flex flex-col mb-4">
       <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
       <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.ReadinessExplorerTitle }}</h2>
