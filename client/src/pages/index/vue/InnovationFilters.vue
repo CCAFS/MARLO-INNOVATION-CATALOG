@@ -1,30 +1,35 @@
 <script setup lang="ts">
+import Select from 'primevue/select';
+import MultiSelect from 'primevue/multiselect';
+import InputText from 'primevue/inputtext';
 import { computed, onMounted, ref } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
-import { texts } from '../../../content/texts';
-import { circleColors } from './colors';
-import Select from 'primevue/select';
-import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import { usePublicAPI } from '~/pages/composables/usePublicAPI';
+
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
 import { useApi } from '~/composables/database-api/useApi';
 
-const { apiBaseUrl } = usePublicAPI();
+import { Banks, Farmers, Agricultural, Researchers, Policy, Others } from '~/images/actors-icons';
+import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+import { africaCountries } from './composables/useAfrica';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
+// Exchange between filters and search
+const isFiltersActive = ref<boolean>(true);
+
+//Provsional Array for Actors Type Chips
+const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
+  { id: 1, name: 'Bank/Investors', color: '#FF6242', imgUrl: Banks },
+  { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58', imgUrl: Farmers },
+  { id: 3, name: 'Agricultural extension agents', color: '#FF8A14', imgUrl: Agricultural },
+  { id: 4, name: 'Researchers', color: '#89AE57', imgUrl: Researchers },
+  { id: 5, name: 'Policy actors (public or private)', color: '#85B1CD', imgUrl: Policy },
+  { id: 6, name: 'Others', color: '#214994', imgUrl: Others }
+]);
+
 const dataSDGs = ref<SdgResume[]>([]);
 const dataInnovationTypes = ref<InnovationType[]>([]);
-
-const backgroundColor = computed(() => {
-  return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined ? circleColors[value.value.scalingReadiness] : '#16a34a';
-});
-
-const readinessText = computed(() => {
-  return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined
-    ? getReadinessScaleText(value.value.scalingReadiness + 1)
-    : getReadinessScaleText(0);
-});
+const dataCountries = ref<AfricaSvgProps[]>([]);
 
 const selectedInnovationType = computed(() => {
   if (value.value.innovationTypeId === null) return null;
@@ -34,6 +39,11 @@ const selectedInnovationType = computed(() => {
 const selectedSDG = computed(() => {
   if (value.value.sdgId === null) return null;
   return dataSDGs.value.find(sdg => sdg.id === value.value.sdgId) || null;
+});
+
+const selectedCountries = computed(() => {
+  if (!value.value.countryIds || value.value.countryIds.length === 0) return [];
+  return dataCountries.value.filter(country => value.value.countryIds?.includes(Number.parseInt(country.id)));
 });
 
 const fetchSGDsData = async () => {
@@ -68,76 +78,147 @@ const handleSelectSDGChange = (newValue: SdgResume | null) => {
   });
 };
 
+const handleSelectCountriesChange = (newValue: AfricaSvgProps[] | null) => {
+  const countryIds = newValue?.map(country => Number.parseInt(country.id)) || [];
+  setValue({
+    countryIds: countryIds.length > 0 ? countryIds : null
+  });
+};
+
 onMounted(() => {
   fetchSGDsData();
   fetchInnovationsTypeData();
+  dataCountries.value = africaCountries;
 });
 </script>
 
 <template>
-  <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
-  <div class="flex flex-col h-full m-4 justify-center md:m-8 md:!ml-0">
-    <div class="flex flex-col mb-4">
-      <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
-      <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.ReadinessExplorerTitle }}</h2>
-      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md" v-html="texts.home.ReadinessExplorerDescription"></p>
-    </div>
+  <div class="relative overflow-hidden h-42">
+    <Transition name="slide-right">
+      <div v-if="isFiltersActive" class="container mx-auto mt-6 px-4 lg:mt-10 lg:p-0 xl:px-16 2xl:px-20">
+        <!-- Selector Filters (Country,SDGs & Innovation typology) -->
+        <div class="flex flex-row items-end gap-2 w-full lg:gap-4 mb-4">
+          <!-- Filters -->
+          <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
+            <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
+            <div class="flex flex-col gap-2 w-full">
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology</label>
+              <Select
+                :modelValue="selectedInnovationType"
+                @update:modelValue="handleSelectInnovationTypeChange"
+                :options="dataInnovationTypes"
+                optionLabel="name"
+                placeholder="All"
+                class="w-full"
+                size="small"
+                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+            </div>
 
-    <div
-      v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
-      class="text-xs text-[#439255] font-medium mb-2 lg:text-sm xl:text-base 2xl:text-base">
-      Scaling Readiness:
-    </div>
-    <!-- Mobile: altura reducida, gap reducido, padding reducido | Desktop (lg+): diseño original -->
-    <div
-      v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
-      class="flex gap-4 transition-all duration-300 rounded-lg items-center p-4 text-white mb-4 h-auto min-h-[100px] lg:gap-8 lg:p-6 lg:mb-5 lg:h-[130px]"
-      :style="{ backgroundColor }">
-      <!-- Mobile: círculo más pequeño | Desktop (lg+): tamaño original -->
-      <div class="text-white border-4 w-[32px] h-[32px] text-sm text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip lg:border-7 lg:w-[40px] lg:h-[40px] lg:text-base">
-        {{ value.scalingReadiness }}
-      </div>
-      <div class="flex flex-col gap-2 flex-1 w-full lg:gap-5">
-        <!-- Mobile: textos más pequeños | Desktop (lg+): tamaños originales -->
-        <div class="text-sm font-semibold lg:text-base xl:text-lg 2xl:text-xl">{{ readinessText.text }}</div>
-        <div class="text-xs font-light lg:text-sm xl:text-base 2xl:text-lg">
-          {{ readinessText.description }}
+            <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
+            <div class="flex flex-col gap-2 w-full">
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">Countries</label>
+              <MultiSelect
+                :modelValue="selectedCountries"
+                @update:modelValue="handleSelectCountriesChange"
+                :options="dataCountries"
+                optionLabel="title"
+                placeholder="All"
+                class="w-full"
+                size="small"
+                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+            </div>
+
+            <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
+            <div class="flex flex-col gap-2 w-full">
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">SDG</label>
+              <Select
+                :modelValue="selectedSDG"
+                @update:modelValue="handleSelectSDGChange"
+                :options="dataSDGs"
+                optionLabel="shortName"
+                placeholder="All"
+                class="w-full"
+                size="small"
+                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+            </div>
+          </div>
+          <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
+          <div class="flex items-center justify-center lg:flex-auto lg:justify-start">
+            <button
+              class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
+              @click="clearFilters">
+              Clear Filters
+            </button>
+          </div>
+
+          <hr class="border-l border-gray-700 h-8" />
+
+          <!-- Button - Change state -->
+          <button
+            class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer"
+            @click="isFiltersActive = false"></button>
+        </div>
+
+        <hr class="border-l border-gray-700 h-[1px] w-full mb-4" />
+
+        <!-- Chip selectors for actors typology -->
+        <div class="w-full flex flex-row gap-2 pb-2 overflow-hidden">
+          <div
+            v-for="actor in actorsType"
+            :key="actor.id"
+            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium cursor-pointer flex items-center justify-between"
+            :style="{ backgroundColor: actor.color + '70', color: '#FFF' }">
+            <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
+            <component
+              :is="actor.imgUrl"
+              viewBox="0 0 863 863"
+              height="20"
+              width="20"
+              class="w-5 h-5 [&_path]:fill-white [&_path]:stroke-white [&_g]:stroke-white [&_g_path]:fill-white" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Mobile: stack vertical, full width | Desktop (lg+): horizontal layout original -->
-    <div class="flex flex-col gap-3 w-full lg:flex-row lg:flex-none lg:gap-1">
-      <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
-      <div class="flex flex-col gap-2 w-full lg:inline-flex lg:flex-row lg:items-center lg:flex-wrap lg:flex-initial lg:w-[58%]">
-        <div class="font-bold text-xs lg:whitespace-nowrap xl:text-sm 2xl:text-base">Innovation typology</div>
-        <Select
-          :modelValue="selectedInnovationType"
-          @update:modelValue="handleSelectInnovationTypeChange"
-          :options="dataInnovationTypes"
-          optionLabel="name"
-          placeholder="All"
-          class="w-full lg:w-[50%]"
-          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
-      </div>
+      <!-- Search visual active -->
+      <div
+        v-else
+        class="container mx-auto mt-6 px-4 lg:mt-10 lg:p-0 xl:px-16 2xl:px-20 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
+        <!-- Button - Change state -->
+        <button
+          class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
+          @click="isFiltersActive = true"></button>
 
-      <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
-      <div class="flex flex-col gap-2 w-full lg:inline-flex lg:flex-row lg:items-center lg:flex-wrap lg:w-[35%]">
-        <div class="font-bold text-xs lg:whitespace-nowrap xl:text-sm 2xl:text-base">SDG</div>
-        <Select
-          :modelValue="selectedSDG"
-          @update:modelValue="handleSelectSDGChange"
-          :options="dataSDGs"
-          optionLabel="shortName"
-          placeholder="All"
-          class="w-full lg:w-[75%]"
-          :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
-      </div>
+        <div class="border-l border-gray-700 h-8"></div>
 
-      <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
-      <div class="flex items-center justify-center lg:flex-auto lg:justify-start">
-        <button class="pi pi-eraser bg-primary-400 rounded-full text-white p-2 hover:bg-primary-500 lg:p-1" @click="clearFilters"></button>
+        <!-- Search -->
+        <div class="flex flex-col gap-2 w-full">
+          <label class="font-bold text-xs xl:text-sm 2xl:text-base">Search</label>
+          <InputText
+            type="text"
+            placeholder="Search..."
+            size="small"
+            class="w-full border rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
+            :pt="{ root: { class: '!bg-transparent !border-gray-700' }, input: { class: '!bg-transparent !border-gray-700' } }" />
+        </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s ease-in-out;
+  position: absolute;
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>

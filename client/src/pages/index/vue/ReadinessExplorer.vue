@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MapFilter from './MapFilter.vue';
-import InnovationFilters from './InnovationFilters.vue';
+import InnovationScaling from './InnovationScaling.vue';
 import PrimeProvider from './../../../providers/PrimeProvider.vue';
 import { texts } from './../../../content/texts.ts';
 </script>
@@ -13,7 +13,7 @@ import { texts } from './../../../content/texts.ts';
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[2fr_1.75fr] xl:grid-cols-[2fr_2.25fr] 2xl:grid-cols-[2fr_2.75fr] relative">
         <MapFilter />
         <PrimeProvider>
-          <InnovationFilters />
+          <InnovationScaling />
         </PrimeProvider>
       </div>
       <!-- Mobile: margin top reducido | Desktop (md+): margin original -->
