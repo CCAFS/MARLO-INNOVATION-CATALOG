@@ -12,6 +12,7 @@ const { value } = useSharedValue();
 
 const dataSDGs = ref<SdgResume[]>([]);
 const dataInnovationTypes = ref<InnovationType[]>([]);
+const isHydrated = ref(false);
 
 const backgroundColor = computed(() => {
   return value.value.scalingReadiness !== null && value.value.scalingReadiness !== undefined ? circleColors[value.value.scalingReadiness] : '#16a34a';
@@ -44,6 +45,7 @@ const fetchInnovationsTypeData = async () => {
 };
 
 onMounted(() => {
+  isHydrated.value = true;
   fetchSGDsData();
   fetchInnovationsTypeData();
 });
@@ -53,16 +55,17 @@ onMounted(() => {
   <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
   <div class="flex flex-col h-full m-4 justify-center md:m-8 md:!ml-0">
     <div class="flex flex-col mb-4">
-      <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
       <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.responsibleScalingTitle }}</h2>
-      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md" v-html="texts.home.responsibleScalingDescription"></p>
+      <div
+        v-if="isHydrated"
+        class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md"
+        v-html="texts.home.responsibleScalingDescription"></div>
+      <div v-else class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md">Loading...</div>
     </div>
     <div class="flex flex-col mb-4">
-      <!-- Mobile: texto más pequeño | Desktop (lg+): tamaños originales -->
       <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.ReadinessExplorerTitle }}</h2>
-      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md" v-html="texts.home.ReadinessExplorerDescription"></p>
+      <p class="text-xs font-light leading-5 mt-2 lg:mt-3 xl:text-base 2xl:text-md">{{ texts.home.ReadinessExplorerDescription }}</p>
     </div>
-
     <div
       v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
       class="text-xs text-[#439255] font-medium mb-2 lg:text-sm xl:text-base 2xl:text-base">
