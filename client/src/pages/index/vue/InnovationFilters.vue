@@ -9,6 +9,8 @@ import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-
 import { useApi } from '~/composables/database-api/useApi';
 
 import { Banks, Farmers, Agricultural, Researchers, Policy, Others } from '~/images/actors-icons';
+import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+import { africaCountries } from './composables/useAfrica';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
@@ -27,6 +29,7 @@ const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: 
 
 const dataSDGs = ref<SdgResume[]>([]);
 const dataInnovationTypes = ref<InnovationType[]>([]);
+const dataCountries = ref<AfricaSvgProps[]>([]);
 
 const selectedInnovationType = computed(() => {
   if (value.value.innovationTypeId === null) return null;
@@ -36,6 +39,11 @@ const selectedInnovationType = computed(() => {
 const selectedSDG = computed(() => {
   if (value.value.sdgId === null) return null;
   return dataSDGs.value.find(sdg => sdg.id === value.value.sdgId) || null;
+});
+
+const selectedCountries = computed(() => {
+  if (!value.value.countryIds || value.value.countryIds.length === 0) return [];
+  return dataCountries.value.filter(country => value.value.countryIds?.includes(Number.parseInt(country.id)));
 });
 
 const fetchSGDsData = async () => {
@@ -70,9 +78,17 @@ const handleSelectSDGChange = (newValue: SdgResume | null) => {
   });
 };
 
+const handleSelectCountriesChange = (newValue: AfricaSvgProps[] | null) => {
+  const countryIds = newValue?.map(country => Number.parseInt(country.id)) || [];
+  setValue({
+    countryIds: countryIds.length > 0 ? countryIds : null
+  });
+};
+
 onMounted(() => {
   fetchSGDsData();
   fetchInnovationsTypeData();
+  dataCountries.value = africaCountries;
 });
 </script>
 
@@ -102,10 +118,10 @@ onMounted(() => {
             <div class="flex flex-col gap-2 w-full">
               <label class="font-bold text-xs xl:text-sm 2xl:text-base">Countries</label>
               <MultiSelect
-                :modelValue="selectedSDG"
-                @update:modelValue="handleSelectSDGChange"
-                :options="dataSDGs"
-                optionLabel="shortName"
+                :modelValue="selectedCountries"
+                @update:modelValue="handleSelectCountriesChange"
+                :options="dataCountries"
+                optionLabel="title"
                 placeholder="All"
                 class="w-full"
                 size="small"
