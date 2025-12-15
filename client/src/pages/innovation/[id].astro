@@ -392,19 +392,22 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                         <div class="relative tooltip not-underline flex items-center justify-center">
                           <Image
                           src={actor.imgUrl}
-                          alt={actor.actorInfoName || 'Actor Icon'}
+                          alt={Array.isArray(actor.actorInfoName) ? actor.actorInfoName.join(', ') : (actor.actorInfoName || 'Actor Icon')}
                           quality={'max'}
                           class="w-full"
                           />
-                          <span class="tooltiptext wide hidden md:block">
-                            {`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
+                          <span class="tooltiptext hidden md:block">
+                            <ul>
+                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
+                                <li class="text-white text-[12px] font-normal list-disc list-inside">{name}</li>
+                              )) : <p class="text-[12px]">{actor.actorInfoName}</p>}
+                            </ul>
                           </span>
                           <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
                             <ul>
-                              <p class="text-[9px] font-semibold text-text-800 mb-1">{actor.actorInfoName}</p>
-                              {actor.actorsNames.map(name => (
-                                <li class="text-[7px] text-text-800 font-normal list-disc list-inside">{name}</li>
-                              ))}
+                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
+                                <li class="text-[8px] text-text-800 font-normal list-disc list-inside">{name}</li>
+                              )) : <p class="text-[8px]">{actor.actorInfoName}</p>}
                             </ul>
                           </div>
                       </div>
