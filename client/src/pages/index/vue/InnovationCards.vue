@@ -31,7 +31,6 @@ watch(
   (newValue, oldValue) => {
     // Only reset if filters actually changed
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      console.log('Filters changed, fetching new data:', newValue);
       currentPage.value = 0;
       handleFetchInnovations(0, rowsPerPage.value);
     }

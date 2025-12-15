@@ -24,7 +24,7 @@ const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: 
   { id: 3, name: 'Agricultural extension agents', color: '#FF8A14', imgUrl: Agricultural },
   { id: 4, name: 'Researchers', color: '#89AE57', imgUrl: Researchers },
   { id: 5, name: 'Policy actors (public or private)', color: '#85B1CD', imgUrl: Policy },
-  { id: 6, name: 'Others', color: '#214994', imgUrl: Others }
+  { id: 6, name: 'Other', color: '#214994', imgUrl: Others }
 ]);
 
 const dataSDGs = ref<SdgResume[]>([]);
@@ -85,10 +85,53 @@ const handleSelectCountriesChange = (newValue: AfricaSvgProps[] | null) => {
   });
 };
 
+const handleSelectActorsChange = (btnName: string, newValue: string[] | null) => {
+  const element = document.getElementsByName(btnName)[0] as HTMLElement;
+
+  const actorNamesValue = value.value.actorName || [];
+  const isAlreadySelected = newValue?.some(actor => actorNamesValue.includes(actor));
+  if (isAlreadySelected) {
+    // Remove actor if already selected
+    const updatedActorNames = actorNamesValue.filter(actor => !newValue?.includes(actor));
+    setValue({
+      actorName: updatedActorNames.length > 0 ? updatedActorNames : null
+    });
+
+    element.classList.add('opacity-50');
+
+    return;
+  } else {
+    // Add new actors
+    const updatedActorNames = [...actorNamesValue, ...(newValue || [])];
+    setValue({
+      actorName: updatedActorNames.length > 0 ? updatedActorNames : null
+    });
+
+    element.classList.remove('opacity-50');
+    return;
+  }
+};
+
+// Compose clearFilter method due to actors filter
+const composeClearFilters = () => {
+  clearFilters();
+
+  // Reset opacity of all actor buttons
+  actorsType.value.forEach(actor => {
+    const element = document.getElementsByName(actor.name)[0] as HTMLElement;
+    if (element) {
+      element.classList.add('opacity-50');
+    }
+  });
+};
+
+// Initial data fetch
+
 onMounted(() => {
   fetchSGDsData();
   fetchInnovationsTypeData();
   dataCountries.value = africaCountries;
+  clearFilters();
 });
 </script>
 
@@ -146,7 +189,7 @@ onMounted(() => {
           <div class="flex items-center justify-center lg:flex-auto lg:justify-start">
             <button
               class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
-              @click="clearFilters">
+              @click="composeClearFilters">
               Clear Filters
             </button>
           </div>
@@ -163,11 +206,13 @@ onMounted(() => {
 
         <!-- Chip selectors for actors typology -->
         <div class="w-full flex flex-row gap-2 pb-2 overflow-hidden">
-          <div
+          <button
             v-for="actor in actorsType"
             :key="actor.id"
-            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium cursor-pointer flex items-center justify-between"
-            :style="{ backgroundColor: actor.color + '70', color: '#FFF' }">
+            :name="actor.name"
+            @click="handleSelectActorsChange(actor.name, [actor.name])"
+            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium cursor-pointer flex items-center justify-between opacity-50"
+            :style="{ backgroundColor: actor.color, color: '#FFF' }">
             <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
             <component
               :is="actor.imgUrl"
@@ -175,7 +220,7 @@ onMounted(() => {
               height="20"
               width="20"
               class="w-5 h-5 [&_path]:fill-white [&_path]:stroke-white [&_g]:stroke-white [&_g_path]:fill-white" />
-          </div>
+          </button>
         </div>
       </div>
 
