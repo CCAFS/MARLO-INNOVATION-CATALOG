@@ -44,11 +44,15 @@ export function useInnovations() {
       if (filters.countryIds && filters.countryIds.length > 0) {
         params.countryIds = filters.countryIds;
       }
+      if (filters.actorName && filters.actorName.length > 0) {
+        params.actorName = filters.actorName;
+      }
+      if (filters.actorIds && filters.actorIds.length > 0) {
+        params.actorIds = filters.actorIds;
+      }
 
       const data = await getInnovations(params);
       apiData.value = data;
-
-      console.log('Fetched innovations data:', data);
 
       if (data.totalCount !== undefined) {
         totalRecords.value = data.totalCount;
@@ -62,8 +66,6 @@ export function useInnovations() {
       }
     } finally {
       isLoading.value = false;
-
-      console.log('isLoading state set to false');
 
       try {
         const params: any = {

@@ -8,8 +8,7 @@ import Researchers from '~/images/actors/Researchers.png';
 import type { ImageMetadata } from 'astro';
 
 interface FilterGroupedActors {
-  actorInfoName: string;
-  actorsNames: string[];
+  actorInfoName: string | string[];
   imgUrl: ImageMetadata;
 }
 
@@ -24,8 +23,6 @@ const getActorsByGroup = (actors: Actor[]) => {
   if (validActors.length === 0) {
     return [];
   }
-
-  const baseActors = [...validActors];
 
   const imgMap: Record<string, ImageMetadata> = {
     Agricultural: Agricultural,
@@ -46,23 +43,18 @@ const getActorsByGroup = (actors: Actor[]) => {
   }, []);
 
   const result: FilterGroupedActors[] = groupedActors.map(groupedActor => {
-    const actorsNames = baseActors
-      .filter(actor => actor.actorInfo && actor.actorInfo.name === groupedActor.actorInfo.name)
-      .map(actor => {
-        if (actor.actorInfo.name === 'Other') {
-          return actor.other || 'Others';
-        } else {
-          return actor.actorInfo.prmsNameEquivalent;
-        }
-      });
-
+    // Extract the name from actorInfo
     const name = groupedActor.actorInfo.name;
 
+    const nameParts = name.split('/').map(part => part.trim());
+
+    const finalName: string | string[] = nameParts.length > 1 ? nameParts : nameParts[0];
+
+    // Get image URL based on the first part of the name
     const imgUrl = imgMap[name.split(/[ /]/)[0]] || Others;
 
     return {
-      actorInfoName: name,
-      actorsNames,
+      actorInfoName: finalName,
       imgUrl
     };
   });
