@@ -24,8 +24,6 @@ const getActorsByGroup = (actors: Actor[]) => {
     return [];
   }
 
-  const baseActors = [...validActors];
-
   const imgMap: Record<string, ImageMetadata> = {
     Agricultural: Agricultural,
     Banks: Banks,

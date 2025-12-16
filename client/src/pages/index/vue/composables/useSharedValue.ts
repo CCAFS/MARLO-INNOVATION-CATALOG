@@ -1,7 +1,16 @@
 // composables/useSharedValue.ts
 import { ref, computed } from 'vue';
 
-interface Filters {
+export enum FilterType {
+  ScalingReadiness = 'scalingReadiness',
+  InnovationTypeId = 'innovationTypeId',
+  SdgId = 'sdgId',
+  CountryIds = 'countryIds',
+  ActorName = 'actorName',
+  ActorIds = 'actorIds'
+}
+
+export interface Filters {
   scalingReadiness: number | null;
   innovationTypeId: number | null;
   sdgId: number | null;
@@ -37,5 +46,5 @@ export function useSharedValue() {
     };
   };
 
-  return { value, setValue, display, clearFilters };
+  return { value, setValue, display, clearFilters, FilterType };
 }

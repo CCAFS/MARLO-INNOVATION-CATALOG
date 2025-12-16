@@ -19,7 +19,7 @@ const isFiltersActive = ref<boolean>(true);
 
 //Provsional Array for Actors Type Chips
 const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
-  { id: 1, name: 'Bank/Investors', color: '#FF6242', imgUrl: Banks },
+  { id: 1, name: 'Banks/Investors', color: '#FF6242', imgUrl: Banks },
   { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58', imgUrl: Farmers },
   { id: 3, name: 'Agricultural extension agents', color: '#FF8A14', imgUrl: Agricultural },
   { id: 4, name: 'Researchers', color: '#89AE57', imgUrl: Researchers },
