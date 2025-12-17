@@ -12,6 +12,7 @@ const error = ref<Error | null>(null);
 const currentPage = ref(0);
 const rowsPerPage = ref(6);
 const totalRecords = ref(0);
+const isSearchActive = ref(false);
 
 export function useInnovations() {
   const { getInnovations, getInnovationStats } = useApi();
@@ -116,6 +117,18 @@ export function useInnovations() {
     fetchInnovations(filters, newOffset, event.rows);
   };
 
+  const onSearchActive = (filters: any) => {
+    isSearchActive.value = true;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
+  };
+
+  const onSearchDeactive = (filters: any) => {
+    isSearchActive.value = false;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, rowsPerPage.value);
+  };
+
   return {
     // State (now shared across all components)
     apiData: readonly(apiData),
@@ -126,6 +139,7 @@ export function useInnovations() {
     currentPage: currentPage,
     rowsPerPage: readonly(rowsPerPage),
     totalRecords: readonly(totalRecords),
+    isSearchActive: readonly(isSearchActive),
 
     // Computed
     offset,
@@ -134,6 +148,8 @@ export function useInnovations() {
     // Methods
     fetchInnovations,
     fetchStats,
-    onPageChange
+    onPageChange,
+    onSearchActive,
+    onSearchDeactive
   };
 }

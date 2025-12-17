@@ -11,8 +11,11 @@ import { useApi } from '~/composables/database-api/useApi';
 import { Banks, Farmers, Agricultural, Researchers, Policy, Others } from '~/images/actors-icons';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import { africaCountries } from './composables/useAfrica';
+import { useInnovations } from './composables/useInnovations';
 
 const { value, setValue, clearFilters } = useSharedValue();
+
+const { onSearchActive, onSearchDeactive } = useInnovations();
 
 // Exchange between filters and search
 const isFiltersActive = ref<boolean>(true);
@@ -112,6 +115,19 @@ const handleSelectActorsChange = (btnName: string, newValue: string[] | null) =>
   }
 };
 
+// Method to change if isFilterActive
+const toggleFilterActive = () => {
+  if (isFiltersActive.value) {
+    isFiltersActive.value = false;
+    clearFilters();
+    onSearchActive(value.value);
+  } else {
+    isFiltersActive.value = true;
+    clearFilters();
+    onSearchDeactive(value.value);
+  }
+};
+
 // Compose clearFilter method due to actors filter
 const composeClearFilters = () => {
   clearFilters();
@@ -199,7 +215,7 @@ onMounted(() => {
           <!-- Button - Change state -->
           <button
             class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer"
-            @click="isFiltersActive = false"></button>
+            @click="toggleFilterActive"></button>
         </div>
 
         <hr class="border-l border-gray-700 h-[1px] w-full mb-4" />
@@ -231,7 +247,7 @@ onMounted(() => {
         <!-- Button - Change state -->
         <button
           class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
-          @click="isFiltersActive = true"></button>
+          @click="toggleFilterActive"></button>
 
         <div class="border-l border-gray-700 h-8"></div>
 

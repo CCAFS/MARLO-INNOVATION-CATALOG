@@ -16,7 +16,8 @@ const imgEmptyDataStats = {
 };
 
 const { value } = useSharedValue();
-const { apiData, isLoading, error, currentPage, rowsPerPage, totalRecords, fetchInnovations, fetchStats, onPageChange } = useInnovations();
+const { apiData, isLoading, error, currentPage, rowsPerPage, totalRecords, fetchInnovations, fetchStats, onPageChange, isSearchActive } =
+  useInnovations();
 
 const handlePageChange = (event: any) => {
   onPageChange(event, value.value);
@@ -155,7 +156,7 @@ onMounted(() => {
     </div>
 
     <!-- Paginator -->
-    <div v-if="totalRecords > 0" class="mt-8 mb-8">
+    <div v-if="totalRecords > 0 && !isSearchActive" class="mt-8 mb-8">
       <Paginator
         :first="currentPage * rowsPerPage"
         :rows="rowsPerPage"
