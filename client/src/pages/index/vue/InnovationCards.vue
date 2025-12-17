@@ -16,8 +16,19 @@ const imgEmptyDataStats = {
 };
 
 const { value } = useSharedValue();
-const { apiData, isLoading, error, currentPage, rowsPerPage, totalRecords, fetchInnovations, fetchStats, onPageChange, isSearchActive } =
-  useInnovations();
+const {
+  apiData,
+  isLoading,
+  error,
+  currentPage,
+  rowsPerPage,
+  totalRecords,
+  fetchInnovations,
+  fetchStats,
+  onPageChange,
+  isSearchActive,
+  limitedInnovations
+} = useInnovations();
 
 const handlePageChange = (event: any) => {
   onPageChange(event, value.value);
@@ -85,7 +96,7 @@ onMounted(() => {
       <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
         <article
-          v-for="innovation in apiData.innovations"
+          v-for="innovation in limitedInnovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">

@@ -15,7 +15,7 @@ import { useInnovations } from './composables/useInnovations';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
-const { onSearchActive, onSearchDeactive } = useInnovations();
+const { onSearchActive, onSearchDeactive, handleSearch } = useInnovations();
 
 // Exchange between filters and search
 const isFiltersActive = ref<boolean>(true);
@@ -258,6 +258,7 @@ onMounted(() => {
             type="text"
             placeholder="Search..."
             size="small"
+            @input="(e) => handleSearch((e.target as HTMLInputElement).value)"
             class="w-full border rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
             :pt="{ root: { class: '!bg-transparent !border-gray-700' }, input: { class: '!bg-transparent !border-gray-700' } }" />
         </div>
