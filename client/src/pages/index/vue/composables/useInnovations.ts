@@ -12,6 +12,12 @@ const error = ref<Error | null>(null);
 const currentPage = ref(0);
 const rowsPerPage = ref(6);
 const totalRecords = ref(0);
+const isSearchActive = ref(false);
+
+// Search-related state
+const searchQuery = ref('');
+const filteredInnovations = ref<any[]>([]);
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 export function useInnovations() {
   const { getInnovations, getInnovationStats } = useApi();
@@ -116,6 +122,55 @@ export function useInnovations() {
     fetchInnovations(filters, newOffset, event.rows);
   };
 
+  const onSearchActive = (filters: any) => {
+    isSearchActive.value = true;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
+  };
+
+  const onSearchDeactive = (filters: any) => {
+    isSearchActive.value = false;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, rowsPerPage.value);
+  };
+
+  // Handle search with debouncing
+  const handleSearch = (query: string) => {
+    searchQuery.value = query;
+
+    isLoading.value = true;
+
+    // Clear previous timer
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+    }
+
+    // Set new debounce timer (1 second)
+    searchDebounceTimer = setTimeout(() => {
+      if (query.trim() === '') {
+        // Reset to original data when search is empty
+        filteredInnovations.value = [];
+        isLoading.value = false;
+      } else {
+        // Create shallow copy and filter
+        const innovations = apiData.value?.innovations || [];
+        filteredInnovations.value = [...innovations].filter(innovation => {
+          const searchTerm = query.toLowerCase();
+          return innovation.title?.toLowerCase().includes(searchTerm);
+        });
+        isLoading.value = false;
+      }
+    }, 1000);
+  };
+
+  // Computed for limited innovations (max 6)
+  const limitedInnovations = computed(() => {
+    if (isSearchActive.value && filteredInnovations.value.length > 0) {
+      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    }
+    return apiData.value?.innovations.slice(0, rowsPerPage.value) || [];
+  });
+
   return {
     // State (now shared across all components)
     apiData: readonly(apiData),
@@ -126,6 +181,12 @@ export function useInnovations() {
     currentPage: currentPage,
     rowsPerPage: readonly(rowsPerPage),
     totalRecords: readonly(totalRecords),
+    isSearchActive: readonly(isSearchActive),
+
+    // Search state
+    searchQuery: readonly(searchQuery),
+    filteredInnovations: readonly(filteredInnovations),
+    limitedInnovations,
 
     // Computed
     offset,
@@ -134,6 +195,9 @@ export function useInnovations() {
     // Methods
     fetchInnovations,
     fetchStats,
-    onPageChange
+    onPageChange,
+    onSearchActive,
+    onSearchDeactive,
+    handleSearch
   };
 }
