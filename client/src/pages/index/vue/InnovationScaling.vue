@@ -53,7 +53,7 @@ onMounted(() => {
 
 <template>
   <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
-  <div class="flex flex-col h-full m-4 justify-center md:m-8 md:!ml-0">
+  <div class="flex flex-col m-4 justify-center md:m-8 md:!ml-0">
     <div class="flex flex-col mb-4">
       <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.responsibleScalingTitle }}</h2>
       <div
@@ -88,6 +88,10 @@ onMounted(() => {
           {{ readinessText.description }}
         </div>
       </div>
+    </div>
+    <!-- Mobile: margin top reducido | Desktop (md+): margin original -->
+    <div class="flex w-full justify-center text-[#439255] text-sm font-light gap-2 items-center xl:text-base 2xl:text-lg">
+      {{ texts.home.seeInnovations }} <i class="pi pi-arrow-down block w-3 xl:w-4 2xl:w-4.5"></i>
     </div>
   </div>
 </template>

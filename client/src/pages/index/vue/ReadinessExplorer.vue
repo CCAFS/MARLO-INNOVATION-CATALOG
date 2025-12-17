@@ -16,11 +16,6 @@ import { texts } from './../../../content/texts.ts';
           <InnovationScaling />
         </PrimeProvider>
       </div>
-      <!-- Mobile: margin top reducido | Desktop (md+): margin original -->
-      <div
-        class="flex flex-1 w-full justify-center text-[#439255] mt-3 text-sm font-light gap-2 items-center pb-4 md:mt-2.5 md:pb-6 lg:mt-0 xl:text-base 2xl:text-lg">
-        {{ texts.home.seeInnovations }} <i class="pi pi-arrow-down block w-3 xl:w-4 2xl:w-4.5"></i>
-      </div>
     </div>
   </div>
 </template>
