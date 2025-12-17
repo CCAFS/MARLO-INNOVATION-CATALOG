@@ -8,11 +8,8 @@ import { useInnovations } from './composables/useInnovations';
 import { getAmountByCountry, getCountryColor } from '~/utils/map/getAmountByCountry';
 import { africaCountries } from './composables/useAfrica';
 
-// Estado reactivo para países seleccionados
-const selectedCountries = ref<string[]>([]);
-
 const { setValue, value } = useSharedValue();
-const { apiDataForCountry } = useInnovations(); // Now uses the same singleton instance
+const { apiDataForCountry, apiDataTotal } = useInnovations(); // Now uses the same singleton instance
 
 // Make getAmountByCountries reactive using computed
 const getAmountByCountries = computed(() => {
@@ -24,6 +21,24 @@ const getAmountByCountries = computed(() => {
   const mutableData = {
     ...apiDataForCountry.value,
     innovations: apiDataForCountry.value.innovations.map(innovation => ({
+      ...innovation,
+      sdgs: [...innovation.sdgs],
+      countries: [...innovation.countries],
+      regions: [...innovation.regions]
+    }))
+  };
+  return getAmountByCountry(mutableData);
+});
+
+const getAmountTotalByCountries = computed(() => {
+  if (!apiDataTotal.value || !apiDataTotal.value.innovations) {
+    console.log('No total API data available yet');
+    return null;
+  }
+  // Create a deep mutable copy of the readonly data
+  const mutableData = {
+    ...apiDataTotal.value,
+    innovations: apiDataTotal.value.innovations.map(innovation => ({
       ...innovation,
       sdgs: [...innovation.sdgs],
       countries: [...innovation.countries],
@@ -70,7 +85,7 @@ const countryList = computed(() => {
     if (getAmountByCountries.value && item.id) {
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
       // Add innovation count to the country data
-      const countryData = getAmountByCountries.value.find(country => country.countryId === item.id);
+      const countryData = getAmountTotalByCountries.value?.find(country => country.countryId === item.id);
       item.innovationCount = countryData ? countryData.innovationCount : 0;
     } else {
       item.fill = '#ffffff'; // Default white color
@@ -92,7 +107,7 @@ const countryList = computed(() => {
       :id="country.id"
       :title="country.title"
       :pathD="country.pathD"
-      :fill="country.fill"
+      :fill="getAmountByCountries ? country.fill : '#e0e0e0'"
       :stroke="country.stroke"
       :isoCode="country.isoCode"
       :innovation-count="country.innovationCount"

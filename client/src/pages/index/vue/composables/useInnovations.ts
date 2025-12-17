@@ -6,6 +6,7 @@ import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalogV2 | null>(null);
 const apiDataForCountry = ref<InnovationCatalogV2 | null>(null);
+const apiDataTotal = ref<InnovationCatalogV2 | null>(null);
 const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
@@ -95,6 +96,9 @@ export function useInnovations() {
 
         const dataForCountry = await getInnovations(params);
         apiDataForCountry.value = dataForCountry;
+
+        const totalData = await getInnovations({ phase: '428', offset: 0, limit: 1000 });
+        apiDataTotal.value = totalData;
       } catch (error: any) {
         console.error('Error fetching data for country filter from API:', error);
         error.value = error instanceof Error ? error : new Error(String(error));
@@ -175,6 +179,7 @@ export function useInnovations() {
     // State (now shared across all components)
     apiData: readonly(apiData),
     apiDataForCountry: readonly(apiDataForCountry),
+    apiDataTotal: readonly(apiDataTotal),
     apiDataStats: readonly(apiDataStats),
     isLoading: readonly(isLoading),
     error: readonly(error),
