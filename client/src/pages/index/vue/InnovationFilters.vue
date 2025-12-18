@@ -152,11 +152,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden h-42">
+  <div class="relative overflow-hidden h-full lg:h-42 xl:h-46">
     <Transition name="slide-right">
-      <div v-if="isFiltersActive" class="container mx-auto mt-6 px-4 lg:mt-10 lg:p-0 xl:px-16 2xl:px-20">
+      <div v-if="isFiltersActive" class="container mx-auto mt-6 px-4 lg:mt-10 lg:px-4 xl:px-12 2xl:px-16">
         <!-- Selector Filters (Country,SDGs & Innovation typology) -->
-        <div class="flex flex-row items-end gap-2 w-full lg:gap-4 mb-4">
+        <div class="flex flex-col flex-wrap lg:flex-nowrap lg:flex-row items-end gap-2 w-full lg:gap-4 mb-4">
           <!-- Filters -->
           <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
             <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
@@ -202,7 +202,7 @@ onMounted(() => {
             </div>
           </div>
           <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
-          <div class="flex items-center justify-center lg:flex-auto lg:justify-start">
+          <div class="flex items-center w-full lg:w-auto justify-center lg:flex-auto lg:justify-start">
             <button
               class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
               @click="composeClearFilters">
@@ -210,24 +210,24 @@ onMounted(() => {
             </button>
           </div>
 
-          <hr class="border-l border-gray-700 h-8" />
+          <hr class="border-l hidden lg:block border-gray-700 h-8" />
 
           <!-- Button - Change state -->
           <button
-            class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer"
+            class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer order-first lg:order-none"
             @click="toggleFilterActive"></button>
         </div>
 
         <hr class="border-l border-gray-700 h-[1px] w-full mb-4" />
 
         <!-- Chip selectors for actors typology -->
-        <div class="w-full flex flex-row gap-2 pb-2 overflow-hidden">
+        <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
           <button
             v-for="actor in actorsType"
             :key="actor.id"
             :name="actor.name"
             @click="handleSelectActorsChange(actor.name, [actor.name])"
-            class="px-3 py-2 rounded-full text-xs w-1/6 font-medium cursor-pointer flex items-center justify-between opacity-50"
+            class="px-3 py-2 rounded-full text-xs w-48 lg:w-1/6 font-medium cursor-pointer flex items-center justify-between opacity-50"
             :style="{ backgroundColor: actor.color, color: '#FFF' }">
             <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
             <component
@@ -249,7 +249,7 @@ onMounted(() => {
           class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
           @click="toggleFilterActive"></button>
 
-        <div class="border-l border-gray-700 h-8"></div>
+        <div class="border-l hidden lg:block border-gray-700 h-8"></div>
 
         <!-- Search -->
         <div class="flex flex-col gap-2 w-full">
