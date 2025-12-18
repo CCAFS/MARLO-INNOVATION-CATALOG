@@ -59,7 +59,7 @@ onMounted(() => {
 
 <template>
   <!-- Mobile: padding lateral | Desktop (xlg+): diseño original -->
-  <section class="container mx-auto px-4 mt-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
+  <section class="container mx-auto px-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
       <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->

@@ -152,9 +152,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden h-full lg:h-42 xl:h-46">
+  <div class="relative overflow-hidden h-full" :class="isFiltersActive ? 'lg:h-42 xl:h-46' : 'lg:h-24 xl:h-28'">
     <Transition name="slide-right">
-      <div v-if="isFiltersActive" class="container mx-auto mt-6 px-4 lg:mt-10 lg:px-4 xl:px-12 2xl:px-16">
+      <div v-if="isFiltersActive" class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16">
         <!-- Selector Filters (Country,SDGs & Innovation typology) -->
         <div class="flex flex-col flex-wrap lg:flex-nowrap lg:flex-row items-end gap-2 w-full lg:gap-4 mb-4">
           <!-- Filters -->
@@ -167,7 +167,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectInnovationTypeChange"
                 :options="dataInnovationTypes"
                 optionLabel="name"
-                placeholder="All"
+                placeholder="Select an innovation typology"
                 :fluid="false"
                 class="w-full"
                 size="small"
@@ -188,7 +188,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectCountriesChange"
                 :options="dataCountries"
                 optionLabel="title"
-                placeholder="All"
+                placeholder="Select a country(ies)"
                 class="w-full"
                 :fluid="false"
                 :showToggleAll="false"
@@ -212,7 +212,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectSDGChange"
                 :options="dataSDGs"
                 optionLabel="shortName"
-                placeholder="All"
+                placeholder="Select an SDG"
                 class="w-full"
                 :fluid="false"
                 size="small"
@@ -242,7 +242,9 @@ onMounted(() => {
             @click="toggleFilterActive"></button>
         </div>
 
-        <hr class="border-l border-gray-700 h-[1px] w-full mb-4" />
+        <hr class="border-l border-gray-700 h-[1px] w-full mb-2" />
+
+        <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">Select an actor(s)</label>
 
         <!-- Chip selectors for actors typology -->
         <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
@@ -267,7 +269,7 @@ onMounted(() => {
       <!-- Search visual active -->
       <div
         v-else
-        class="container mx-auto mt-6 px-4 lg:mt-10 lg:px-4 xl:px-12 2xl:px-16 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
+        class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
         <!-- Button - Change state -->
         <button
           class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
