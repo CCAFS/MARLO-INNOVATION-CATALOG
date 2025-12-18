@@ -118,6 +118,12 @@ interface Props {
   innovation: InnovationComplete;
 }
 
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/404');
+}
+
 const { innovation } = Astro.props;
 
 

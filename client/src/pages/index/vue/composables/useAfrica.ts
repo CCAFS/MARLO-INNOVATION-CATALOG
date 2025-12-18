@@ -62,7 +62,7 @@ export const africaCountries: AfricaSvgProps[] = [
   { title: 'Saint Helena', id: '192', isoCode: 'SH' },
   { title: 'Sierra Leone', id: '196', isoCode: 'SL' },
   { title: 'Senegal', id: '198', isoCode: 'SN' },
-  { title: 'Somalia', id: '236', isoCode: 'SO' },
+  { title: 'Somalia', id: '199', isoCode: 'SO' },
   { title: 'South Sudan', id: '687', isoCode: 'SS' },
   { title: 'Sao Tome and Principe', id: '201', isoCode: 'ST' },
   { title: 'Syria', id: '690', isoCode: 'SY' },
