@@ -160,7 +160,7 @@ export function useInnovations() {
         const innovations = apiData.value?.innovations || [];
         filteredInnovations.value = [...innovations].filter(innovation => {
           const searchTerm = query.toLowerCase();
-          return innovation.title?.toLowerCase().includes(searchTerm);
+          return innovation.title?.toLowerCase().includes(searchTerm) || innovation.projectInnovationId?.toString().includes(searchTerm);
         });
         isLoading.value = false;
       }
