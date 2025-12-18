@@ -168,9 +168,16 @@ onMounted(() => {
                 :options="dataInnovationTypes"
                 optionLabel="name"
                 placeholder="All"
+                :fluid="false"
                 class="w-full"
                 size="small"
-                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+                :pt="{
+                  root: { class: '!bg-transparent !border-black' },
+                  input: { class: '!bg-transparent !border-black' },
+                  overlay: { class: 'w-0' },
+                  optionLabel: { class: 'overflow-hidden text-ellipsis whitespace-nowrap min-w-0' },
+                  label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
+                }" />
             </div>
 
             <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
@@ -183,8 +190,18 @@ onMounted(() => {
                 optionLabel="title"
                 placeholder="All"
                 class="w-full"
+                :fluid="false"
+                :showToggleAll="false"
                 size="small"
-                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+                :showClear="false"
+                :maxSelectedLabels="2"
+                :pt="{
+                  root: { class: '!bg-transparent !border-black' },
+                  input: { class: '!bg-transparent !border-black' },
+                  overlay: { class: 'w-0' },
+                  optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
+                  labelContainer: { class: 'w-0 overflow-hidden text-ellipsis' }
+                }" />
             </div>
 
             <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
@@ -197,8 +214,15 @@ onMounted(() => {
                 optionLabel="shortName"
                 placeholder="All"
                 class="w-full"
+                :fluid="false"
                 size="small"
-                :pt="{ root: { class: '!bg-transparent !border-black' }, input: { class: '!bg-transparent !border-black' } }" />
+                :pt="{
+                  root: { class: '!bg-transparent !border-black' },
+                  input: { class: '!bg-transparent !border-black' },
+                  overlay: { class: 'w-0' },
+                  optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
+                  label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
+                }" />
             </div>
           </div>
           <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
@@ -243,7 +267,7 @@ onMounted(() => {
       <!-- Search visual active -->
       <div
         v-else
-        class="container mx-auto mt-6 px-4 lg:mt-10 lg:p-0 xl:px-16 2xl:px-20 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
+        class="container mx-auto mt-6 px-4 lg:mt-10 lg:px-4 xl:px-12 2xl:px-16 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
         <!-- Button - Change state -->
         <button
           class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
