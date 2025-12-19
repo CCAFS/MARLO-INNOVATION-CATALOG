@@ -24,7 +24,7 @@ const isFiltersActive = ref<boolean>(true);
 const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
   { id: 1, name: 'Banks/Investors', color: '#FF6242', imgUrl: Banks },
   { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58', imgUrl: Farmers },
-  { id: 3, name: 'Agricultural extension agents', color: '#FF8A14', imgUrl: Agricultural },
+  { id: 3, name: 'Agricultural extensions agents', color: '#FF8A14', imgUrl: Agricultural },
   { id: 4, name: 'Researchers', color: '#89AE57', imgUrl: Researchers },
   { id: 5, name: 'Policy actors (public or private)', color: '#85B1CD', imgUrl: Policy },
   { id: 6, name: 'Other', color: '#214994', imgUrl: Others }
