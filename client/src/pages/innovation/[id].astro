@@ -403,11 +403,11 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                           class="w-full"
                           />
                           <span class="tooltiptext hidden md:block">
-                            <ul>
                               {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
-                                <li class="text-white text-[12px] font-normal list-disc list-inside">{name}</li>
+                                <ul class="flex flex-col items-baseline ">
+                                  <li class="text-white text-[12px] font-normal list-disc list-inside pl-4">{name}</li>
+                                </ul>
                               )) : <p class="text-[12px]">{actor.actorInfoName}</p>}
-                            </ul>
                           </span>
                           <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
                             <ul>
