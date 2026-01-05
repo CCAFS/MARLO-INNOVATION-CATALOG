@@ -14,6 +14,7 @@ const currentPage = ref(0);
 const rowsPerPage = ref(6);
 const totalRecords = ref(0);
 const isSearchActive = ref(false);
+const isMatchingSearch = ref(false);
 
 // Search-related state
 const searchQuery = ref('');
@@ -154,6 +155,7 @@ export function useInnovations() {
       if (query.trim() === '') {
         // Reset to original data when search is empty
         filteredInnovations.value = [];
+        isMatchingSearch.value = false;
         isLoading.value = false;
       } else {
         // Create shallow copy and filter
@@ -162,6 +164,8 @@ export function useInnovations() {
           const searchTerm = query.toLowerCase();
           return innovation.title?.toLowerCase().includes(searchTerm) || innovation.projectInnovationId?.toString().includes(searchTerm);
         });
+        // Set isMatchingSearch based on whether results were found
+        isMatchingSearch.value = filteredInnovations.value.length > 0;
         isLoading.value = false;
       }
     }, 1000);
@@ -187,6 +191,7 @@ export function useInnovations() {
     rowsPerPage: readonly(rowsPerPage),
     totalRecords: readonly(totalRecords),
     isSearchActive: readonly(isSearchActive),
+    isMatchingSearch: readonly(isMatchingSearch),
 
     // Search state
     searchQuery: readonly(searchQuery),
