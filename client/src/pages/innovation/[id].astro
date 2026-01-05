@@ -609,7 +609,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           console.log('Refresh event dispatched');
         } catch (error) {
           
-          alert('Failed to submit. Please try again.' + error);
+          alert('Failed to submit. ' + error);
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {
