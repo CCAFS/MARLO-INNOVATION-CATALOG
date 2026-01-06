@@ -20,6 +20,7 @@ import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText
 import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
+import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 
 interface staticPaths {
   params: { id: string };
@@ -403,11 +404,11 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                           class="w-full"
                           />
                           <span class="tooltiptext hidden md:block">
-                            <ul>
                               {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
-                                <li class="text-white text-[12px] font-normal list-disc list-inside">{name}</li>
+                                <ul class="flex flex-col items-baseline ">
+                                  <li class="text-white text-[12px] font-normal list-disc list-inside pl-4">{name}</li>
+                                </ul>
                               )) : <p class="text-[12px]">{actor.actorInfoName}</p>}
-                            </ul>
                           </span>
                           <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
                             <ul>
@@ -527,6 +528,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       </aside>
     </div>
   </article>
+  <CustomToastWrapper client:load />
 </MainLayout>
 
 <!-- Cloudflare Turnstile Script -->
@@ -600,7 +602,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           const { postInnovationComment } = useApi();
           await postInnovationComment(commentData);
 
-          alert('Thank you for sharing your story!');
+          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 5000 });
           form.reset();
           (window as any).turnstile?.reset?.();
           
@@ -609,7 +611,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           console.log('Refresh event dispatched');
         } catch (error) {
           
-          alert('Failed to submit. Please try again.' + error);
+          (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 5000 });
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {

@@ -7,6 +7,7 @@ import Skeleton from 'primevue/skeleton';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
 import ImgNotAvailable from '~/images/no-img-available.png';
+import ImgNotSearchResults from '~/images/no-search-result-found.png';
 
 const imgEmptyDataStats = {
   title: 'No Data',
@@ -27,7 +28,9 @@ const {
   fetchStats,
   onPageChange,
   isSearchActive,
-  limitedInnovations
+  searchQuery,
+  limitedInnovations,
+  isMatchingSearch
 } = useInnovations();
 
 const handlePageChange = (event: any) => {
@@ -93,6 +96,14 @@ onMounted(() => {
     </div>
     <!-- V2 Innovations Cards from API -->
     <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
+      <!-- Control Message If Filter Return nothing -->
+      <div
+        v-if="isSearchActive && !isMatchingSearch && searchQuery.length > 0"
+        class="col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4 mb-6">
+        <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
+        <p class="text-gray-500 text-base mb-2 lg:text-lg">No search results found</p>
+        <p class="text-gray-400 text-xs lg:text-sm">Check the lastest innovations available in the system</p>
+      </div>
       <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
         <article
