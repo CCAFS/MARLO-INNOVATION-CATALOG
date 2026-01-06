@@ -20,6 +20,7 @@ import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText
 import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
+import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 
 interface staticPaths {
   params: { id: string };
@@ -527,6 +528,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       </aside>
     </div>
   </article>
+  <CustomToastWrapper client:load />
 </MainLayout>
 
 <!-- Cloudflare Turnstile Script -->
@@ -600,7 +602,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           const { postInnovationComment } = useApi();
           await postInnovationComment(commentData);
 
-          alert('Thank you for sharing your story!');
+          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 5000 });
           form.reset();
           (window as any).turnstile?.reset?.();
           
@@ -609,7 +611,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           console.log('Refresh event dispatched');
         } catch (error) {
           
-          alert('Failed to submit. ' + error);
+          (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 5000 });
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {
