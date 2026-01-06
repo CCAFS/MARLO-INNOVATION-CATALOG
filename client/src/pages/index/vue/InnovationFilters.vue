@@ -3,15 +3,18 @@ import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import { computed, onMounted, ref } from 'vue';
-import { useSharedValue } from './composables/useSharedValue';
+import { FilterType, useSharedValue } from './composables/useSharedValue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
+import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
+
 import { useApi } from '~/composables/database-api/useApi';
 
 import { Banks, Farmers, Agricultural, Researchers, Policy, Others } from '~/images/actors-icons';
-import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import { africaCountries } from './composables/useAfrica';
 import { useInnovations } from './composables/useInnovations';
+
+import areAnyInnovationsAssociatedWithFilterOption from '~/utils/filters/areAnyInnovationsAssociatedWithFilterOption';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
@@ -143,11 +146,33 @@ const composeClearFilters = () => {
 
 // Initial data fetch
 
-onMounted(() => {
-  fetchSGDsData();
-  fetchInnovationsTypeData();
-  dataCountries.value = africaCountries;
-  clearFilters();
+onMounted(async () => {
+  await Promise.all([fetchSGDsData(), fetchInnovationsTypeData()])
+    .then(() => {
+      // Data fetched
+      dataCountries.value = africaCountries;
+      clearFilters();
+    })
+    .finally(() => {
+      // Final actions if needed
+      // FSet disabled options if there it's no innovation associated
+      setTimeout(async () => {
+        dataSDGs.value = dataSDGs.value.map(sdg => ({
+          ...sdg,
+          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.SdgId, sdg.id)
+        }));
+
+        dataInnovationTypes.value = dataInnovationTypes.value.map(type => ({
+          ...type,
+          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.InnovationTypeId, type.id)
+        }));
+
+        dataCountries.value = dataCountries.value.map(country => ({
+          ...country,
+          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
+        }));
+      }, 2000);
+    });
 });
 </script>
 
@@ -167,6 +192,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectInnovationTypeChange"
                 :options="dataInnovationTypes"
                 optionLabel="name"
+                optionDisabled="disabled"
                 placeholder="Select an innovation typology"
                 :fluid="false"
                 class="w-full"
@@ -188,6 +214,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectCountriesChange"
                 :options="dataCountries"
                 optionLabel="title"
+                optionDisabled="disabled"
                 placeholder="Select a country(ies)"
                 class="w-full"
                 :fluid="false"
@@ -212,6 +239,7 @@ onMounted(() => {
                 @update:modelValue="handleSelectSDGChange"
                 :options="dataSDGs"
                 optionLabel="shortName"
+                optionDisabled="disabled"
                 placeholder="Select an SDG"
                 class="w-full"
                 :fluid="false"
