@@ -74,22 +74,23 @@ const isCountrySelected = (countryId: string): boolean => {
 };
 
 const countryList = computed(() => {
-  const list: AfricaSvgProps[] = africaCountries;
+  // Create a new array with shallow copies to ensure reactivity
+  const list: AfricaSvgProps[] = africaCountries.map((country, index) => ({
+    ...country,
+    pathD: africaSvgPaths[index],
+    stroke: '#bababa',
+    fill: '#ffffff',
+    innovationCount: 0
+  }));
 
-  // Apply paths and dynamic colors based on innovation data
-  list.forEach((item, index) => {
-    item.pathD = africaSvgPaths[index];
-    item.stroke = '#bababa';
-
+  // Apply dynamic colors and innovation counts based on API data
+  list.forEach(item => {
     // Get color based on innovation count for this country
     if (getAmountByCountries.value && item.id) {
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
       // Add innovation count to the country data
       const countryData = getAmountTotalByCountries.value?.find(country => country.countryId === item.id);
       item.innovationCount = countryData ? countryData.innovationCount : 0;
-    } else {
-      item.fill = '#ffffff'; // Default white color
-      item.innovationCount = 0;
     }
   });
 

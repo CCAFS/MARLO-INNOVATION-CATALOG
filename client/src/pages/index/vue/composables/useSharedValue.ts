@@ -46,5 +46,5 @@ export function useSharedValue() {
     };
   };
 
-  return { value, setValue, display, clearFilters, FilterType };
+  return { value, setValue, display, clearFilters };
 }
