@@ -8,6 +8,7 @@ import { getCountryTextStructured } from '~/utils/country-normalize-text/getCoun
 import EmptyDataImg from '~/images/empty-data.png';
 import ImgNotAvailable from '~/images/no-img-available.png';
 import ImgNotSearchResults from '~/images/no-search-result-found.png';
+import ImgGlobal from '~/images/icon-2.svg?component';
 
 const imgEmptyDataStats = {
   title: 'No Data',
@@ -121,6 +122,7 @@ onMounted(() => {
                 "
                 @error="(e) => { const img = e.target as HTMLImageElement; img.src = ImgNotAvailable.src; }"
                 alt="innovation"
+                loading="lazy"
                 class="w-full h-full object-cover sm:object-contain md:object-cover" />
             </div>
 
@@ -141,7 +143,7 @@ onMounted(() => {
                 </div>
                 <!-- Country chip -->
                 <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
-                  <img src="icon-2.png" class="h-4" alt="" srcset="" />
+                  <ImgGlobal class="w-3.5 h-3.5 svg-scale" width="14" height="14" style="width: 14px; height: 14px" viewBox="7 7 14 14" />
                   <span class="text-sm">{{ getCountryTextStructured([...innovation.countries], [...innovation.regions]).text }}</span>
                 </div>
                 <!-- Year chip -->
@@ -264,5 +266,10 @@ onMounted(() => {
 /* Remove text (just dots or pill shapes) */
 :deep(.p-paginator-page span) {
   display: none;
+}
+
+:deep(.svg-scale path) {
+  transform: scale(0.5);
+  transform-origin: center;
 }
 </style>
