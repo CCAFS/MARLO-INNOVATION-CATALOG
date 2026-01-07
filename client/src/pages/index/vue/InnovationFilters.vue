@@ -5,7 +5,7 @@ import InputText from 'primevue/inputtext';
 import { computed, onMounted, ref } from 'vue';
 import { FilterType, useSharedValue } from './composables/useSharedValue';
 
-import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 
 import { useApi } from '~/composables/database-api/useApi';

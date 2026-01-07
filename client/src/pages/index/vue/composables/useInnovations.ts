@@ -1,13 +1,13 @@
 // composables/useInnovations.ts
 import { ref, computed, readonly } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
-import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationCatalog, InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
 
 // Move state OUTSIDE the function to make it shared across all components
-const apiData = ref<InnovationCatalogV2 | null>(null);
-const apiDataForCountry = ref<InnovationCatalogV2 | null>(null);
-const apiDataTotal = ref<InnovationCatalogV2 | null>(null);
-const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
+const apiData = ref<InnovationCatalog | null>(null);
+const apiDataForCountry = ref<InnovationCatalog | null>(null);
+const apiDataTotal = ref<InnovationCatalog | null>(null);
+const apiDataStats = ref<InnovationCatalogStats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
 const currentPage = ref(0);
@@ -57,6 +57,9 @@ export function useInnovations() {
       }
       if (filters.actorIds && filters.actorIds.length > 0) {
         params.actorIds = filters.actorIds;
+      }
+
+      if (filters) {
       }
 
       const data = await getInnovations(params);

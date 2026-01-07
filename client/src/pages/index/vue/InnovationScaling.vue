@@ -5,7 +5,7 @@ import { texts } from '../../../content/texts';
 import { circleColors } from './colors';
 
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
 import { useApi } from '~/composables/database-api/useApi';
 
 const { value } = useSharedValue();
