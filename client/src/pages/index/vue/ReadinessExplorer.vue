@@ -2,7 +2,6 @@
 import MapFilter from './MapFilter.vue';
 import InnovationScaling from './InnovationScaling.vue';
 import PrimeProvider from './../../../providers/PrimeProvider.vue';
-import { texts } from './../../../content/texts.ts';
 </script>
 
 <template>

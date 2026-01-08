@@ -15,6 +15,7 @@ import { africaCountries } from './composables/useAfrica';
 import { useInnovations } from './composables/useInnovations';
 
 import areAnyInnovationsAssociatedWithFilterOption from '~/utils/filters/areAnyInnovationsAssociatedWithFilterOption';
+import { texts } from '~/content/texts';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
@@ -186,14 +187,14 @@ onMounted(async () => {
           <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
             <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
             <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">Innovation typology</label>
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.innovationTypology.title }}</label>
               <Select
                 :modelValue="selectedInnovationType"
                 @update:modelValue="handleSelectInnovationTypeChange"
                 :options="dataInnovationTypes"
                 optionLabel="name"
                 optionDisabled="disabled"
-                placeholder="Select an innovation typology"
+                :placeholder="texts.home.innovationFilters.filters.innovationTypology.placeholder"
                 :fluid="false"
                 class="w-full"
                 size="small"
@@ -208,14 +209,14 @@ onMounted(async () => {
 
             <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
             <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">Countries</label>
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.countries.title }}</label>
               <MultiSelect
                 :modelValue="selectedCountries"
                 @update:modelValue="handleSelectCountriesChange"
                 :options="dataCountries"
                 optionLabel="title"
                 optionDisabled="disabled"
-                placeholder="Select a country(ies)"
+                :placeholder="texts.home.innovationFilters.filters.countries.placeholder"
                 class="w-full"
                 :fluid="false"
                 :showToggleAll="false"
@@ -233,14 +234,14 @@ onMounted(async () => {
 
             <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
             <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">SDG</label>
+              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.sdgs.title }}</label>
               <Select
                 :modelValue="selectedSDG"
                 @update:modelValue="handleSelectSDGChange"
                 :options="dataSDGs"
                 optionLabel="shortName"
                 optionDisabled="disabled"
-                placeholder="Select an SDG"
+                :placeholder="texts.home.innovationFilters.filters.sdgs.placeholder"
                 class="w-full"
                 :fluid="false"
                 size="small"
@@ -258,7 +259,7 @@ onMounted(async () => {
             <button
               class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
               @click="composeClearFilters">
-              Clear Filters
+              {{ texts.home.innovationFilters.filters.clearFilters }}
             </button>
           </div>
 
@@ -272,7 +273,7 @@ onMounted(async () => {
 
         <hr class="border-l border-gray-700 h-[1px] w-full mb-2" />
 
-        <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">Select an actor(s)</label>
+        <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.actors.title }}</label>
 
         <!-- Chip selectors for actors typology -->
         <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
@@ -307,10 +308,10 @@ onMounted(async () => {
 
         <!-- Search -->
         <div class="flex flex-col gap-2 w-full">
-          <label class="font-bold text-xs xl:text-sm 2xl:text-base">Search</label>
+          <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.search.title }}</label>
           <InputText
             type="text"
-            placeholder="Search..."
+            :placeholder="texts.home.innovationFilters.search.placeholder"
             size="small"
             @input="(e) => handleSearch((e.target as HTMLInputElement).value)"
             class="w-full border rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
