@@ -4,10 +4,10 @@ import Icon1 from '../../../images/icon-1.svg';
 import Icon2 from '../../../images/icon-2.svg';
 import Icon3 from '../../../images/icon-3.svg';
 import { texts } from '../../../content/texts';
-import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
 import { useApi } from '~/composables/database-api/useApi';
 
-async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
+async function fetchStatsInnovations(): Promise<InnovationCatalogStats | null> {
   const { getInnovationStats } = useApi();
   try {
     const response = await getInnovationStats({

@@ -3,7 +3,6 @@ import { getCurrentInstance } from 'vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
-import Toast from 'primevue/toast';
 import { ToastService } from 'primevue';
 
 const inst = getCurrentInstance();
@@ -20,6 +19,5 @@ if (app && !app._context.provides['primevue']) {
 </script>
 
 <template>
-  <Toast />
   <slot />
 </template>
