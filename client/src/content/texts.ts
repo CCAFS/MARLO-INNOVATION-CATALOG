@@ -67,6 +67,84 @@ export const texts = {
       }
     }
   },
-  innovation: {},
-  footer: {}
+  innovation: {
+    goBack: 'Go back to innovations catalog',
+    innovationDetails: {
+      title: 'No Title Available',
+      narrative: 'No summary available for this innovation.'
+    },
+    keymetrics: {
+      title: 'Key metrics',
+      location: 'Location',
+      innovationTypology: 'Innovation typology',
+      scalingReadiness: 'Scaling readiness'
+    },
+    reasonKnowledgePotential: 'Adapted and scaled context / What needs to be adapted?',
+    knowledgeResultsNarrative: 'Realized/expected outcomes',
+    beneficiariesNarrative: 'Intended beneficiaries/users',
+    bundles: {
+      title: 'Bundle innovations',
+      internal: 'Internal',
+      external: 'N/A'
+    },
+    evidence: {
+      title: 'Evidence',
+      reference: {
+        deliverableName: 'No Deliverable Name',
+        reference: 'No Reference Name',
+        link: 'No Link Available'
+      }
+    },
+    communitySolutionStories: {
+      title: 'Community solution stories',
+      form: {
+        prompt: 'Share your experience with this innovation or read what others have accomplished:',
+        name: {
+          label: 'Name:',
+          placeholder: 'Enter your name'
+        },
+        email: {
+          label: 'E-mail:',
+          placeholder: 'Enter your e-mail'
+        },
+        comment: {
+          label: 'Comment:',
+          placeholder: 'Share your experience...'
+        },
+        send: 'Send'
+      }
+    },
+    aside: {
+      title: 'Quick information',
+      leadOrganization: 'Lead organization(s)',
+      keyActors: 'Key actors',
+      keyOrganizations: 'Key organizations',
+      sdgs: 'Sustainable Development Goals contribution',
+      contactInformation: {
+        title: 'Contact information',
+        subtitle: 'Get in touch with the responsible team',
+        technicalSupport: 'Technical Support',
+        technicalSupportDescription:
+          'This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team',
+        technicalSupportEmail: 'MARLOSupport@cgiar.org'
+      },
+      share: 'Share'
+    },
+    defaultValue: 'No Information available yet'
+  },
+  footer: {
+    contact: {
+      title: 'Contact',
+      email: 'MARLOSupport@cgiar.org'
+    },
+    legal: {
+      title: 'Legal',
+      privacyNotice: 'Privacy Notice',
+      termsAndConditions: 'Terms and Conditions'
+    },
+    other: {
+      title: 'Others',
+      glossary: 'Glossary of relevant items'
+    }
+  }
 };
