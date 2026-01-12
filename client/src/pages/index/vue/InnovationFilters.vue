@@ -2,6 +2,7 @@
 import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
+import Skeleton from 'primevue/skeleton';
 import { computed, onMounted, ref } from 'vue';
 import { FilterType, useSharedValue } from './composables/useSharedValue';
 
@@ -23,6 +24,7 @@ const { onSearchActive, onSearchDeactive, handleSearch } = useInnovations();
 
 // Exchange between filters and search
 const isFiltersActive = ref<boolean>(true);
+const isLoading = ref<boolean>(true);
 
 //Provsional Array for Actors Type Chips
 const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
@@ -145,9 +147,8 @@ const composeClearFilters = () => {
   });
 };
 
-// Initial data fetch
-
 onMounted(async () => {
+  isLoading.value = true;
   await Promise.all([fetchSGDsData(), fetchInnovationsTypeData()])
     .then(() => {
       // Data fetched
@@ -172,6 +173,8 @@ onMounted(async () => {
           ...country,
           disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
         }));
+
+        isLoading.value = false;
       }, 2000);
     });
 });
@@ -179,146 +182,192 @@ onMounted(async () => {
 
 <template>
   <div class="relative overflow-hidden h-full" :class="isFiltersActive ? 'lg:h-42 xl:h-46' : 'lg:h-24 xl:h-28'">
-    <Transition name="slide-right">
-      <div v-if="isFiltersActive" class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16">
-        <!-- Selector Filters (Country,SDGs & Innovation typology) -->
-        <div class="flex flex-col flex-wrap lg:flex-nowrap lg:flex-row items-end gap-2 w-full lg:gap-4 mb-4">
-          <!-- Filters -->
-          <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
-            <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
-            <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.innovationTypology.title }}</label>
-              <Select
-                :modelValue="selectedInnovationType"
-                @update:modelValue="handleSelectInnovationTypeChange"
-                :options="dataInnovationTypes"
-                optionLabel="name"
-                optionDisabled="disabled"
-                :placeholder="texts.home.innovationFilters.filters.innovationTypology.placeholder"
-                :fluid="false"
-                class="w-full"
-                size="small"
-                :pt="{
-                  root: { class: '!bg-transparent !border-black' },
-                  input: { class: '!bg-transparent !border-black' },
-                  overlay: { class: 'w-0' },
-                  optionLabel: { class: 'overflow-hidden text-ellipsis whitespace-nowrap min-w-0' },
-                  label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
-                }" />
+    <!-- Loading State with Skeleton -->
+    <div v-if="isLoading && isFiltersActive" class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16">
+      <div class="flex flex-col flex-wrap lg:flex-nowrap lg:flex-row items-end gap-2 w-full lg:gap-4 mb-4">
+        <!-- Skeleton for Innovation typology -->
+        <div class="flex flex-col gap-2 w-full">
+          <Skeleton width="100%" height="1rem" class="mb-2" />
+          <Skeleton width="100%" height="2rem" />
+        </div>
+
+        <!-- Skeleton for Countries -->
+        <div class="flex flex-col gap-2 w-full">
+          <Skeleton width="100%" height="1rem" class="mb-2" />
+          <Skeleton width="100%" height="2rem" />
+        </div>
+
+        <!-- Skeleton for SDGs -->
+        <div class="flex flex-col gap-2 w-full">
+          <Skeleton width="100%" height="1rem" class="mb-2" />
+          <Skeleton width="100%" height="2rem" />
+        </div>
+
+        <!-- Skeleton for Clear button -->
+        <div class="flex items-center w-full lg:w-auto justify-center lg:flex-auto lg:justify-start">
+          <Skeleton width="5rem" height="2rem" />
+        </div>
+
+        <Skeleton width="1px" height="2rem" />
+
+        <!-- Skeleton for Search button -->
+        <Skeleton width="2.1rem" height="2.1rem" borderRadius="0.375rem" />
+      </div>
+
+      <Skeleton width="100%" height="1px" class="mb-2" />
+
+      <!-- Skeleton for Actors label -->
+      <Skeleton width="8rem" height="1rem" class="mb-2" />
+
+      <!-- Skeleton for Actor chips -->
+      <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2">
+        <Skeleton v-for="i in 6" :key="i" width="100%" class="lg:w-1/6" height="2rem" borderRadius="9999px" />
+      </div>
+    </div>
+
+    <!-- Content - Hidden while loading -->
+    <div v-show="!isLoading">
+      <Transition name="slide-right">
+        <div v-if="isFiltersActive" class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16">
+          <!-- Selector Filters (Country,SDGs & Innovation typology) -->
+          <div class="flex flex-col flex-wrap lg:flex-nowrap lg:flex-row items-end gap-2 w-full lg:gap-4 mb-4">
+            <!-- Filters -->
+            <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
+              <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
+              <div class="flex flex-col gap-2 w-full">
+                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.innovationTypology.title }}</label>
+                <Select
+                  :modelValue="selectedInnovationType"
+                  @update:modelValue="handleSelectInnovationTypeChange"
+                  :options="dataInnovationTypes"
+                  optionLabel="name"
+                  optionDisabled="disabled"
+                  :placeholder="texts.home.innovationFilters.filters.innovationTypology.placeholder"
+                  :fluid="false"
+                  class="w-full"
+                  size="small"
+                  :pt="{
+                    root: { class: '!bg-transparent !border-black' },
+                    input: { class: '!bg-transparent !border-black' },
+                    overlay: { class: 'w-0' },
+                    optionLabel: { class: 'overflow-hidden text-ellipsis whitespace-nowrap min-w-0' },
+                    label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
+                  }" />
+              </div>
+
+              <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
+              <div class="flex flex-col gap-2 w-full">
+                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.countries.title }}</label>
+                <MultiSelect
+                  :modelValue="selectedCountries"
+                  @update:modelValue="handleSelectCountriesChange"
+                  :options="dataCountries"
+                  optionLabel="title"
+                  optionDisabled="disabled"
+                  :placeholder="texts.home.innovationFilters.filters.countries.placeholder"
+                  class="w-full"
+                  :fluid="false"
+                  :showToggleAll="false"
+                  size="small"
+                  :showClear="false"
+                  :maxSelectedLabels="2"
+                  :pt="{
+                    root: { class: '!bg-transparent !border-black' },
+                    input: { class: '!bg-transparent !border-black' },
+                    overlay: { class: 'w-0' },
+                    optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
+                    labelContainer: { class: 'w-0 overflow-hidden text-ellipsis' }
+                  }" />
+              </div>
+
+              <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
+              <div class="flex flex-col gap-2 w-full">
+                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.sdgs.title }}</label>
+                <Select
+                  :modelValue="selectedSDG"
+                  @update:modelValue="handleSelectSDGChange"
+                  :options="dataSDGs"
+                  optionLabel="shortName"
+                  optionDisabled="disabled"
+                  :placeholder="texts.home.innovationFilters.filters.sdgs.placeholder"
+                  class="w-full"
+                  :fluid="false"
+                  size="small"
+                  :pt="{
+                    root: { class: '!bg-transparent !border-black' },
+                    input: { class: '!bg-transparent !border-black' },
+                    overlay: { class: 'w-0' },
+                    optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
+                    label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
+                  }" />
+              </div>
+            </div>
+            <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
+            <div class="flex items-center w-full lg:w-auto justify-center lg:flex-auto lg:justify-start">
+              <button
+                class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
+                @click="composeClearFilters">
+                {{ texts.home.innovationFilters.filters.clearFilters }}
+              </button>
             </div>
 
-            <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
-            <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.countries.title }}</label>
-              <MultiSelect
-                :modelValue="selectedCountries"
-                @update:modelValue="handleSelectCountriesChange"
-                :options="dataCountries"
-                optionLabel="title"
-                optionDisabled="disabled"
-                :placeholder="texts.home.innovationFilters.filters.countries.placeholder"
-                class="w-full"
-                :fluid="false"
-                :showToggleAll="false"
-                size="small"
-                :showClear="false"
-                :maxSelectedLabels="2"
-                :pt="{
-                  root: { class: '!bg-transparent !border-black' },
-                  input: { class: '!bg-transparent !border-black' },
-                  overlay: { class: 'w-0' },
-                  optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
-                  labelContainer: { class: 'w-0 overflow-hidden text-ellipsis' }
-                }" />
-            </div>
+            <hr class="border-l hidden lg:block border-gray-700 h-8" />
 
-            <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
-            <div class="flex flex-col gap-2 w-full">
-              <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.sdgs.title }}</label>
-              <Select
-                :modelValue="selectedSDG"
-                @update:modelValue="handleSelectSDGChange"
-                :options="dataSDGs"
-                optionLabel="shortName"
-                optionDisabled="disabled"
-                :placeholder="texts.home.innovationFilters.filters.sdgs.placeholder"
-                class="w-full"
-                :fluid="false"
-                size="small"
-                :pt="{
-                  root: { class: '!bg-transparent !border-black' },
-                  input: { class: '!bg-transparent !border-black' },
-                  overlay: { class: 'w-0' },
-                  optionLabel: { class: 'overflow-hidden text-ellipsis min-w-0' },
-                  label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
-                }" />
-            </div>
-          </div>
-          <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
-          <div class="flex items-center w-full lg:w-auto justify-center lg:flex-auto lg:justify-start">
+            <!-- Button - Change state -->
             <button
-              class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
-              @click="composeClearFilters">
-              {{ texts.home.innovationFilters.filters.clearFilters }}
+              class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer order-first lg:order-none"
+              @click="toggleFilterActive"></button>
+          </div>
+
+          <hr class="border-l border-gray-700 h-[1px] w-full mb-2" />
+
+          <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.actors.title }}</label>
+
+          <!-- Chip selectors for actors typology -->
+          <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
+            <button
+              v-for="actor in actorsType"
+              :key="actor.id"
+              :name="actor.name"
+              @click="handleSelectActorsChange(actor.name, [actor.name])"
+              class="px-3 py-2 rounded-full text-xs w-48 lg:w-1/6 font-medium cursor-pointer flex items-center justify-between opacity-50"
+              :style="{ backgroundColor: actor.color, color: '#FFF' }">
+              <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
+              <component
+                :is="actor.imgUrl"
+                viewBox="0 0 863 863"
+                height="20"
+                width="20"
+                class="w-5 h-5 [&_path]:fill-white [&_path]:stroke-white [&_g]:stroke-white [&_g_path]:fill-white" />
             </button>
           </div>
+        </div>
 
-          <hr class="border-l hidden lg:block border-gray-700 h-8" />
-
+        <!-- Search visual active -->
+        <div
+          v-else
+          class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
           <!-- Button - Change state -->
           <button
-            class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-search p-2 cursor-pointer order-first lg:order-none"
+            class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
             @click="toggleFilterActive"></button>
+
+          <div class="border-l hidden lg:block border-gray-700 h-8"></div>
+
+          <!-- Search -->
+          <div class="flex flex-col gap-2 w-full">
+            <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.search.title }}</label>
+            <InputText
+              type="text"
+              :placeholder="texts.home.innovationFilters.search.placeholder"
+              size="small"
+              @input="(e) => handleSearch((e.target as HTMLInputElement).value)"
+              class="w-full border rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
+              :pt="{ root: { class: '!bg-transparent !border-gray-700' }, input: { class: '!bg-transparent !border-gray-700' } }" />
+          </div>
         </div>
-
-        <hr class="border-l border-gray-700 h-[1px] w-full mb-2" />
-
-        <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.actors.title }}</label>
-
-        <!-- Chip selectors for actors typology -->
-        <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
-          <button
-            v-for="actor in actorsType"
-            :key="actor.id"
-            :name="actor.name"
-            @click="handleSelectActorsChange(actor.name, [actor.name])"
-            class="px-3 py-2 rounded-full text-xs w-48 lg:w-1/6 font-medium cursor-pointer flex items-center justify-between opacity-50"
-            :style="{ backgroundColor: actor.color, color: '#FFF' }">
-            <span class="text-ellipsis whitespace-nowrap line-clamp-1 w-5/6">{{ actor.name }}</span>
-            <component
-              :is="actor.imgUrl"
-              viewBox="0 0 863 863"
-              height="20"
-              width="20"
-              class="w-5 h-5 [&_path]:fill-white [&_path]:stroke-white [&_g]:stroke-white [&_g_path]:fill-white" />
-          </button>
-        </div>
-      </div>
-
-      <!-- Search visual active -->
-      <div
-        v-else
-        class="container mx-auto px-4 lg:mt-4 lg:px-4 xl:px-12 2xl:px-16 flex flex-col gap-2 items-end w-full lg:flex-row lg:flex-none lg:gap-4">
-        <!-- Button - Change state -->
-        <button
-          class="border border-gray-700 h-8.5 w-8.5 rounded-sm hover:bg-text-600 hover:text-white pi pi-bars p-2 cursor-pointer"
-          @click="toggleFilterActive"></button>
-
-        <div class="border-l hidden lg:block border-gray-700 h-8"></div>
-
-        <!-- Search -->
-        <div class="flex flex-col gap-2 w-full">
-          <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.search.title }}</label>
-          <InputText
-            type="text"
-            :placeholder="texts.home.innovationFilters.search.placeholder"
-            size="small"
-            @input="(e) => handleSearch((e.target as HTMLInputElement).value)"
-            class="w-full border rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
-            :pt="{ root: { class: '!bg-transparent !border-gray-700' }, input: { class: '!bg-transparent !border-gray-700' } }" />
-        </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </div>
 </template>
 
