@@ -3,7 +3,7 @@ import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Skeleton from 'primevue/skeleton';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { FilterType, useSharedValue } from './composables/useSharedValue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
@@ -20,7 +20,7 @@ import { texts } from '~/content/texts';
 
 const { value, setValue, clearFilters } = useSharedValue();
 
-const { onSearchActive, onSearchDeactive, handleSearch } = useInnovations();
+const { onSearchActive, onSearchDeactive, handleSearch, apiDataTotal } = useInnovations();
 
 // Exchange between filters and search
 const isFiltersActive = ref<boolean>(true);
@@ -147,6 +147,25 @@ const composeClearFilters = () => {
   });
 };
 
+const setDisabledOptions = () => {
+  dataSDGs.value = dataSDGs.value.map(sdg => ({
+    ...sdg,
+    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.SdgId, sdg.id)
+  }));
+
+  dataInnovationTypes.value = dataInnovationTypes.value.map(type => ({
+    ...type,
+    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.InnovationTypeId, type.id)
+  }));
+
+  dataCountries.value = dataCountries.value.map(country => ({
+    ...country,
+    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
+  }));
+
+  isLoading.value = false;
+};
+
 onMounted(async () => {
   isLoading.value = true;
   await Promise.all([fetchSGDsData(), fetchInnovationsTypeData()])
@@ -155,29 +174,25 @@ onMounted(async () => {
       dataCountries.value = africaCountries;
       clearFilters();
     })
-    .finally(() => {
-      // Final actions if needed
-      // FSet disabled options if there it's no innovation associated
-      setTimeout(async () => {
-        dataSDGs.value = dataSDGs.value.map(sdg => ({
-          ...sdg,
-          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.SdgId, sdg.id)
-        }));
-
-        dataInnovationTypes.value = dataInnovationTypes.value.map(type => ({
-          ...type,
-          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.InnovationTypeId, type.id)
-        }));
-
-        dataCountries.value = dataCountries.value.map(country => ({
-          ...country,
-          disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
-        }));
-
-        isLoading.value = false;
-      }, 2000);
+    .catch(error => {
+      console.error('Error fetching filter data:', error);
+      isLoading.value = false;
     });
 });
+
+// Watch for apiDataTotal to be loaded
+watch(
+  () => apiDataTotal.value,
+  newValue => {
+    if (newValue && newValue.totalCount > 0) {
+      setDisabledOptions();
+    } else if (newValue && newValue.totalCount === 0) {
+      // If no data available, still stop loading
+      isLoading.value = false;
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
