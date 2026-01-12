@@ -6,12 +6,13 @@ import Icon3 from '../../../images/icon-3.svg';
 import { texts } from '../../../content/texts';
 import type { InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
 import { useApi } from '~/composables/database-api/useApi';
+import { phaseId } from '~/content/vars';
 
 async function fetchStatsInnovations(): Promise<InnovationCatalogStats | null> {
   const { getInnovationStats } = useApi();
   try {
     const response = await getInnovationStats({
-      phaseId: '428'
+      phaseId: phaseId.toString()
     });
     return response;
   } catch (error) {
@@ -21,7 +22,7 @@ async function fetchStatsInnovations(): Promise<InnovationCatalogStats | null> {
       innovationCount: 0,
       countryCount: 0,
       averageScalingReadiness: 0,
-      phaseId: 428
+      phaseId: phaseId
     };
   }
 }

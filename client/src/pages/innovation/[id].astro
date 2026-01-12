@@ -22,6 +22,7 @@ import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
 import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 import { texts } from '~/content/texts';
+import { phaseId } from '~/content/vars';
 
 interface staticPaths {
   params: { id: string };
@@ -60,7 +61,7 @@ export const getStaticPaths = (async () => {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
       const { getInnovationsComplete } = useApi();
       const response = await getInnovationsComplete({
-        phase: '428',
+        phase: phaseId.toString(),
         limit: 1000
       });
       return response.innovations;

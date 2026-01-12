@@ -1,3 +1,4 @@
+import { phaseId } from '~/content/vars';
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 import {
@@ -114,7 +115,7 @@ export function useApi() {
           active_since: string;
           modification_justification: string;
         }[]
-      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: 428 } }),
+      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: phaseId } }),
 
     postNewsletterSubscription: (email: string) =>
       makeRequest('POST', `${apiBaseUrl}/innovations/subscriptions`, {
