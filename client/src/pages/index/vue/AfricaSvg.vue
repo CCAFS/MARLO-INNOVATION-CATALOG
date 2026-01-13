@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { africaSvgPaths } from './AfricaSVGPaths';
 import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
