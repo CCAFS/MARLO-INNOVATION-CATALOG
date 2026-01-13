@@ -62,7 +62,7 @@ const stats = [
       stats.map((stat, index) => (
         <>
           <div class="flex items-center gap-4">
-            {<Image height="40" src={stat.imagePath} alt={stat.title} class="w-8 h-8 lg:w-10 lg:h-10" />}
+            {<Image height="40" src={stat.imagePath} alt={stat.title} class="w-8 h-8 lg:w-10 lg:h-10" loading="eager" />}
             <div class="flex flex-row lg:flex-col gap-2 lg:gap-1 justify-center items-baseline lg:items-start">
               <div class="text-base font-semibold -mb-1.5 lg:text-lg xl:text-xl">{stat.value}</div>
               <div class="text-xs text-gray-400 font-light 2xl:text-sm">{stat.title}</div>
