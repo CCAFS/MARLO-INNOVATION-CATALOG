@@ -10,10 +10,6 @@ import vue from '@astrojs/vue';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  redirects: {
-    // Catch-all: redirect non-existent routes to 404
-    '/innovation/[id]': '/404'
-  },
   vite: {
     plugins: [tailwindcss(), svgLoader()]
   },

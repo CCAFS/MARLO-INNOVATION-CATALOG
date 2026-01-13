@@ -83,19 +83,16 @@ export const getStaticPaths = (async () => {
       console.log(`Building paths from API data: ${apiData.length} innovations`);
 
       // Create paths directly from complete innovation data (no mapping needed)
-      // Filter out invalid innovations to prevent broken routes
-      const paths = apiData
-        .filter(innovation => innovation && innovation.projectInnovationId)
-        .map(innovation => {
-          console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
+      const paths = apiData.map(innovation => {
+        console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
 
-          return {
-            params: { id: innovation.projectInnovationId.toString() },
-            props: {
-              innovation
-            }
-          };
-        });
+        return {
+          params: { id: innovation.projectInnovationId.toString() },
+          props: {
+            innovation
+          }
+        };
+      });
 
       console.log(`Successfully generated ${paths.length} paths`);
       console.log(
@@ -112,27 +109,23 @@ export const getStaticPaths = (async () => {
   }
 
   // Fallback to static data
-  const fallbackPaths = innovationCatalog
-    .filter(innovation => innovation && innovation.id)
-    .flatMap(innovation => ({
-      params: { id: innovation.id.toString() },
-      props: { innovation }
-    }));
-
-  console.log(`Using ${fallbackPaths.length} innovations from static fallback data`);
-  return fallbackPaths;
+  return innovationCatalog.flatMap(innovation => ({
+    params: { id: innovation.id.toString() },
+    props: { innovation }
+  }));
 }) satisfies GetStaticPaths;
 
 interface Props {
   innovation: InnovationComplete;
 }
 
+const { id } = Astro.params;
 
-const { innovation } = Astro.props;
-
-if (!innovation) {
+if (!id) {
   return Astro.redirect('/404');
 }
+
+const { innovation } = Astro.props;
 
 
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
