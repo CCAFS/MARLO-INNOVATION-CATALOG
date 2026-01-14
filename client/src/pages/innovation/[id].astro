@@ -85,16 +85,19 @@ export const getStaticPaths = (async () => {
       console.log(`Building paths from API data: ${apiData.length} innovations`);
 
       // Create paths directly from complete innovation data (no mapping needed)
-      const paths = apiData.map(innovation => {
-        console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
+      // Filter to ensure all innovations have valid IDs
+      const paths = apiData
+        .filter(innovation => innovation && innovation.projectInnovationId)
+        .map(innovation => {
+          console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
 
-        return {
-          params: { id: innovation.projectInnovationId.toString() },
-          props: {
-            innovation
-          }
-        };
-      });
+          return {
+            params: { id: innovation.projectInnovationId.toString() },
+            props: {
+              innovation
+            }
+          };
+        });
 
       console.log(`Successfully generated ${paths.length} paths`);
       console.log(
@@ -110,11 +113,16 @@ export const getStaticPaths = (async () => {
     console.warn('Failed to fetch from API during build, falling back to static data:', error);
   }
 
-  // Fallback to static data
-  return innovationCatalog.flatMap(innovation => ({
-    params: { id: innovation.id.toString() },
-    props: { innovation }
-  }));
+  // Fallback to static data - ensure all innovations have valid IDs
+  const fallbackPaths = innovationCatalog
+    .filter(innovation => innovation && innovation.id)
+    .map(innovation => ({
+      params: { id: innovation.id.toString() },
+      props: { innovation }
+    }));
+
+  console.log(`Using ${fallbackPaths.length} innovations from static fallback data`);
+  return fallbackPaths;
 }) satisfies GetStaticPaths;
 
 interface Props {
@@ -128,6 +136,10 @@ if (!id) {
 }
 
 const { innovation } = Astro.props;
+
+if (!innovation) {
+  return Astro.redirect('/404');
+}
 
 
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);

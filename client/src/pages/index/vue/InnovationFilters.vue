@@ -107,8 +107,6 @@ const handleSelectActorsChange = (btnName: string, newValue: string[] | null) =>
     });
 
     element.classList.add('opacity-50');
-
-    return;
   } else {
     // Add new actors
     const updatedActorNames = [...actorNamesValue, ...(newValue || [])];
@@ -117,7 +115,6 @@ const handleSelectActorsChange = (btnName: string, newValue: string[] | null) =>
     });
 
     element.classList.remove('opacity-50');
-    return;
   }
 };
 
@@ -250,8 +247,11 @@ watch(
             <div class="flex flex-col gap-3 w-full lg:flex-row lg:gap-2">
               <!-- Innovation typology - Mobile: full width | Desktop (lg+): 58% width -->
               <div class="flex flex-col gap-2 w-full">
-                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.innovationTypology.title }}</label>
+                <label for="innovation-typology" class="font-bold text-xs xl:text-sm 2xl:text-base">{{
+                  texts.home.innovationFilters.filters.innovationTypology.title
+                }}</label>
                 <Select
+                  id="innovation-typology"
                   :modelValue="selectedInnovationType"
                   @update:modelValue="handleSelectInnovationTypeChange"
                   :options="dataInnovationTypes"
@@ -272,8 +272,11 @@ watch(
 
               <!-- Countries - Multiselect - Mobile: full width | Desktop (lg+): 35% width -->
               <div class="flex flex-col gap-2 w-full">
-                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.countries.title }}</label>
+                <label for="countries" class="font-bold text-xs xl:text-sm 2xl:text-base">{{
+                  texts.home.innovationFilters.filters.countries.title
+                }}</label>
                 <MultiSelect
+                  id="countries"
                   :modelValue="selectedCountries"
                   @update:modelValue="handleSelectCountriesChange"
                   :options="dataCountries"
@@ -297,8 +300,9 @@ watch(
 
               <!-- SDG - Mobile: full width | Desktop (lg+): 35% width -->
               <div class="flex flex-col gap-2 w-full">
-                <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.sdgs.title }}</label>
+                <label for="sdg" class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.sdgs.title }}</label>
                 <Select
+                  id="sdg"
                   :modelValue="selectedSDG"
                   @update:modelValue="handleSelectSDGChange"
                   :options="dataSDGs"
@@ -336,10 +340,12 @@ watch(
 
           <hr class="border-l border-gray-700 h-[1px] w-full mb-2" />
 
-          <label class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.filters.actors.title }}</label>
+          <label for="actors-container" class="w-[100%] font-bold text-xs xl:text-sm 2xl:text-base">{{
+            texts.home.innovationFilters.filters.actors.title
+          }}</label>
 
           <!-- Chip selectors for actors typology -->
-          <div class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
+          <div id="actors-container" class="w-full flex flex-row flex-wrap justify-between lg:flex-nowrap gap-2 pb-2 overflow-hidden">
             <button
               v-for="actor in actorsType"
               :key="actor.id"
@@ -371,8 +377,9 @@ watch(
 
           <!-- Search -->
           <div class="flex flex-col gap-2 w-full">
-            <label class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.search.title }}</label>
+            <label for="search-input" class="font-bold text-xs xl:text-sm 2xl:text-base">{{ texts.home.innovationFilters.search.title }}</label>
             <InputText
+              id="search-input"
               type="text"
               :placeholder="texts.home.innovationFilters.search.placeholder"
               size="small"
