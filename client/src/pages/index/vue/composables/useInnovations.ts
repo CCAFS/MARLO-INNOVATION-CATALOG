@@ -6,12 +6,20 @@ import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalogV2 | null>(null);
 const apiDataForCountry = ref<InnovationCatalogV2 | null>(null);
+const apiDataTotal = ref<InnovationCatalogV2 | null>(null);
 const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
 const currentPage = ref(0);
 const rowsPerPage = ref(6);
 const totalRecords = ref(0);
+const isSearchActive = ref(false);
+const isMatchingSearch = ref(false);
+
+// Search-related state
+const searchQuery = ref('');
+const filteredInnovations = ref<any[]>([]);
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 export function useInnovations() {
   const { getInnovations, getInnovationStats } = useApi();
@@ -44,11 +52,15 @@ export function useInnovations() {
       if (filters.countryIds && filters.countryIds.length > 0) {
         params.countryIds = filters.countryIds;
       }
+      if (filters.actorName && filters.actorName.length > 0) {
+        params.actorName = filters.actorName;
+      }
+      if (filters.actorIds && filters.actorIds.length > 0) {
+        params.actorIds = filters.actorIds;
+      }
 
       const data = await getInnovations(params);
       apiData.value = data;
-
-      console.log('Fetched innovations data:', data);
 
       if (data.totalCount !== undefined) {
         totalRecords.value = data.totalCount;
@@ -62,8 +74,6 @@ export function useInnovations() {
       }
     } finally {
       isLoading.value = false;
-
-      console.log('isLoading state set to false');
 
       try {
         const params: any = {
@@ -87,6 +97,9 @@ export function useInnovations() {
 
         const dataForCountry = await getInnovations(params);
         apiDataForCountry.value = dataForCountry;
+
+        const totalData = await getInnovations({ phase: '428', offset: 0, limit: 1000 });
+        apiDataTotal.value = totalData;
       } catch (error: any) {
         console.error('Error fetching data for country filter from API:', error);
         error.value = error instanceof Error ? error : new Error(String(error));
@@ -114,16 +127,76 @@ export function useInnovations() {
     fetchInnovations(filters, newOffset, event.rows);
   };
 
+  const onSearchActive = (filters: any) => {
+    isSearchActive.value = true;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
+  };
+
+  const onSearchDeactive = (filters: any) => {
+    isSearchActive.value = false;
+    currentPage.value = 0;
+    fetchInnovations(filters, 0, rowsPerPage.value);
+  };
+
+  // Handle search with debouncing
+  const handleSearch = (query: string) => {
+    searchQuery.value = query;
+
+    isLoading.value = true;
+
+    // Clear previous timer
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+    }
+
+    // Set new debounce timer (1 second)
+    searchDebounceTimer = setTimeout(() => {
+      if (query.trim() === '') {
+        // Reset to original data when search is empty
+        filteredInnovations.value = [];
+        isMatchingSearch.value = false;
+        isLoading.value = false;
+      } else {
+        // Create shallow copy and filter
+        const innovations = apiData.value?.innovations || [];
+        filteredInnovations.value = [...innovations].filter(innovation => {
+          const searchTerm = query.toLowerCase();
+          return innovation.title?.toLowerCase().includes(searchTerm) || innovation.projectInnovationId?.toString().includes(searchTerm);
+        });
+        // Set isMatchingSearch based on whether results were found
+        isMatchingSearch.value = filteredInnovations.value.length > 0;
+        isLoading.value = false;
+      }
+    }, 1000);
+  };
+
+  // Computed for limited innovations (max 6)
+  const limitedInnovations = computed(() => {
+    if (isSearchActive.value && filteredInnovations.value.length > 0) {
+      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    }
+    return apiData.value?.innovations.slice(0, rowsPerPage.value) || [];
+  });
+
   return {
     // State (now shared across all components)
     apiData: readonly(apiData),
     apiDataForCountry: readonly(apiDataForCountry),
+    apiDataTotal: readonly(apiDataTotal),
     apiDataStats: readonly(apiDataStats),
     isLoading: readonly(isLoading),
     error: readonly(error),
     currentPage: currentPage,
     rowsPerPage: readonly(rowsPerPage),
     totalRecords: readonly(totalRecords),
+    isSearchActive: readonly(isSearchActive),
+    isMatchingSearch: readonly(isMatchingSearch),
+
+    // Search state
+    searchQuery: readonly(searchQuery),
+    filteredInnovations: readonly(filteredInnovations),
+    limitedInnovations,
 
     // Computed
     offset,
@@ -132,6 +205,9 @@ export function useInnovations() {
     // Methods
     fetchInnovations,
     fetchStats,
-    onPageChange
+    onPageChange,
+    onSearchActive,
+    onSearchDeactive,
+    handleSearch
   };
 }

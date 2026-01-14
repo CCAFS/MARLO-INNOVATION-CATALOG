@@ -20,6 +20,7 @@ import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText
 import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
+import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 
 interface staticPaths {
   params: { id: string };
@@ -82,16 +83,19 @@ export const getStaticPaths = (async () => {
       console.log(`Building paths from API data: ${apiData.length} innovations`);
 
       // Create paths directly from complete innovation data (no mapping needed)
-      const paths = apiData.map(innovation => {
-        console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
+      // Filter to ensure all innovations have valid IDs
+      const paths = apiData
+        .filter(innovation => innovation && innovation.projectInnovationId)
+        .map(innovation => {
+          console.log(`Building path for innovation ID: ${innovation.projectInnovationId}`);
 
-        return {
-          params: { id: innovation.projectInnovationId.toString() },
-          props: {
-            innovation
-          }
-        };
-      });
+          return {
+            params: { id: innovation.projectInnovationId.toString() },
+            props: {
+              innovation
+            }
+          };
+        });
 
       console.log(`Successfully generated ${paths.length} paths`);
       console.log(
@@ -107,18 +111,33 @@ export const getStaticPaths = (async () => {
     console.warn('Failed to fetch from API during build, falling back to static data:', error);
   }
 
-  // Fallback to static data
-  return innovationCatalog.flatMap(innovation => ({
-    params: { id: innovation.id.toString() },
-    props: { innovation }
-  }));
+  // Fallback to static data - ensure all innovations have valid IDs
+  const fallbackPaths = innovationCatalog
+    .filter(innovation => innovation && innovation.id)
+    .map(innovation => ({
+      params: { id: innovation.id.toString() },
+      props: { innovation }
+    }));
+
+  console.log(`Using ${fallbackPaths.length} innovations from static fallback data`);
+  return fallbackPaths;
 }) satisfies GetStaticPaths;
 
 interface Props {
   innovation: InnovationComplete;
 }
 
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/404');
+}
+
 const { innovation } = Astro.props;
+
+if (!innovation) {
+  return Astro.redirect('/404');
+}
 
 
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
@@ -226,7 +245,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
             )
           }
           <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
-          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
             <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
@@ -392,19 +411,22 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                         <div class="relative tooltip not-underline flex items-center justify-center">
                           <Image
                           src={actor.imgUrl}
-                          alt={actor.actorInfoName || 'Actor Icon'}
+                          alt={Array.isArray(actor.actorInfoName) ? actor.actorInfoName.join(', ') : (actor.actorInfoName || 'Actor Icon')}
                           quality={'max'}
                           class="w-full"
                           />
-                          <span class="tooltiptext wide hidden md:block">
-                            {`${actor.actorInfoName || ''} : ${actor.actorsNames.join(', ')}` || 'Actor Icon'}
+                          <span class="tooltiptext hidden md:block">
+                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
+                                <ul class="flex flex-col items-baseline ">
+                                  <li class="text-white text-[12px] font-normal list-disc list-inside pl-4">{name}</li>
+                                </ul>
+                              )) : <p class="text-[12px]">{actor.actorInfoName}</p>}
                           </span>
                           <div class="md:hidden bg-white border border-border-light rounded shadow-md p-2 absolute left-1/2 transform -translate-x-1/2 top-[75%] w-full whitespace-normal break-words z-10">
                             <ul>
-                              <p class="text-[9px] font-semibold text-text-800 mb-1">{actor.actorInfoName}</p>
-                              {actor.actorsNames.map(name => (
-                                <li class="text-[7px] text-text-800 font-normal list-disc list-inside">{name}</li>
-                              ))}
+                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
+                                <li class="text-[8px] text-text-800 font-normal list-disc list-inside">{name}</li>
+                              )) : <p class="text-[8px]">{actor.actorInfoName}</p>}
                             </ul>
                           </div>
                       </div>
@@ -518,6 +540,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       </aside>
     </div>
   </article>
+  <CustomToastWrapper client:load />
 </MainLayout>
 
 <!-- Cloudflare Turnstile Script -->
@@ -591,7 +614,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           const { postInnovationComment } = useApi();
           await postInnovationComment(commentData);
 
-          alert('Thank you for sharing your story!');
+          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 5000 });
           form.reset();
           (window as any).turnstile?.reset?.();
           
@@ -600,7 +623,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           console.log('Refresh event dispatched');
         } catch (error) {
           
-          alert('Failed to submit. Please try again.' + error);
+          (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 5000 });
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {

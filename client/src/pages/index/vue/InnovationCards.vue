@@ -7,6 +7,7 @@ import Skeleton from 'primevue/skeleton';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
 import ImgNotAvailable from '~/images/no-img-available.png';
+import ImgNotSearchResults from '~/images/no-search-result-found.png';
 
 const imgEmptyDataStats = {
   title: 'No Data',
@@ -16,7 +17,21 @@ const imgEmptyDataStats = {
 };
 
 const { value } = useSharedValue();
-const { apiData, isLoading, error, currentPage, rowsPerPage, totalRecords, fetchInnovations, fetchStats, onPageChange } = useInnovations();
+const {
+  apiData,
+  isLoading,
+  error,
+  currentPage,
+  rowsPerPage,
+  totalRecords,
+  fetchInnovations,
+  fetchStats,
+  onPageChange,
+  isSearchActive,
+  searchQuery,
+  limitedInnovations,
+  isMatchingSearch
+} = useInnovations();
 
 const handlePageChange = (event: any) => {
   onPageChange(event, value.value);
@@ -32,7 +47,6 @@ watch(
   (newValue, oldValue) => {
     // Only reset if filters actually changed
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-      console.log('Filters changed, fetching new data:', newValue);
       currentPage.value = 0;
       handleFetchInnovations(0, rowsPerPage.value);
     }
@@ -48,7 +62,7 @@ onMounted(() => {
 
 <template>
   <!-- Mobile: padding lateral | Desktop (xlg+): diseño original -->
-  <section class="container mx-auto px-4 mt-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
+  <section class="container mx-auto px-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
       <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
@@ -82,10 +96,18 @@ onMounted(() => {
     </div>
     <!-- V2 Innovations Cards from API -->
     <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
+      <!-- Control Message If Filter Return nothing -->
+      <div
+        v-if="isSearchActive && !isMatchingSearch && searchQuery.length > 0"
+        class="col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4 mb-6">
+        <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
+        <p class="text-gray-500 text-base mb-2 lg:text-lg">No search results found</p>
+        <p class="text-gray-400 text-xs lg:text-sm">Check the lastest innovations available in the system</p>
+      </div>
       <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
         <article
-          v-for="innovation in apiData.innovations"
+          v-for="innovation in limitedInnovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">
@@ -156,7 +178,7 @@ onMounted(() => {
     </div>
 
     <!-- Paginator -->
-    <div v-if="totalRecords > 0" class="mt-8 mb-8">
+    <div v-if="totalRecords > 0 && !isSearchActive" class="mt-8 mb-8">
       <Paginator
         :first="currentPage * rowsPerPage"
         :rows="rowsPerPage"

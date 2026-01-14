@@ -56,13 +56,18 @@ export function useApiRequest() {
           ...(options?.body && { body: JSON.stringify(options.body) })
         });
 
+        const data = await response.json();
+
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          if (data.message) {
+            throw new Error(data.message);
+          } else {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
         }
 
-        const data = await response.json();
         return data as T;
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {

@@ -6,7 +6,7 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="w-full h-auto max-h-[300px] mx-auto my-4 md:max-h-none md:m-8 md:mb-5 md:-ml-2.5 md:mt-2.5"
+    class="w-full h-auto max-h-[300px] mx-auto my-4 md:max-h-none md:m-8 md:mb-5 md:-ml-2.5"
     shape-rendering="geometricPrecision"
     preserveAspectRatio="xMidYMid meet">
     <g filter="url(#filter0_d_532_106)">
@@ -216,7 +216,7 @@
   </svg>
   <!-- Overlay Info Note Circle of how interact with the map-->
   <div
-    class="absolute w-[260px] h-[260px] md:w-[280px] md:h-[280px] lg:w-[400px] lg:h-[400px] top-8 left-[16.75%] sm:left-[25.5%] md:left-3 md:top-6 lg:top-10 lg:left-6.5 flex flex-col justify-center text-center items-center bg-gray-900/50 text-white text-sm md:text-base px-3 py-1 rounded-full gap-4 hidden"
+    class="absolute w-[260px] h-[260px] md:w-[280px] md:h-[280px] lg:w-[400px] lg:h-[400px] xl:h-[430px] xl:w-[430px] 2xl:h-[460px] 2xl:w-[460px] top-8 left-[16.75%] sm:left-[25.5%] md:left-3 md:top-11.5 lg:top-[10.5%] lg:left-6 xl:left-7 xl:top-[11%] 2xl:top-[10.5%] flex flex-col justify-center text-center items-center bg-gray-900/50 text-white text-sm md:text-base px-3 py-1 rounded-full gap-4 hidden"
     id="info-note">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40" fill="none">
       <path
