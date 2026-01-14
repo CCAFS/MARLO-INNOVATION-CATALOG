@@ -7,7 +7,6 @@ import Paginator from 'primevue/paginator';
 import Skeleton from 'primevue/skeleton';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
-import ImgNotAvailable from '~/images/no-img-available.png';
 import ImgNotSearchResults from '~/images/no-search-result-found.png';
 import ImgGlobal from '~/images/icon-2.svg?component';
 import { texts } from '~/content/texts';
