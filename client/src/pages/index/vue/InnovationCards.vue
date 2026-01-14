@@ -2,14 +2,17 @@
 import { onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
+import { useImageOptimization } from '~/utils/images/useImageOptimization';
 import Paginator from 'primevue/paginator';
 import Skeleton from 'primevue/skeleton';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import EmptyDataImg from '~/images/empty-data.png';
-import ImgNotAvailable from '~/images/no-img-available.png';
 import ImgNotSearchResults from '~/images/no-search-result-found.png';
 import ImgGlobal from '~/images/icon-2.svg?component';
 import { texts } from '~/content/texts';
+
+// Initialize image optimization utility
+const { getOptimizedUrl, getBlurPlaceholder, imageLoadingStates, handleImageLoad, handleImageError } = useImageOptimization();
 
 const imgEmptyDataStats = {
   title: 'No Data',
@@ -114,17 +117,30 @@ onMounted(() => {
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">
             <!-- Image section: 1/3 width -->
-            <div class="w-1/3 flex-shrink-0">
+            <div class="w-1/3 flex-shrink-0 overflow-hidden relative bg-gray-100">
+              <!-- Placeholder/skeleton while loading -->
+              <Skeleton v-if="!imageLoadingStates[innovation.id] || imageLoadingStates[innovation.id] === 'loading'" width="100%" height="100%" />
+
+              <!-- Low Quality Image Placeholder (LQIP) - shows blurred version while loading -->
               <img
-                :src="
-                  innovation.projectInnovationId
-                    ? `https://aiccra-innovations-images.s3.us-east-1.amazonaws.com/image-${innovation.projectInnovationId}`
-                    : ImgNotAvailable.src
-                "
-                @error="(e) => { const img = e.target as HTMLImageElement; img.src = ImgNotAvailable.src; }"
-                alt="innovation"
+                v-if="innovation.projectInnovationId"
+                :src="getBlurPlaceholder(innovation.projectInnovationId)"
+                alt="innovation-placeholder"
+                class="w-full h-full object-cover sm:object-contain md:object-cover absolute inset-0 blur-md" />
+
+              <!-- Main Image -->
+              <img
+                :src="getOptimizedUrl(innovation.projectInnovationId)"
+                :alt="`${innovation.title || 'innovation'}`"
                 loading="lazy"
-                class="w-full h-full object-cover sm:object-contain md:object-cover" />
+                decoding="async"
+                @load="handleImageLoad(innovation.id)"
+                @error="e => handleImageError(e, innovation.id)"
+                class="w-full h-full object-cover sm:object-contain md:object-cover relative z-10 transition-opacity duration-300"
+                :class="{
+                  'opacity-0': imageLoadingStates[innovation.id] === 'loading',
+                  'opacity-100': imageLoadingStates[innovation.id] === 'loaded'
+                }" />
             </div>
 
             <!-- Content section: 2/3 width -->

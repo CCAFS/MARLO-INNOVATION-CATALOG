@@ -1,6 +1,7 @@
 ---
 const currentYear = new Date().getFullYear();
 import { Image } from 'astro:assets';
+import { texts } from '~/content/texts';
 import Tractor from '~/images/tractor.png';
 ---
 
@@ -16,31 +17,33 @@ import Tractor from '~/images/tractor.png';
       <div class="grid grid-cols-1 gap-6 pb-6 lg:grid-cols-[1fr_0.5fr_0.5fr] lg:gap-0 lg:pb-10">
         <!-- Contact Information -->
         <div class="h-fit text-left text-xs lg:text-sm">
-          <strong class="text-medium">Contact</strong>
+          <strong class="text-medium">{texts.footer.contact.title}</strong>
           <ul>
-            <li class="opacity-70"><a class="hover:underline" href="mailto:MARLOSupport@cgiar.org">MARLOSupport@cgiar.org</a></li>
+            <li class="opacity-70"><a class="hover:underline" href="mailto:MARLOSupport@cgiar.org">{texts.footer.contact.email}</a></li>
           </ul>
         </div>
         <!-- Legal Information -->
         <div class="h-fit text-left text-xs lg:text-sm">
-          <strong class="text-medium">Legal</strong>
+          <strong class="text-medium">{texts.footer.legal.title}</strong>
           <ul>
             <li class="opacity-70">
-              <a class="hover:underline" target="_blank" href="https://aiccra.marlo.cgiar.org/legalInformation.do#privacyNotice">Privacy Notice </a>
+              <a class="hover:underline" target="_blank" href="https://aiccra.marlo.cgiar.org/legalInformation.do#privacyNotice"
+                >{texts.footer.legal.privacyNotice}</a
+              >
             </li>
             <li class="opacity-70">
               <a class="hover:underline" target="_blank" href="https://aiccra.marlo.cgiar.org/legalInformation.do#termsConditions"
-                >Terms and Conditions</a
+                >{texts.footer.legal.termsAndConditions}</a
               >
             </li>
           </ul>
         </div>
         <!-- Glossary -->
         <div class="h-fit text-left text-xs lg:text-sm">
-          <strong class="text-medium">Others</strong>
+          <strong class="text-medium">{texts.footer.other.title}</strong>
           <ul>
             <li class="opacity-70">
-              <a class="hover:underline" target="_blank" href="https://aiccra.marlo.cgiar.org/glossary.do">Glossary of relevant items </a>
+              <a class="hover:underline" target="_blank" href="https://aiccra.marlo.cgiar.org/glossary.do">{texts.footer.other.glossary}</a>
             </li>
           </ul>
         </div>

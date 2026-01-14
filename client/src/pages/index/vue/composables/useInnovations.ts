@@ -1,6 +1,7 @@
 // composables/useInnovations.ts
 import { ref, computed, readonly } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
+import { phaseId } from '~/content/vars';
 import type { InnovationCatalog, InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
 import type { Filters } from '~/interfaces/search-filters.interface';
 
@@ -36,7 +37,7 @@ export function useInnovations() {
       error.value = null;
 
       const params: any = {
-        phase: '428',
+        phase: phaseId,
         offset: pageOffset,
         limit: pageLimit
       };
@@ -78,7 +79,7 @@ export function useInnovations() {
 
       try {
         const params: any = {
-          phase: '428',
+          phase: phaseId,
           offset: 0,
           limit: 1000
         };
@@ -105,7 +106,7 @@ export function useInnovations() {
         const dataForCountry = await getInnovations(params);
         apiDataForCountry.value = dataForCountry;
 
-        const totalData = await getInnovations({ phase: '428', offset: 0, limit: 1000 });
+        const totalData = await getInnovations({ phase: phaseId.toString(), offset: 0, limit: 1000 });
         apiDataTotal.value = totalData;
       } catch (error: any) {
         console.error('Error fetching data for country filter from API:', error);
@@ -119,7 +120,7 @@ export function useInnovations() {
 
   const fetchStats = async () => {
     try {
-      const data = await getInnovationStats({ phaseId: '428' });
+      const data = await getInnovationStats({ phaseId: phaseId.toString() });
       apiDataStats.value = data;
       totalRecords.value = data.innovationCount || 0;
     } catch (err) {
