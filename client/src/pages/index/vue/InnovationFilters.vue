@@ -145,20 +145,26 @@ const composeClearFilters = () => {
 };
 
 const setDisabledOptions = () => {
-  dataSDGs.value = dataSDGs.value.map(sdg => ({
-    ...sdg,
-    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.SdgId, sdg.id)
-  }));
+  dataSDGs.value = dataSDGs.value
+    .map(sdg => ({
+      ...sdg,
+      disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.SdgId, sdg.id)
+    }))
+    .sort((a, b) => (a.disabled === b.disabled ? 0 : a.disabled ? 1 : -1));
 
-  dataInnovationTypes.value = dataInnovationTypes.value.map(type => ({
-    ...type,
-    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.InnovationTypeId, type.id)
-  }));
+  dataInnovationTypes.value = dataInnovationTypes.value
+    .map(type => ({
+      ...type,
+      disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.InnovationTypeId, type.id)
+    }))
+    .sort((a, b) => (a.disabled === b.disabled ? 0 : a.disabled ? 1 : -1));
 
-  dataCountries.value = dataCountries.value.map(country => ({
-    ...country,
-    disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
-  }));
+  dataCountries.value = dataCountries.value
+    .map(country => ({
+      ...country,
+      disabled: !areAnyInnovationsAssociatedWithFilterOption(FilterType.CountryIds, Number.parseInt(country.id))
+    }))
+    .sort((a, b) => (a.disabled === b.disabled ? 0 : a.disabled ? 1 : -1));
 
   isLoading.value = false;
 };
