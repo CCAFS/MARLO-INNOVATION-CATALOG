@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import MapFilter from './MapFilter.vue';
-import InnovationFilters from './InnovationFilters.vue';
+import InnovationScaling from './InnovationScaling.vue';
 import PrimeProvider from './../../../providers/PrimeProvider.vue';
-import { texts } from './../../../content/texts.ts';
 </script>
 
 <template>
@@ -13,13 +12,8 @@ import { texts } from './../../../content/texts.ts';
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[2fr_1.75fr] xl:grid-cols-[2fr_2.25fr] 2xl:grid-cols-[2fr_2.75fr] relative">
         <MapFilter />
         <PrimeProvider>
-          <InnovationFilters />
+          <InnovationScaling />
         </PrimeProvider>
-      </div>
-      <!-- Mobile: margin top reducido | Desktop (md+): margin original -->
-      <div
-        class="flex flex-1 w-full justify-center text-[#439255] mt-3 text-sm font-light gap-2 items-center pb-4 md:mt-2.5 md:pb-6 lg:mt-0 xl:text-base 2xl:text-lg">
-        {{ texts.home.seeInnovations }} <i class="pi pi-arrow-down block w-3 xl:w-4 2xl:w-4.5"></i>
       </div>
     </div>
   </div>

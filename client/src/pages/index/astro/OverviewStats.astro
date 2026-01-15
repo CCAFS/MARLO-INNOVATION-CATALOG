@@ -4,14 +4,15 @@ import Icon1 from '../../../images/icon-1.svg';
 import Icon2 from '../../../images/icon-2.svg';
 import Icon3 from '../../../images/icon-3.svg';
 import { texts } from '../../../content/texts';
-import type { InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
 import { useApi } from '~/composables/database-api/useApi';
+import { phaseId } from '~/content/vars';
 
-async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null> {
+async function fetchStatsInnovations(): Promise<InnovationCatalogStats | null> {
   const { getInnovationStats } = useApi();
   try {
     const response = await getInnovationStats({
-      phaseId: '428'
+      phaseId: phaseId.toString()
     });
     return response;
   } catch (error) {
@@ -21,7 +22,7 @@ async function fetchStatsInnovations(): Promise<InnovationCatalogV2Stats | null>
       innovationCount: 0,
       countryCount: 0,
       averageScalingReadiness: 0,
-      phaseId: 428
+      phaseId: phaseId
     };
   }
 }
@@ -48,11 +49,12 @@ const stats = [
 ---
 
 <!-- Mobile: padding lateral | Desktop (xlg+): diseño original -->
-<div class="container mx-auto flex flex-col gap-4 mt-6 px-4 lg:flex-row lg:justify-between lg:mt-10 lg:px-4 xl:px-8 2xl:px-12">
+<div
+  class="container mx-auto flex flex-col text-center items-center gap-4 mt-6 px-4 lg:flex-row lg:justify-between lg:mt-10 lg:px-4 xl:px-8 2xl:px-12">
   <!-- Mobile: centrado, text base | Desktop (lg+): alineación izquierda, tamaño original -->
   <div
-    class="uppercase text-[#0277A2] text-base font-bold w-full text-center lg:text-left lg:text-xl lg:max-w-[475px] xl:max-w-[550px] 2xl:max-w-[650px] px-16 md:p-0">
-    {texts.home.overviewStatsTitle}
+    class="uppercase text-[#0277A2] text-lg font-bold w-full text-center content-center max-w-[350px] sm:max-w-[600px] lg:text-left lg:text-xl lg:max-w-[400px] xl:max-w-[600px] 2xl:max-w-[700px] 2xl:text-2xl px-8 md:p-0">
+    {texts.home.overviewStats.title}
   </div>
   <!-- Mobile: stack vertical con separadores horizontales | Desktop (lg+): horizontal con separadores verticales -->
   <div
@@ -61,8 +63,8 @@ const stats = [
       stats.map((stat, index) => (
         <>
           <div class="flex items-center gap-4">
-            {<Image height="40" src={stat.imagePath} alt={stat.title} class="w-8 h-8 lg:w-10 lg:h-10" />}
-            <div class="flex flex-row md:flex-col gap-2 md:gap-1 justify-center items-center md:items-start">
+            {<Image height="40" src={stat.imagePath} alt={stat.title} class="w-8 h-8 lg:w-10 lg:h-10" loading="eager" />}
+            <div class="flex flex-row lg:flex-col gap-2 lg:gap-1 justify-center items-baseline lg:items-start">
               <div class="text-base font-semibold -mb-1.5 lg:text-lg xl:text-xl">{stat.value}</div>
               <div class="text-xs text-gray-400 font-light 2xl:text-sm">{stat.title}</div>
             </div>

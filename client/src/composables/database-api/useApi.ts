@@ -1,12 +1,13 @@
+import { phaseId } from '~/content/vars';
 import { useApiRequest } from './useApiRequest';
 import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 import {
   type InnovationType,
-  type InnovationCatalogV2,
-  type InnovationCatalogV2Stats,
+  type InnovationCatalog,
+  type InnovationCatalogStats,
   type SdgResume,
   type PDFInfo
-} from '~/interfaces/innovation-catalog-v2.interface';
+} from '~/interfaces/innovation-catalog.interface';
 import type { SearchComplete } from '~/interfaces/search-complete.interface';
 
 export function useApi() {
@@ -35,10 +36,10 @@ export function useApi() {
       innovationTypeId?: number;
       sdgId?: number;
       countryIds?: number[];
-    }) => makeRequest<InnovationCatalogV2>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
+    }) => makeRequest<InnovationCatalog>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
 
     getInnovationStats: (params?: { phaseId?: string }) =>
-      makeRequest<InnovationCatalogV2Stats>('GET', `${apiBaseUrl}/innovations/stats`, {
+      makeRequest<InnovationCatalogStats>('GET', `${apiBaseUrl}/innovations/stats`, {
         params,
         retry: 2, // Retry up to 2 times (3 total attempts)
         retryDelay: 2000 // Wait 2 seconds between retries
@@ -114,7 +115,7 @@ export function useApi() {
           active_since: string;
           modification_justification: string;
         }[]
-      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: 428 } }),
+      >('GET', `${apiBaseUrl}/innovation-comments/innovation/${innovationId}`, { params: { phaseId: phaseId } }),
 
     postNewsletterSubscription: (email: string) =>
       makeRequest('POST', `${apiBaseUrl}/innovations/subscriptions`, {

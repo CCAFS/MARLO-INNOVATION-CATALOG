@@ -4,28 +4,7 @@ import { Image } from 'astro:assets';
 import BgImgSolutionStories from '~/images/bg_img_solution_stories.png';
 import { useApi } from '~/composables/database-api/useApi';
 import EmptyDataImg from '~/images/empty-data.png';
-
-
-const solutionStories = [
-  {
-    id: 1,
-    author: "Jhon Doe",
-    date: "22 Jul 2024",
-    rating: 0.62,
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    innovation: "The Community of Practices of Institutions creates an environment for...",
-    readMoreLink: "#"
-  },
-  {
-    id: 2,
-    author: "Jane Smith",
-    date: "18 Jul 2024",
-    rating: 0.75,
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.",
-    innovation: "Digital Innovation Platform for Agricultural Solutions transforms...",
-    readMoreLink: "#"
-  }
-];
+import { texts } from '~/content/texts';
 
 let fetchedStories: {
           id: number;
@@ -69,7 +48,7 @@ fetchedStories = await getCommunityStories();
   <div class="relative z-10 h-full flex flex-col justify-start items-center container mx-auto px-4 pt-8 pb-8 lg:p-4 lg:pt-4 xl:px-8 2xl:px-12 md:!pt-20">
     <div class="w-full mx-auto">
       <!-- Mobile: texto más pequeño, margin bottom reducido | Desktop (lg+): tamaño original -->
-      <h1 class="text-sm font-bold text-[#1E1E1E] mb-4 text-left lg:text-base lg:mb-8 xl:text-lg 2xl:text-xl">Solution Stories</h1>
+      <h1 class="text-sm font-bold text-[#1E1E1E] mb-4 text-left lg:text-base lg:mb-8 xl:text-lg 2xl:text-xl">{ texts.home.solutionStories.title }</h1>
     </div>
 
     <!-- Mobile: 1 columna, gap reducido | Desktop (md+): 2 columnas, gap original -->
@@ -104,7 +83,7 @@ fetchedStories = await getCommunityStories();
               <!-- Innovation Title -->
               <div class="mb-4 mt-2">
                 <p class="text-xs text-gray-600 line-clamp-1 sm:text-sm">
-                  <span class="font-semibold">Innovation:</span> {story.innovation_name ? story.innovation_name : 'N/A'}
+                  <span class="font-semibold">Innovation:</span> {story.innovation_name ? story.innovation_name : texts.home.solutionStories.solutionDetails.innovationRelated}
                 </p>
               </div>
 
@@ -113,7 +92,7 @@ fetchedStories = await getCommunityStories();
                 <a
                   href={`/innovation/${story.innovation_id}`}
                   class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200 sm:text-sm">
-                  Read More
+                  { texts.home.solutionStories.solutionDetails.readMore }
                 </a>
               </div>
             </article>
@@ -121,8 +100,8 @@ fetchedStories = await getCommunityStories();
         ) : (
           <div class="col-span-full flex flex-col items-center justify-center py-8 bg-white rounded-lg shadow-md lg:py-12">
             {(<Image height={100} quality="max" src={EmptyDataImg} alt="No Community Stories" class={'pb-1 w-16 h-auto lg:w-auto'} />)}
-            <p class="text-gray-500 text-base mb-2 lg:text-lg">No solution stories available</p>
-            <p class="text-gray-400 text-xs lg:text-sm">Check back later for new stories</p>
+            <p class="text-gray-500 text-base mb-2 lg:text-lg">{ texts.home.solutionStories.noResultsAvailable.title }</p>
+            <p class="text-gray-400 text-xs lg:text-sm">{ texts.home.solutionStories.noResultsAvailable.subtitle }</p>
           </div>
         )}
     </div>
