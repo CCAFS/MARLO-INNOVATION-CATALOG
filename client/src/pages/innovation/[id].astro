@@ -21,6 +21,8 @@ import { getActorsByGroup } from '~/utils/actors/getActorsByGroup';
 import { useApi } from '~/composables/database-api/useApi';
 import CommentCards from './vue/CommentCards.vue';
 import CustomToastWrapper from './vue/CustomToastWrapper.vue';
+import { texts } from '~/content/texts';
+import { phaseId } from '~/content/vars';
 
 interface staticPaths {
   params: { id: string };
@@ -59,7 +61,7 @@ export const getStaticPaths = (async () => {
       // Use full API URL for build-time fetching (SSG), since no proxy is available during build
       const { getInnovationsComplete } = useApi();
       const response = await getInnovationsComplete({
-        phase: '428',
+        phase: phaseId.toString(),
         limit: 1000
       });
       return response.innovations;
@@ -152,7 +154,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
     <!-- Return link - Mobile: margin reducido, texto más pequeño | Desktop (lg+): diseño original -->
     <a href="/" class="my-6 mb-4 text-primary-300 text-xs font-semibold flex items-center gap-2 hover:underline lg:my-12 lg:mb-8 lg:text-sm xl:text-sm 2xl:text-base">
       <span class="pi pi-arrow-left text-xs lg:text-sm"></span>
-      <p>Go back to innovations catalog</p>
+      <p>{texts.innovation.goBack}</p>
     </a>
 
     <!-- Title and main options -->
@@ -160,7 +162,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       <!-- Mobile: stack vertical en pantallas pequeñas | Desktop (lg+): horizontal con gap -->
       <div class="flex flex-col gap-3 mb-2.5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-4">
         <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
-        <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title}</h1>
+        <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title ?? texts.innovation.innovationDetails.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
           <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
@@ -169,7 +171,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
         </div>
       </div>
       <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
-      <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative}</p>
+      <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative ?? texts.innovation.innovationDetails.narrative}</p>
     </section>
 
     <!-- Main Content - Mobile: 1 columna stack | Desktop (lg+): grid 4 columnas original -->
@@ -178,7 +180,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       <section class="col-span-1 lg:col-span-3">
         <!-- Key Metrics - Mobile: padding reducido | Desktop (lg+): padding original -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">Key metrics</p>
+          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.keymetrics.title}</p>
           <!-- Mobile: flex column stack, gap reducido | Desktop (md+): flex row con gap | Desktop (lg+): justify around con padding -->
           <div class="flex flex-col gap-4 mt-3 lg:flex-row lg:flex-wrap lg:gap-12 lg:mt-4 lg:justify-around lg:px-12 xl:px-24">
             <!-- Geoscope - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
@@ -187,7 +189,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
               <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Location</span>
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.location}</span>
                 <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
                   {
                     countryText.hasMore ? (
@@ -211,7 +213,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
               <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Innovation typology</span>
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.innovationTypology}</span>
                 <span class="text-xs text-text-800 font-normal w-full md:w-[150px] lg:w-[250px] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
               </div>
             </div>
@@ -221,7 +223,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
               </div>
               <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">Scaling readiness</span>
+                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.scalingReadiness}</span>
                 <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base"
                   >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
                 >
@@ -237,7 +239,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               <></>
             ) : (
               <>
-                <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Adapted and scaled context / What needs to be adapted?</p>
+                <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.reasonKnowledgePotential}</p>
                 <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
                   {innovation.reasonKnowledgePotential}
                 </p>
@@ -245,22 +247,22 @@ const actorsInfo = getActorsByGroup(innovation.actors);
             )
           }
           <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm xl:text-base 2xl:text-lg">Realized/expected outcomes</p>
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.knowledgeResultsNarrative}</p>
             <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
-              <span class="text-gray-500">No Information available yet</span>
+              <span class="text-gray-500">{texts.innovation.defaultValue}</span>
               ) : (
               innovation.knowledgeResultsNarrative
               )
             }
             </p>
           <!-- Intended beneficiaries/users -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Intended beneficiaries/users</p>
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.beneficiariesNarrative}</p>
           <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
-                <span class="text-gray-500">No Information available yet</span>
+                <span class="text-gray-500">{texts.innovation.defaultValue}</span>
               ) : (
                 innovation.beneficiariesNarrative
               )
@@ -269,7 +271,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           <!-- Bundle innovations -->
           {innovation.bundles != null && innovation.bundles.length > 0 && (
           <>
-            <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Bundle innovations</p>
+            <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.bundles.title}</p>
             <p class="text-xs text-text-800 w-max font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
             <div class="w-full pb-1">
               {innovation.bundles.map(bundle => (
@@ -284,8 +286,8 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                       d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
                       fill="#439255" />
                     </svg>
-                    <span class="text-sm">{bundle.selectedInnovationReadinessScale - 1}</span>
-                    ) : <span class="text-sm">Internal</span>
+                    <span class="text-sm">{bundle.selectedInnovationReadinessScale ? bundle.selectedInnovationReadinessScale - 1 : texts.innovation.bundles.external}</span>
+                    ) : <span class="text-sm">{texts.innovation.bundles.external}</span>
                   }
                 </div>
                 <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
@@ -296,24 +298,24 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           </>
           )}
           <!-- Piece of evidence -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">Evidence</p>
+          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.evidence.title}</p>
           <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
             {
               innovation.references == null || innovation.references.length === 0 ? (
-                <span class="text-gray-500">No Information available yet</span>
+                <span class="text-gray-500">{texts.innovation.defaultValue}</span>
               ) : (
                 <ul class="pl-4">
                   {
                   innovation.references.map(reference => 
                     reference.hasEvidenceByDeliverable ? (
                       <li class="py-1 list-disc">
-                        <p class="text-sm font-normal">{reference.deliverableName ? reference.deliverableName : "No Deliverable Name"}</p>
-                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.disseminationUrl ? reference.disseminationUrl : "#"}>{reference.disseminationUrl ? reference.disseminationUrl : "No Link Available"}</a>
+                        <p class="text-sm font-normal">{reference.deliverableName ? reference.deliverableName : texts.innovation.evidence.reference.deliverableName}</p>
+                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.disseminationUrl ? reference.disseminationUrl : "#"}>{reference.disseminationUrl ? reference.disseminationUrl : texts.innovation.evidence.reference.link}</a>
                       </li>
                     ) : (
                       <li class="py-1 list-disc">
-                        <p class="text-sm font-normal">{reference.reference ? reference.reference : "No Reference Name"}</p>
-                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : "No Link Available"}</a>
+                        <p class="text-sm font-normal">{reference.reference ? reference.reference : texts.innovation.evidence.reference.reference}</p>
+                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : texts.innovation.evidence.reference.link}</a>
                       </li>
                     )
                   )
@@ -325,7 +327,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
         </div>
         <!-- Community solution stories - Mobile: padding reducido | Desktop (lg+): padding original -->
         <section class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 relative lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Community solution stories</p>
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.communitySolutionStories.title}</p>
 
           <!-- Comment stories -->
           <div data-comment-cards>
@@ -334,21 +336,21 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           
           <!-- Input container -->
           <form class="mt-4 lg:mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Share your experience with this innovation or read what others have accomplished:</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.communitySolutionStories.form.prompt}</p>
             <!-- Content Form - Mobile: sin margin izquierdo | Desktop (lg+): margin original -->
             <div class="mt-2 flex flex-col gap-1 lg:ml-4">
               <!-- Name Input -->
               <Input
-                label="Name:"
-                placeholder="Enter your name"
+                label={texts.innovation.communitySolutionStories.form.name.label}
+                placeholder={texts.innovation.communitySolutionStories.form.name.placeholder}
                 id="name-input"
                 name="name-input"
                 required
               />
               <!-- E-mail Input -->
               <Input
-                label="E-mail:"
-                placeholder="Enter your e-mail"
+                label={texts.innovation.communitySolutionStories.form.email.label}
+                placeholder={texts.innovation.communitySolutionStories.form.email.placeholder}
                 id="email-input"
                 name="email-input"
                 type="email"
@@ -356,8 +358,8 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               />
               <!-- Comment Input -->
                <Input
-                label="Comment:"
-                placeholder="Share your experience..."
+                label={texts.innovation.communitySolutionStories.form.comment.label}
+                placeholder={texts.innovation.communitySolutionStories.form.comment.placeholder}
                 id="story-input"
                 name="story-input"
                 hasMaxLength
@@ -374,7 +376,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                   data-theme="light"
                 ></div>
                 <BasicButton
-                  text='Send'
+                  text={texts.innovation.communitySolutionStories.form.send}
                   type="submit"
                   classList="!bg-lime-500 text-white px-8 py-2.5 rounded hover:!bg-lime-800 transition-colors duration-300 sm:px-10 sm:py-3"
                 />
@@ -388,21 +390,21 @@ const actorsInfo = getActorsByGroup(innovation.actors);
         <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-4 lg:mb-6" />
         <!-- Quick Information - Mobile: padding reducido | Desktop (lg+): padding original -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Quick information</p>
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.title}</p>
 
           <div class="mb-3 lg:mb-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Lead organization(s)</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.leadOrganization}</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
                 <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
               ) : (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">This is yet to be determined.</p>
+                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{texts.innovation.defaultValue}</p>
               )
             }
           </div>
           <!-- Key actors -->
           <div class="mb-3 lg:mb-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key actors</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.keyActors}</p>
             
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-1">
                 {
@@ -433,7 +435,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                     ))
                   ) : (
                     <ul class="pl-2 col-span-3">
-                      <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                      <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
                     </ul>
                   )
                 }
@@ -441,7 +443,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           </div>
           <!-- Key organizations -->
           <div>
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Key organizations</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.keyOrganizations}</p>
             <ul class="pl-2">
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
@@ -453,14 +455,14 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                       </li>
                   ))
                 ) : (
-                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
                 )
               }
             </ul>
           </div>
           <!-- SDGs: Sustainable Development Goals contribution -->
           <div class="mt-3 lg:mt-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base mb-2">Sustainable Development Goals contribution</p>
+            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base mb-2">{texts.innovation.aside.sdgs}</p>
               {
                 innovation.sdgs && innovation.sdgs.length > 0 ? (
                   <div class="grid grid-cols-4 lg:grid-cols-3 gap-2">
@@ -475,7 +477,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                     ))}
                   </div>) : (
                   <ul>
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">This is yet to be determined.</li>
+                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
                   </ul>
                 )
               }
@@ -483,10 +485,10 @@ const actorsInfo = getActorsByGroup(innovation.actors);
         </div>
         <!-- Contact information - Mobile: padding reducido | Desktop (lg+): padding original -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">Contact information</p>
+          <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.aside.contactInformation.title}</p>
 
           <div class="mb-2">
-            <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">Get in touch with the responsible team</p>
+            <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.contactInformation.subtitle}</p>
             <ul>
               {
                 innovation.contactPersons && innovation.contactPersons.length > 0 ? (
@@ -503,29 +505,29 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                         </>
                       ))
                     ) : (
-                      <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
+                      <span class="text-xs xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</span>
                     )
                   )
                 ) : (
-                  <span class="text-xs xl:text-sm 2xl:text-base">This is yet to be determined.</span>
+                  <span class="text-xs xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</span>
                 )
               }
             </ul>
             <div class="mt-2">
-              <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">Technical Support</p>
+              <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.contactInformation.technicalSupport}</p>
               <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
-                This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team
+                {texts.innovation.aside.contactInformation.technicalSupportDescription}
               </p>
               <a
                 href="mailto:MARLOSupport@cgiar.org"
-                class="text-[11px] xl:text-sm 2xl:text-base text-primary-500 underline hover:underline break-all">MARLOSupport@cgiar.org</a
+                class="text-[11px] xl:text-sm 2xl:text-base text-primary-500 underline hover:underline break-all">{texts.innovation.aside.contactInformation.technicalSupportEmail}</a
               >
             </div>
           </div>
         </div>
         <!-- Share - Mobile: padding reducido | Desktop (lg+): padding original -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">Share</p>
+          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.share}</p>
           <!--           <BasicButton
             text="Save to favorites"
             hasIcon
@@ -614,7 +616,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           const { postInnovationComment } = useApi();
           await postInnovationComment(commentData);
 
-          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 5000 });
+          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 8000 });
           form.reset();
           (window as any).turnstile?.reset?.();
           
@@ -623,7 +625,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           console.log('Refresh event dispatched');
         } catch (error) {
           
-          (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 5000 });
+          (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 8000 });
           (window as any).turnstile?.reset?.();
         } finally {
           if (submitButton) {

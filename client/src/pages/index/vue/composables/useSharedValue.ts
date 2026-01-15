@@ -1,5 +1,6 @@
 // composables/useSharedValue.ts
 import { ref, computed } from 'vue';
+import type { Filters } from '~/interfaces/search-filters.interface';
 
 export enum FilterType {
   ScalingReadiness = 'scalingReadiness',
@@ -8,15 +9,6 @@ export enum FilterType {
   CountryIds = 'countryIds',
   ActorName = 'actorName',
   ActorIds = 'actorIds'
-}
-
-export interface Filters {
-  scalingReadiness: number | null;
-  innovationTypeId: number | null;
-  sdgId: number | null;
-  countryIds: number[] | null;
-  actorName: string[] | null;
-  actorIds: number[] | null;
 }
 
 // ref declared outside => all components share the same instance

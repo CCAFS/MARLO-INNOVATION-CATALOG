@@ -1,4 +1,4 @@
-import type { Country as CountryV2, Region as RegionV2 } from '~/interfaces/innovation-catalog-v2.interface';
+import type { Country as CountryV2, Region as RegionV2 } from '~/interfaces/innovation-catalog.interface';
 import type { Country as CountryComplete, Region as RegionComplete } from '~/interfaces/search-complete.interface';
 
 // Type for structured country text result

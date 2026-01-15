@@ -1,13 +1,15 @@
 // composables/useInnovations.ts
 import { ref, computed, readonly } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
-import type { InnovationCatalogV2, InnovationCatalogV2Stats } from '~/interfaces/innovation-catalog-v2.interface';
+import { phaseId } from '~/content/vars';
+import type { InnovationCatalog, InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
+import type { Filters } from '~/interfaces/search-filters.interface';
 
 // Move state OUTSIDE the function to make it shared across all components
-const apiData = ref<InnovationCatalogV2 | null>(null);
-const apiDataForCountry = ref<InnovationCatalogV2 | null>(null);
-const apiDataTotal = ref<InnovationCatalogV2 | null>(null);
-const apiDataStats = ref<InnovationCatalogV2Stats | null>(null);
+const apiData = ref<InnovationCatalog | null>(null);
+const apiDataForCountry = ref<InnovationCatalog | null>(null);
+const apiDataTotal = ref<InnovationCatalog | null>(null);
+const apiDataStats = ref<InnovationCatalogStats | null>(null);
 const isLoading = ref(false);
 const error = ref<Error | null>(null);
 const currentPage = ref(0);
@@ -29,13 +31,13 @@ export function useInnovations() {
   const limit = computed(() => rowsPerPage.value);
 
   // Methods
-  const fetchInnovations = async (filters: any, pageOffset = 0, pageLimit = 6) => {
+  const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
     try {
       isLoading.value = true;
       error.value = null;
 
       const params: any = {
-        phase: '428',
+        phase: phaseId,
         offset: pageOffset,
         limit: pageLimit
       };
@@ -77,7 +79,7 @@ export function useInnovations() {
 
       try {
         const params: any = {
-          phase: '428',
+          phase: phaseId,
           offset: 0,
           limit: 1000
         };
@@ -94,11 +96,17 @@ export function useInnovations() {
         if (filters.countryIds && filters.countryIds.length > 0) {
           params.countryIds = filters.countryIds;
         }
+        if (filters.actorName && filters.actorName.length > 0) {
+          params.actorName = filters.actorName;
+        }
+        if (filters.actorIds && filters.actorIds.length > 0) {
+          params.actorIds = filters.actorIds;
+        }
 
         const dataForCountry = await getInnovations(params);
         apiDataForCountry.value = dataForCountry;
 
-        const totalData = await getInnovations({ phase: '428', offset: 0, limit: 1000 });
+        const totalData = await getInnovations({ phase: phaseId.toString(), offset: 0, limit: 1000 });
         apiDataTotal.value = totalData;
       } catch (error: any) {
         console.error('Error fetching data for country filter from API:', error);
@@ -112,7 +120,7 @@ export function useInnovations() {
 
   const fetchStats = async () => {
     try {
-      const data = await getInnovationStats({ phaseId: '428' });
+      const data = await getInnovationStats({ phaseId: phaseId.toString() });
       apiDataStats.value = data;
       totalRecords.value = data.innovationCount || 0;
     } catch (err) {
@@ -120,20 +128,20 @@ export function useInnovations() {
     }
   };
 
-  const onPageChange = (event: any, filters: any) => {
+  const onPageChange = (event: any, filters: Filters) => {
     currentPage.value = event.page;
     rowsPerPage.value = event.rows;
     const newOffset = event.page * event.rows;
     fetchInnovations(filters, newOffset, event.rows);
   };
 
-  const onSearchActive = (filters: any) => {
+  const onSearchActive = (filters: Filters) => {
     isSearchActive.value = true;
     currentPage.value = 0;
     fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
   };
 
-  const onSearchDeactive = (filters: any) => {
+  const onSearchDeactive = (filters: Filters) => {
     isSearchActive.value = false;
     currentPage.value = 0;
     fetchInnovations(filters, 0, rowsPerPage.value);

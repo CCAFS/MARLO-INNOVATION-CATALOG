@@ -1,5 +1,5 @@
 // utils/map/getAmountByCountry.ts
-import type { InnovationCatalogV2 } from '~/interfaces/innovation-catalog-v2.interface';
+import type { InnovationCatalogV2 } from '~/interfaces/innovation-catalog.interface';
 
 export interface CountryInnovationData {
   countryId: string;
