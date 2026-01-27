@@ -117,8 +117,8 @@ export const texts = {
     aside: {
       title: 'Quick information',
       leadOrganization: 'Lead organization(s)',
-      keyActors: 'Key actors',
-      keyOrganizations: 'Key organizations',
+      keyActors: 'Key beneficiary actors',
+      keyOrganizations: 'Key partners and beneficiary organizations',
       sdgs: 'Sustainable Development Goals contribution',
       contactInformation: {
         title: 'Contact information',
