@@ -4,17 +4,17 @@ import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 
 const props = defineProps<AfricaSvgProps>();
 
-// Definir el evento click
+// Define the click event
 const emit = defineEmits<{
   click: [id: string];
 }>();
 
-// Calcular el color de relleno basado en si está seleccionado
+// Calculate the fill color based on selection
 const fillColor = computed(() => {
   return props.isSelected ? '#4CAF50' : props.fill;
 });
 
-// Calcular el color del borde basado en si está seleccionado
+// Calculate the stroke color based on selection
 const strokeColor = computed(() => {
   return props.isSelected ? '#2E7D32' : props.stroke;
 });
@@ -26,7 +26,7 @@ const tooltipText = computed(() => {
   return `${props.title}: ${count} ${innovationText}`;
 });
 
-// Manejar el click
+// Handle click
 const handleClick = () => {
   emit('click', props.id);
 };

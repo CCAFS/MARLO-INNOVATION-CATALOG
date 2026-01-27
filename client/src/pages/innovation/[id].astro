@@ -149,9 +149,9 @@ const actorsInfo = getActorsByGroup(innovation.actors);
 ---
 
 <MainLayout title={innovation.title} description={innovation.narrative}>
-  <!-- Mobile: padding lateral | Desktop (lg+): diseño original -->
+  <!-- Mobile: side padding | Desktop (lg+): original layout -->
   <article class="container mx-auto m-auto my-auto px-4 lg:p-0 xl:px-16 2xl:px-20">
-    <!-- Return link - Mobile: margin reducido, texto más pequeño | Desktop (lg+): diseño original -->
+    <!-- Return link - Mobile: reduced margin, smaller text | Desktop (lg+): original layout -->
     <a href="/" class="my-6 mb-4 text-primary-300 text-xs font-semibold flex items-center gap-2 hover:underline lg:my-12 lg:mb-8 lg:text-sm xl:text-sm 2xl:text-base">
       <span class="pi pi-arrow-left text-xs lg:text-sm"></span>
       <p>{texts.innovation.goBack}</p>
@@ -159,9 +159,9 @@ const actorsInfo = getActorsByGroup(innovation.actors);
 
     <!-- Title and main options -->
     <section class="max-width">
-      <!-- Mobile: stack vertical en pantallas pequeñas | Desktop (lg+): horizontal con gap -->
+      <!-- Mobile: vertical stack on small screens | Desktop (lg+): horizontal with gap -->
       <div class="flex flex-col gap-3 mb-2.5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-4">
-        <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+        <!-- Mobile: smaller text, reduced margin | Desktop (lg+): original size -->
         <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title ?? texts.innovation.innovationDetails.title}</h1>
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
@@ -170,20 +170,20 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
-      <!-- Mobile: texto más pequeño, margin reducido | Desktop (lg+): tamaño original -->
+      <!-- Mobile: smaller text, reduced margin | Desktop (lg+): original size -->
       <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative ?? texts.innovation.innovationDetails.narrative}</p>
     </section>
 
-    <!-- Main Content - Mobile: 1 columna stack | Desktop (lg+): grid 4 columnas original -->
+    <!-- Main Content - Mobile: 1-column stack | Desktop (lg+): original 4-column grid -->
     <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-4 lg:mb-12">
       <!-- Mobile: col-span-1 (full width) | Desktop (lg+): col-span-3 -->
       <section class="col-span-1 lg:col-span-3">
-        <!-- Key Metrics - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Key Metrics - Mobile: reduced padding | Desktop (lg+): original padding -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
           <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.keymetrics.title}</p>
-          <!-- Mobile: flex column stack, gap reducido | Desktop (md+): flex row con gap | Desktop (lg+): justify around con padding -->
+          <!-- Mobile: flex column stack, reduced gap | Desktop (md+): flex row with gap | Desktop (lg+): justify around with padding -->
           <div class="flex flex-col gap-4 mt-3 lg:flex-row lg:flex-wrap lg:gap-12 lg:mt-4 lg:justify-around lg:px-12 xl:px-24">
-            <!-- Geoscope - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <!-- Geoscope - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
             <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
               <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
                 {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
@@ -207,7 +207,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 </span>
               </div>
             </div>
-            <!-- Typology - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <!-- Typology - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
             <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
               <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
                 {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
@@ -217,7 +217,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 <span class="text-xs text-text-800 font-normal w-full md:w-[150px] lg:w-[250px] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
               </div>
             </div>
-            <!-- Scaling Readiness - Mobile: flex-row alineado a la izquierda | Desktop (lg+): flex-col centrado -->
+            <!-- Scaling Readiness - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
             <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
               <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
                 {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
@@ -231,7 +231,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
             </div>
           </div>
         </div>
-        <!-- Description - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Description - Mobile: reduced padding | Desktop (lg+): original padding -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
           <!-- Adapted and scaled context / What needs to be adapted? -->
           {
@@ -246,7 +246,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               </>
             )
           }
-          <!-- Expected outcomes - Mobile: texto más pequeño | Desktop (lg+): tamaño original -->
+          <!-- Expected outcomes - Mobile: smaller text | Desktop (lg+): original size -->
           <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.knowledgeResultsNarrative}</p>
             <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
             {
@@ -325,7 +325,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
             }
           </p>
         </div>
-        <!-- Community solution stories - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Community solution stories - Mobile: reduced padding | Desktop (lg+): original padding -->
         <section class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 relative lg:p-4 lg:mb-6">
           <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.communitySolutionStories.title}</p>
 
@@ -337,7 +337,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
           <!-- Input container -->
           <form class="mt-4 lg:mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
             <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.communitySolutionStories.form.prompt}</p>
-            <!-- Content Form - Mobile: sin margin izquierdo | Desktop (lg+): margin original -->
+            <!-- Content Form - Mobile: no left margin | Desktop (lg+): original margin -->
             <div class="mt-2 flex flex-col gap-1 lg:ml-4">
               <!-- Name Input -->
               <Input
@@ -367,7 +367,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
                 required
               />
 
-              <!-- Submit Button with CAPTCHA - Mobile: stack vertical | Desktop (sm+): horizontal -->
+              <!-- Submit Button with CAPTCHA - Mobile: vertical stack | Desktop (sm+): horizontal -->
               <div class="flex flex-col gap-3 mt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
                 <div
@@ -386,9 +386,9 @@ const actorsInfo = getActorsByGroup(innovation.actors);
       </section>
       <!-- Aside Sidebar - Mobile: col-span-1 (full width), order first | Desktop (lg+): col-span-1, order last -->
       <aside class="col-span-1 order-first lg:order-last">
-        <!-- Download PDF button - Mobile: margin bottom reducido | Desktop (lg+): margin original -->
+        <!-- Download PDF button - Mobile: reduced bottom margin | Desktop (lg+): original margin -->
         <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-4 lg:mb-6" />
-        <!-- Quick Information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Quick Information - Mobile: reduced padding | Desktop (lg+): original padding -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
           <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.title}</p>
 
@@ -483,7 +483,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
               }
           </div>
         </div>
-        <!-- Contact information - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Contact information - Mobile: reduced padding | Desktop (lg+): original padding -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
           <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.aside.contactInformation.title}</p>
 
@@ -525,7 +525,7 @@ const actorsInfo = getActorsByGroup(innovation.actors);
             </div>
           </div>
         </div>
-        <!-- Share - Mobile: padding reducido | Desktop (lg+): padding original -->
+        <!-- Share - Mobile: reduced padding | Desktop (lg+): original padding -->
         <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
           <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.share}</p>
           <!--           <BasicButton

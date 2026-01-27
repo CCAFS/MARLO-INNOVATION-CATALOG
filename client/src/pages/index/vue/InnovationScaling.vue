@@ -52,7 +52,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Mobile: padding reducido, margin adaptado | Desktop (md+): diseño original -->
+  <!-- Mobile: reduced padding, adjusted margin | Desktop (md+): original layout -->
   <div class="flex flex-col m-4 justify-center md:m-8 md:!ml-0">
     <div class="flex flex-col mb-4">
       <h2 class="text-sm font-bold text-[#1E1E1E] lg:text-base xl:text-lg 2xl:text-xl">{{ texts.home.readinessExplorer.responsibleScalingTitle }}</h2>
@@ -73,25 +73,25 @@ onMounted(() => {
       class="text-xs text-[#439255] font-medium mb-2 lg:text-sm xl:text-base 2xl:text-base">
       {{ texts.home.readinessExplorer.readinessExplorerSubtitle }}
     </div>
-    <!-- Mobile: altura reducida, gap reducido, padding reducido | Desktop (lg+): diseño original -->
+    <!-- Mobile: reduced height, reduced gap, reduced padding | Desktop (lg+): original layout -->
     <div
       v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined"
       class="flex gap-4 transition-all duration-300 rounded-lg items-center p-4 text-white mb-4 h-auto min-h-[100px] lg:gap-8 lg:p-6 lg:mb-5 lg:h-[130px]"
       :style="{ backgroundColor }">
-      <!-- Mobile: círculo más pequeño | Desktop (lg+): tamaño original -->
+      <!-- Mobile: smaller circle | Desktop (lg+): original size -->
       <div
         class="text-white border-4 w-[32px] h-[32px] text-sm text-center flex items-center justify-center rounded-full shadow-lg truncate text-clip lg:border-7 lg:w-[40px] lg:h-[40px] lg:text-base">
         {{ value.scalingReadiness }}
       </div>
       <div class="flex flex-col gap-2 flex-1 w-full lg:gap-5">
-        <!-- Mobile: textos más pequeños | Desktop (lg+): tamaños originales -->
+        <!-- Mobile: smaller text | Desktop (lg+): original sizes -->
         <div class="text-sm font-semibold lg:text-base xl:text-lg 2xl:text-xl">{{ readinessText.text }}</div>
         <div class="text-xs font-light lg:text-sm xl:text-base 2xl:text-lg">
           {{ readinessText.description }}
         </div>
       </div>
     </div>
-    <!-- Mobile: margin top reducido | Desktop (md+): margin original -->
+    <!-- Mobile: reduced top margin | Desktop (md+): original margin -->
     <div class="flex w-full justify-center text-[#439255] text-sm font-light gap-2 items-center xl:text-base 2xl:text-lg">
       {{ texts.home.readinessExplorer.seeInnovations }} <i class="pi pi-arrow-down block w-3 xl:w-4 2xl:w-4.5"></i>
     </div>

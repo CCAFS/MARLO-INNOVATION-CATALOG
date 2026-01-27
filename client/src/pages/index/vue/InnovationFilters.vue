@@ -26,7 +26,7 @@ const { onSearchActive, onSearchDeactive, handleSearch, apiDataTotal } = useInno
 const isFiltersActive = ref<boolean>(true);
 const isLoading = ref<boolean>(true);
 
-//Provsional Array for Actors Type Chips
+// Provisional array for actor type chips
 const actorsType = ref<Array<{ id: number; name: string; color: string; imgUrl: any }>>([
   { id: 1, name: 'Banks/Investors', color: '#FF6242', imgUrl: Banks },
   { id: 2, name: 'Farmers/(agro)pastoralist/heders/fishers', color: '#84AC58', imgUrl: Farmers },
@@ -327,7 +327,7 @@ watch(
                   }" />
               </div>
             </div>
-            <!-- Clear button - Mobile: centrado | Desktop (lg+): flex-auto original -->
+            <!-- Clear button - Mobile: centered | Desktop (lg+): original flex-auto -->
             <div class="flex items-center w-full lg:w-auto justify-center lg:flex-auto lg:justify-start">
               <button
                 class="bg-transparent text-gray-700 w-max h-8 p-4 text-xs rounded-sm hover:bg-gray-700 hover:text-white lg:p-2 cursor-pointer"
