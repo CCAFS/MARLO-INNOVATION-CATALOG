@@ -48,27 +48,27 @@ const getAmountTotalByCountries = computed(() => {
   return getAmountByCountry(mutableData);
 });
 
-// Función para manejar la selección de países
+// Function to handle country selection
 const toggleCountrySelection = (countryId: string) => {
   const currentCountries = value.value.countryIds || [];
   const countryIdNum = Number.parseInt(countryId);
   const index = currentCountries.indexOf(countryIdNum);
 
   if (index > -1) {
-    // Si ya está seleccionado, lo removemos
+    // If already selected, remove it
     const updatedCountries = currentCountries.filter(id => id !== countryIdNum);
     setValue({
       countryIds: updatedCountries.length > 0 ? updatedCountries : undefined
     });
   } else {
-    // Si no está seleccionado, lo agregamos
+    // If not selected, add it
     setValue({
       countryIds: [...currentCountries, countryIdNum]
     });
   }
 };
 
-// Función para verificar si un país está seleccionado
+// Function to check if a country is selected
 const isCountrySelected = (countryId: string): boolean => {
   return value.value.countryIds?.includes(Number.parseInt(countryId)) || false;
 };

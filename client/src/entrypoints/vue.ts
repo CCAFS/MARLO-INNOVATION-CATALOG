@@ -3,8 +3,8 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
 
-// Este archivo se ejecuta para cada isla que Astro monta,
-// pero aquí es donde tienes acceso al "app" real de Vue.
+// This file runs for each island that Astro mounts,
+// but this is where you can access Vue's real "app".
 export default (App: Component, props: Record<string, any>, slots: any) => {
   const app = createApp(App, props);
 
@@ -15,7 +15,7 @@ export default (App: Component, props: Record<string, any>, slots: any) => {
     }
   });
 
-  // registra globales si quieres:
+  // Register globals if you want:
   // import Button from 'primevue/button';
   // app.component('PButton', Button);
 

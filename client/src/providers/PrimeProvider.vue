@@ -8,7 +8,7 @@ import { ToastService } from 'primevue';
 const inst = getCurrentInstance();
 const app = inst?.appContext.app;
 
-// evita doble instalación si el HMR re-monta
+// Avoid double installation if HMR remounts
 if (app && !app._context.provides['primevue']) {
   app.use(PrimeVue, {
     theme: { preset: Aura, options: { darkModeSelector: '' } }

@@ -1,5 +1,5 @@
 <template>
-  <!-- Mobile: altura reducida, padding adaptado | Desktop (md+): diseño original -->
+  <!-- Mobile: reduced height, adjusted padding | Desktop (md+): original layout -->
   <svg
     height="440"
     viewBox="0 0 457 401"

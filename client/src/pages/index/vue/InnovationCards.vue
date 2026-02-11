@@ -66,11 +66,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Mobile: padding lateral | Desktop (xlg+): diseño original -->
+  <!-- Mobile: side padding | Desktop (xlg+): original layout -->
   <section class="container mx-auto px-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
-      <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
+      <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
         <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
           <!-- Badges Skeleton -->
@@ -109,7 +109,7 @@ onMounted(() => {
         <p class="text-gray-500 text-base mb-2 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
         <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
       </div>
-      <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
+      <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
         <article
           v-for="innovation in limitedInnovations"
@@ -145,7 +145,7 @@ onMounted(() => {
 
             <!-- Content section: 2/3 width -->
             <div class="flex flex-col p-4 h-full text-inherit no-underline w-2/3">
-              <!-- Badges - Mobile: wrap permitido | Desktop: mantener en línea -->
+              <!-- Badges - Mobile: wrapping allowed | Desktop: keep in one line -->
               <div class="flex items-center gap-2 mb-2 flex-wrap">
                 <!-- Trending chip -->
                 <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">

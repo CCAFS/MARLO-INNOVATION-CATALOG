@@ -6,14 +6,14 @@ import Tractor from '~/images/tractor.png';
 ---
 
 <footer class="text-white relative mb-0">
-  <!-- Mobile: tractor más pequeño, top reducido | Desktop (md+): tamaño y posición original -->
+  <!-- Mobile: smaller tractor, reduced top | Desktop (md+): original size and position -->
   <div class="flex justify-center absolute -top-3 w-full md:-top-4 lg:-top-10">
     <Image src={Tractor} alt="Tractor" class="w-16 h-auto md:w-20 lg:w-auto" />
   </div>
-  <!-- Mobile: padding vertical reducido | Desktop (lg+): padding original -->
+  <!-- Mobile: reduced vertical padding | Desktop (lg+): original padding -->
   <div class="bg-primary-500 py-4 lg:py-6">
     <div class="container mx-auto py-4 px-4 lg:py-5 lg:px-0 xl:px-16 2xl:px-20">
-      <!-- Mobile: 1 columna, gap entre secciones | Desktop (lg+): 3 columnas layout original -->
+      <!-- Mobile: 1 column, gap between sections | Desktop (lg+): 3 columns, original layout -->
       <div class="grid grid-cols-1 gap-6 pb-6 lg:grid-cols-[1fr_0.5fr_0.5fr] lg:gap-0 lg:pb-10">
         <!-- Contact Information -->
         <div class="h-fit text-left text-xs lg:text-sm">
@@ -51,10 +51,10 @@ import Tractor from '~/images/tractor.png';
 
       <!-- Copyright -->
       <div class="text-xs copyRight">
-        <!-- Mobile: margin bottom reducido | Desktop (lg+): margin original -->
+        <!-- Mobile: reduced bottom margin | Desktop (lg+): original margin -->
         <hr class="mb-3 lg:mb-5" />
         <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
-        <!-- Mobile: stack vertical | Desktop (lg+): horizontal justify-between -->
+        <!-- Mobile: vertical stack | Desktop (lg+): horizontal justify-between -->
         <div class="flex flex-col gap-3 lg:flex-row lg:justify-between lg:gap-0">
           <span class="opacity-70"
             >Developed by the Innovation and Business Development (IBD) team of the Technology Integration Unit.<span
