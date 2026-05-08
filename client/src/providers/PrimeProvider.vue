@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getCurrentInstance } from 'vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import 'primeicons/primeicons.css';
 import { ToastService } from 'primevue';
 

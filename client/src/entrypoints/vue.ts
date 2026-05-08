@@ -1,6 +1,6 @@
 import { createApp, type Component } from 'vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import 'primeicons/primeicons.css';
 
 // This file runs for each island that Astro mounts,

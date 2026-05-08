@@ -9,18 +9,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/vue": "^5.1.1",
-    "@primevue/themes": "^4.3.9",
-    "@tailwindcss/vite": "^4.1.13",
-    "astro": "^5.13.7",
-    "modern-screenshot": "^4.6.6",
+    "@astrojs/vue": "^6.0.1",
+    "@primeuix/themes": "^2.0.3",
+    "@tailwindcss/vite": "^4.2.4",
+    "astro": "^6.3.1",
+    "modern-screenshot": "^4.7.0",
     "primeicons": "^7.0.0",
-    "primevue": "^4.3.9",
-    "tailwindcss": "^4.1.13",
+    "primevue": "^4.5.5",
+    "tailwindcss": "^4.2.4",
     "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.21"
   },
   "devDependencies": {
-    "vite-svg-loader": "^5.1.0"
+    "vite-svg-loader": "^5.1.1"
   }
 }

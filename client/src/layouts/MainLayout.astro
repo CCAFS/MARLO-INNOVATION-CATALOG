@@ -5,8 +5,6 @@ import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
-import NewsletterWidget from '~/components/NewsletterWidget.vue';
-import FeedbackWidget from '~/components/FeedbackWidget.vue';
 
 const link = Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
@@ -74,12 +72,10 @@ const clarityScript = `
   <body class="bg-white overflow-x-hidden overflow-y-auto min-h-[100vh] m-0 p-0">
     <div id="screenshot-area" class="bg-white">
       <TopBar />
-      <div class="max-w-screen-2xl mx-auto">
+      <div class="max-w-screen-2xl mx-auto pt-[65px]">
         <slot />
       </div>
       <Footer />
     </div>
-    <NewsletterWidget client:only />
-    <FeedbackWidget client:only />
   </body>
 </html>
