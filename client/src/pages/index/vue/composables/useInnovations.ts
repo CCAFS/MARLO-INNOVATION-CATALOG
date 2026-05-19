@@ -108,12 +108,24 @@ export function useInnovations() {
 
         const totalData = await getInnovations({ phase: phaseId.toString(), offset: 0, limit: 1000 });
         apiDataTotal.value = totalData;
-      } catch (error: any) {
-        console.error('Error fetching data for country filter from API:', error);
-        error.value = error instanceof Error ? error : new Error(String(error));
-        if (error.message.includes('ETIMEDOUT') || error.message.includes('503')) {
+      } catch (fetchError: any) {
+        console.error('Error fetching data for country filter from API:', fetchError);
+        error.value = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
+        if (fetchError.message?.includes('ETIMEDOUT') || fetchError.message?.includes('503')) {
           error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
         }
+        apiDataTotal.value = {
+          innovations: [],
+          totalCount: 0,
+          appliedFilters: {
+            phase: phaseId,
+            readinessScale: null,
+            innovationTypeId: null,
+            innovationId: null,
+            sdgId: null,
+            searchType: ''
+          }
+        };
       }
     }
   };

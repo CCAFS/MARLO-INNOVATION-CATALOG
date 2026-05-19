@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
+import { useFilterCatalog } from './composables/useFilterCatalog';
 import { texts } from '../../../content/texts';
 import { circleColors } from './colors';
 
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
-import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
-import { useApi } from '~/composables/database-api/useApi';
 
 const { value } = useSharedValue();
+const { loadCatalog } = useFilterCatalog();
 
-const dataSDGs = ref<SdgResume[]>([]);
-const dataInnovationTypes = ref<InnovationType[]>([]);
 const isHydrated = ref(false);
 
 const backgroundColor = computed(() => {
@@ -24,30 +22,9 @@ const readinessText = computed(() => {
     : getReadinessScaleText(0);
 });
 
-const fetchSGDsData = async () => {
-  try {
-    const { getSustainableDevelopmentGoals } = useApi();
-    const response = await getSustainableDevelopmentGoals();
-    dataSDGs.value = response;
-  } catch (error) {
-    console.error('Error fetching SDGs data:', error);
-  }
-};
-
-const fetchInnovationsTypeData = async () => {
-  try {
-    const { getInnovationTypes } = useApi();
-    const response = await getInnovationTypes();
-    dataInnovationTypes.value = response;
-  } catch (error) {
-    console.error('Error fetching Innovation Types data:', error);
-  }
-};
-
 onMounted(() => {
   isHydrated.value = true;
-  fetchSGDsData();
-  fetchInnovationsTypeData();
+  loadCatalog();
 });
 </script>
 
