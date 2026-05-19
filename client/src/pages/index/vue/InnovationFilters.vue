@@ -16,12 +16,15 @@ const { value, setValue, clearFilters } = useSharedValue();
 const { isLoading: isCatalogLoading, loadCatalog } = useFilterCatalog();
 const { sdgOptions, innovationTypeOptions, countryOptions } = useFilterAvailability();
 
-const selectPt = {
-  root: { class: '!bg-white !border-border-light !rounded-lg' },
-  input: { class: '!bg-white' },
-  overlay: { class: 'w-0' },
+const filterFieldWrapperClass = 'rounded-lg border border-border-light bg-white overflow-hidden';
+
+const minimalSelectPt = {
+  optionLabel: { class: 'overflow-hidden text-ellipsis whitespace-nowrap min-w-0' }
+};
+
+const multiSelectPt = {
   optionLabel: { class: 'overflow-hidden text-ellipsis whitespace-nowrap min-w-0' },
-  label: { class: '!w-0 overflow-hidden text-ellipsis whitespace-nowrap' }
+  labelContainer: { class: 'min-w-0 flex-1 overflow-hidden' }
 };
 
 const selectedInnovationType = computed(() => {
@@ -72,8 +75,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full">
-    <div v-if="isCatalogLoading" class="flex flex-col gap-4">
+  <div class="relative w-full flex flex-col gap-4">
+    <div v-show="isCatalogLoading" class="absolute inset-0 z-10 flex flex-col gap-4 bg-white">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <Skeleton v-for="i in 3" :key="i" width="100%" height="2.5rem" borderRadius="0.5rem" />
       </div>
@@ -82,47 +85,55 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-else class="flex flex-col gap-4">
+    <div :class="{ 'invisible pointer-events-none': isCatalogLoading }" class="flex flex-col gap-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Select
-          id="innovation-typology"
-          :modelValue="selectedInnovationType"
-          @update:modelValue="handleSelectInnovationTypeChange"
-          :options="innovationTypeOptions"
-          optionLabel="name"
-          optionDisabled="disabled"
-          :placeholder="texts.home.innovationFilters.filters.innovationTypology.title"
-          class="w-full"
-          size="small"
-          :pt="selectPt" />
+        <div :class="filterFieldWrapperClass">
+          <Select
+            id="innovation-typology"
+            :modelValue="selectedInnovationType"
+            @update:modelValue="handleSelectInnovationTypeChange"
+            :options="innovationTypeOptions"
+            optionLabel="name"
+            optionDisabled="disabled"
+            :placeholder="texts.home.innovationFilters.filters.innovationTypology.title"
+            class="w-full border-0 shadow-none"
+            size="small"
+            showClear
+            :pt="minimalSelectPt" />
+        </div>
 
-        <MultiSelect
-          id="countries"
-          :modelValue="selectedCountries"
-          @update:modelValue="handleSelectCountriesChange"
-          :options="countryOptions"
-          optionLabel="title"
-          optionDisabled="disabled"
-          :placeholder="texts.home.innovationFilters.filters.countries.title"
-          class="w-full"
-          :fluid="false"
-          :showToggleAll="false"
-          size="small"
-          :showClear="false"
-          :maxSelectedLabels="2"
-          :pt="selectPt" />
+        <div :class="filterFieldWrapperClass">
+          <MultiSelect
+            id="countries"
+            :modelValue="selectedCountries"
+            @update:modelValue="handleSelectCountriesChange"
+            :options="countryOptions"
+            optionLabel="title"
+            optionDisabled="disabled"
+            :placeholder="texts.home.innovationFilters.filters.countries.title"
+            class="w-full border-0 shadow-none"
+            :fluid="false"
+            :showToggleAll="false"
+            size="small"
+            showClear
+            :maxSelectedLabels="2"
+            :pt="multiSelectPt" />
+        </div>
 
-        <Select
-          id="sdg"
-          :modelValue="selectedSDG"
-          @update:modelValue="handleSelectSDGChange"
-          :options="sdgOptions"
-          optionLabel="shortName"
-          optionDisabled="disabled"
-          :placeholder="texts.home.innovationFilters.filters.sdgs.title"
-          class="w-full"
-          size="small"
-          :pt="selectPt" />
+        <div :class="filterFieldWrapperClass">
+          <Select
+            id="sdg"
+            :modelValue="selectedSDG"
+            @update:modelValue="handleSelectSDGChange"
+            :options="sdgOptions"
+            optionLabel="shortName"
+            optionDisabled="disabled"
+            :placeholder="texts.home.innovationFilters.filters.sdgs.title"
+            class="w-full border-0 shadow-none"
+            size="small"
+            showClear
+            :pt="minimalSelectPt" />
+        </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">

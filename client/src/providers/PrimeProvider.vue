@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import { getCurrentInstance } from 'vue';
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
-import 'primeicons/primeicons.css';
-import { ToastService } from 'primevue';
-
-const inst = getCurrentInstance();
-const app = inst?.appContext.app;
-
-// Avoid double installation if HMR remounts
-if (app && !app._context.provides['primevue']) {
-  app.use(PrimeVue, {
-    theme: { preset: Aura, options: { darkModeSelector: '' } }
-  });
-
-  app.use(ToastService);
-}
-</script>
-
 <template>
   <slot />
 </template>

@@ -4,15 +4,17 @@ import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.
 
 const sdgs = ref<SdgResume[]>([]);
 const innovationTypes = ref<InnovationType[]>([]);
-const isLoading = ref(false);
 const error = ref<Error | null>(null);
+const hasCachedCatalog = () => sdgs.value.length > 0 && innovationTypes.value.length > 0 && !error.value;
+const isLoading = ref(!hasCachedCatalog());
 let loadPromise: Promise<void> | null = null;
 
 export function useFilterCatalog() {
   const { getSustainableDevelopmentGoals, getInnovationTypes } = useApi();
 
   const loadCatalog = async () => {
-    if (sdgs.value.length > 0 && innovationTypes.value.length > 0 && !error.value) {
+    if (hasCachedCatalog()) {
+      isLoading.value = false;
       return;
     }
 
