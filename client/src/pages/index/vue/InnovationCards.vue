@@ -114,7 +114,7 @@ onMounted(() => {
         <article
           v-for="innovation in limitedInnovations"
           :key="innovation.id"
-          class="overflow-hidden rounded-xl border border-green-600/80 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
+          class="h-[200px] overflow-hidden rounded-xl border border-green-600/80 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex h-full gap-2">
             <!-- Image section: 1/3 width -->
             <div class="relative w-1/3 shrink-0 overflow-hidden bg-gray-100">

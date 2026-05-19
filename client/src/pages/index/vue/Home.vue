@@ -7,7 +7,7 @@ import PrimeProvider from '~/providers/PrimeProvider.vue';
 
 <template>
   <PrimeProvider>
-    <div class="mx-auto px-4 py-6 max-lg:container lg:px-8 2xl:px-12">
+    <div class="mx-auto px-4 py-6 max-lg:container lg:px-8 xl:container 2xl:px-12">
       <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(320px,38%)_1fr] lg:gap-8">
         <ReadinessExplorer />
         <div class="flex min-w-0 flex-col gap-4">
