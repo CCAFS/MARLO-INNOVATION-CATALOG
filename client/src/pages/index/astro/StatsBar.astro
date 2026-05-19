@@ -7,7 +7,7 @@ import type { InnovationCatalogStats } from '~/interfaces/innovation-catalog.int
 import { useApi } from '~/composables/database-api/useApi';
 import { phaseId } from '~/content/vars';
 
-async function fetchStatsInnovations(): Promise<InnovationCatalogStats | null> {
+async function fetchStatsInnovations(): Promise<InnovationCatalogStats> {
   const { getInnovationStats } = useApi();
   try {
     const response = await getInnovationStats({

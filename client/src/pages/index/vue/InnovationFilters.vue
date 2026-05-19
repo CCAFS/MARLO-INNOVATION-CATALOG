@@ -103,9 +103,6 @@ const handleSelectActorsChange = (actorName: string) => {
   }
 };
 
-const composeClearFilters = () => {
-  clearFilters();
-};
 
 const setDisabledOptions = () => {
   dataSDGs.value = dataSDGs.value
@@ -225,7 +222,7 @@ watch(
           ">
           {{ actor.shortLabel }}
         </button>
-        <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="composeClearFilters">
+        <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="clearFilters">
           {{ texts.home.innovationFilters.filters.clearFilters }}
         </button>
       </div>
