@@ -1,5 +1,11 @@
 ---
-const { title, description } = Astro.props;
+interface Props {
+  title: string;
+  description?: string;
+  showGlossary?: boolean;
+}
+
+const { title, description, showGlossary = false } = Astro.props;
 import { domain } from './../content/vars.ts';
 import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
@@ -72,10 +78,10 @@ const clarityScript = `
   <body class="bg-white overflow-x-hidden overflow-y-auto min-h-[100vh] m-0 p-0">
     <div id="screenshot-area" class="bg-white">
       <TopBar />
-      <div class="max-w-screen-2xl mx-auto pt-[65px]">
+      <main class="pt-[65px]">
         <slot />
-      </div>
-      <Footer />
+      </main>
+      <Footer showGlossary={showGlossary} />
     </div>
   </body>
 </html>

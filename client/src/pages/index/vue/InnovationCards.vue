@@ -67,11 +67,11 @@ onMounted(() => {
 
 <template>
   <!-- Mobile: side padding | Desktop (xlg+): original layout -->
-  <section class="container mx-auto px-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
+  <section class="w-full pt-2">
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="mb-8 mt-4">
       <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div class="flex flex-col gap-4">
         <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
           <!-- Badges Skeleton -->
           <div class="flex items-center gap-2 mb-2 flex-wrap">
@@ -110,7 +110,7 @@ onMounted(() => {
         <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
       </div>
       <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div class="flex flex-col gap-4">
         <article
           v-for="innovation in limitedInnovations"
           :key="innovation.id"

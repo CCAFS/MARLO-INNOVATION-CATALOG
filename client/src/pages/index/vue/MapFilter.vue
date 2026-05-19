@@ -6,7 +6,7 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="w-full h-auto max-h-[300px] mx-auto my-4 md:max-h-none md:m-8 md:mb-5 md:-ml-2.5"
+    class="w-full h-auto max-h-[240px] mx-auto my-2 lg:max-h-[350px]"
     shape-rendering="geometricPrecision"
     preserveAspectRatio="xMidYMid meet">
     <g filter="url(#filter0_d_532_106)">

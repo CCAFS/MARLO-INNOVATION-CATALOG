@@ -1,14 +1,16 @@
 export const texts = {
   home: {
     overviewStats: {
-      title: 'Explore Validated Climate Innovations for Africa'
+      title: 'Explore Validated Climate Innovations for Africa',
+      subtitle: 'Discover and access a knowledge hub dedicated to climate-smart solutions for Africa.',
+      cta: 'Explore Catalog'
     },
     readinessExplorer: {
       advice: 'Click on a country to see how many and which AICCRA innovations are being implemented there.',
       responsibleScalingTitle: 'AICCRA Scaling Framework',
       responsibleScalingDescription:
         '<ol class="list-decimal pl-4"><li>Technical excellence - Innovations must perform reliably and add value in real-world conditions.</li><li>Demand and investment - Scaling requires demonstrated interest from users and financial or institutional support to enable adoption.</li><li>Sustained use - Innovations need to be embedded into systems (policy, markets, institutions) to last beyond projects.</li></ol>',
-      readinessExplorerTitle: 'Innovations by Scaling Readiness',
+      readinessExplorerTitle: 'Scaling Readiness',
       readinessExplorerSubtitle: 'Scaling Readiness:',
       readinessExplorerDescription:
         'Scaling Readiness is a framework that helps individuals and organizations effectively scale innovations to achieve meaningful impact.',
