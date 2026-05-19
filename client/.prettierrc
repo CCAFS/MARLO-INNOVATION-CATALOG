@@ -8,9 +8,15 @@
   "trailingComma": "none",
   "bracketSameLine": true,
   "printWidth": 150,
-  "bracketLine": true,
   "endOfLine": "auto",
+  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
   "overrides": [
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
     {
       "files": "*.html",
       "options": {
