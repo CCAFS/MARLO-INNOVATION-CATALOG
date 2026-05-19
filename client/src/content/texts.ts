@@ -37,7 +37,7 @@ export const texts = {
       },
       search: {
         title: 'Search',
-        placeholder: 'Search...'
+        placeholder: 'Search innovations...'
       }
     },
     innovationCards: {

@@ -6,6 +6,7 @@ import { computed, onMounted } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { useFilterCatalog } from './composables/useFilterCatalog';
 import { useFilterAvailability } from './composables/useFilterAvailability';
+import { useInnovations } from './composables/useInnovations';
 import { ACTOR_FILTER_OPTIONS } from './constants/filterActors';
 import HeaderSearch from '~/components/vue/HeaderSearch.vue';
 
@@ -14,6 +15,7 @@ import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import { texts } from '~/content/texts';
 
 const { value, setValue, clearFilters } = useSharedValue();
+const { clearSearch } = useInnovations();
 const { isLoading: isCatalogLoading, loadCatalog } = useFilterCatalog();
 const { sdgOptions, innovationTypeOptions, countryOptions } = useFilterAvailability();
 
@@ -68,6 +70,11 @@ const handleSelectActorsChange = (actorName: string) => {
   } else {
     setValue({ actorName: [...actorNamesValue, actorName] });
   }
+};
+
+const handleClearFilters = () => {
+  clearFilters();
+  clearSearch();
 };
 
 onMounted(() => {
@@ -153,7 +160,7 @@ onMounted(() => {
           ">
           {{ actor.shortLabel }}
         </button>
-        <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="clearFilters">
+        <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="handleClearFilters">
           {{ texts.home.innovationFilters.filters.clearFilters }}
         </button>
       </div>

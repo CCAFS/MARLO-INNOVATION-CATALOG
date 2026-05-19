@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import { useSharedValue } from '~/pages/index/vue/composables/useSharedValue';
 import { useInnovations } from '~/pages/index/vue/composables/useInnovations';
+import { texts } from '~/content/texts';
 
 const { value } = useSharedValue();
-const { handleSearch, onSearchActive, onSearchDeactive } = useInnovations();
+const { searchQuery, handleSearch, onSearchActive, onSearchDeactive } = useInnovations();
 
-const query = ref('');
-
-watch(query, newQuery => {
+watch(searchQuery, (newQuery, oldQuery) => {
   if (newQuery.trim()) {
-    onSearchActive(value.value);
+    onSearchActive();
     handleSearch(newQuery);
-  } else {
+  } else if (oldQuery?.trim()) {
     handleSearch('');
     onSearchDeactive(value.value);
   }
@@ -32,9 +31,9 @@ watch(query, newQuery => {
       <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"></path>
     </svg>
     <input
-      v-model="query"
+      v-model="searchQuery"
       type="search"
-      placeholder="Search innovations..."
+      :placeholder="texts.home.innovationFilters.search.placeholder"
       class="bg-transparent text-sm text-text-800 placeholder-text-600 outline-none w-full"
     />
   </div>

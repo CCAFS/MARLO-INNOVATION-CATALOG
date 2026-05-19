@@ -1,9 +1,12 @@
 // composables/useInnovations.ts
-import { ref, computed, readonly } from 'vue';
+import { ref, computed, readonly, watch } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 import { phaseId } from '~/content/vars';
-import type { InnovationCatalog, InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
+import type { InnovationCatalog, InnovationCatalogStats, InnovationResume } from '~/interfaces/innovation-catalog.interface';
 import type { Filters } from '~/interfaces/search-filters.interface';
+import { matchesInnovationSearch } from '~/utils/search/matchesInnovationSearch';
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalog | null>(null);
@@ -17,11 +20,36 @@ const rowsPerPage = ref(6);
 const totalRecords = ref(0);
 const isSearchActive = ref(false);
 const isMatchingSearch = ref(false);
+const isSearchFiltering = ref(false);
 
 // Search-related state
 const searchQuery = ref('');
-const filteredInnovations = ref<any[]>([]);
+const filteredInnovations = ref<InnovationResume[]>([]);
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+const getSearchPool = (): InnovationResume[] => {
+  return apiDataForCountry.value?.innovations ?? apiData.value?.innovations ?? [];
+};
+
+const runSearch = (query: string) => {
+  const trimmed = query.trim();
+  if (!trimmed) {
+    filteredInnovations.value = [];
+    isMatchingSearch.value = false;
+    isSearchFiltering.value = false;
+    return;
+  }
+
+  filteredInnovations.value = getSearchPool().filter(innovation => matchesInnovationSearch(innovation, trimmed));
+  isMatchingSearch.value = filteredInnovations.value.length > 0;
+  isSearchFiltering.value = false;
+};
+
+watch(apiDataForCountry, () => {
+  if (isSearchActive.value && searchQuery.value.trim()) {
+    runSearch(searchQuery.value);
+  }
+});
 
 export function useInnovations() {
   const { getInnovations, getInnovationStats } = useApi();
@@ -29,6 +57,15 @@ export function useInnovations() {
   // Computed
   const offset = computed(() => currentPage.value * rowsPerPage.value);
   const limit = computed(() => rowsPerPage.value);
+
+  const limitedInnovations = computed(() => {
+    if (isSearchActive.value) {
+      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    }
+    return apiData.value?.innovations ?? [];
+  });
+
+  const displayInnovations = computed(() => limitedInnovations.value);
 
   // Methods
   const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
@@ -147,10 +184,9 @@ export function useInnovations() {
     fetchInnovations(filters, newOffset, event.rows);
   };
 
-  const onSearchActive = (filters: Filters) => {
+  const onSearchActive = () => {
     isSearchActive.value = true;
     currentPage.value = 0;
-    fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
   };
 
   const onSearchDeactive = (filters: Filters) => {
@@ -159,45 +195,38 @@ export function useInnovations() {
     fetchInnovations(filters, 0, rowsPerPage.value);
   };
 
-  // Handle search with debouncing
+  const clearSearch = () => {
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = null;
+    }
+    searchQuery.value = '';
+    filteredInnovations.value = [];
+    isMatchingSearch.value = false;
+    isSearchActive.value = false;
+    isSearchFiltering.value = false;
+  };
+
   const handleSearch = (query: string) => {
     searchQuery.value = query;
 
-    isLoading.value = true;
-
-    // Clear previous timer
     if (searchDebounceTimer) {
       clearTimeout(searchDebounceTimer);
     }
 
-    // Set new debounce timer (1 second)
-    searchDebounceTimer = setTimeout(() => {
-      if (query.trim() === '') {
-        // Reset to original data when search is empty
-        filteredInnovations.value = [];
-        isMatchingSearch.value = false;
-        isLoading.value = false;
-      } else {
-        // Create shallow copy and filter
-        const innovations = apiData.value?.innovations || [];
-        filteredInnovations.value = [...innovations].filter(innovation => {
-          const searchTerm = query.toLowerCase();
-          return innovation.title?.toLowerCase().includes(searchTerm) || innovation.projectInnovationId?.toString().includes(searchTerm);
-        });
-        // Set isMatchingSearch based on whether results were found
-        isMatchingSearch.value = filteredInnovations.value.length > 0;
-        isLoading.value = false;
-      }
-    }, 1000);
-  };
-
-  // Computed for limited innovations (max 6)
-  const limitedInnovations = computed(() => {
-    if (isSearchActive.value && filteredInnovations.value.length > 0) {
-      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    if (!query.trim()) {
+      filteredInnovations.value = [];
+      isMatchingSearch.value = false;
+      isSearchFiltering.value = false;
+      return;
     }
-    return apiData.value?.innovations.slice(0, rowsPerPage.value) || [];
-  });
+
+    isSearchFiltering.value = true;
+
+    searchDebounceTimer = setTimeout(() => {
+      runSearch(query);
+    }, SEARCH_DEBOUNCE_MS);
+  };
 
   return {
     // State (now shared across all components)
@@ -212,11 +241,13 @@ export function useInnovations() {
     totalRecords: readonly(totalRecords),
     isSearchActive: readonly(isSearchActive),
     isMatchingSearch: readonly(isMatchingSearch),
+    isSearchFiltering: readonly(isSearchFiltering),
 
     // Search state
-    searchQuery: readonly(searchQuery),
+    searchQuery,
     filteredInnovations: readonly(filteredInnovations),
     limitedInnovations,
+    displayInnovations,
 
     // Computed
     offset,
@@ -228,6 +259,7 @@ export function useInnovations() {
     onPageChange,
     onSearchActive,
     onSearchDeactive,
-    handleSearch
+    handleSearch,
+    clearSearch
   };
 }

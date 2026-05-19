@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
 import { useImageOptimization } from '~/utils/images/useImageOptimization';
@@ -34,9 +34,12 @@ const {
   onPageChange,
   isSearchActive,
   searchQuery,
-  limitedInnovations,
-  isMatchingSearch
+  displayInnovations,
+  isMatchingSearch,
+  isSearchFiltering
 } = useInnovations();
+
+const hasActiveSearchQuery = computed(() => searchQuery.value.trim().length > 0);
 
 const handlePageChange = (event: any) => {
   onPageChange(event, value.value);
@@ -69,7 +72,7 @@ onMounted(() => {
   <!-- Mobile: side padding | Desktop (xlg+): original layout -->
   <section class="w-full pt-2">
     <!-- Loading Skeleton -->
-    <div v-if="isLoading" class="mb-8 mt-4">
+    <div v-if="isLoading && !isSearchFiltering" class="mb-8 mt-4">
       <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
       <div class="flex flex-col gap-4">
         <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
@@ -100,19 +103,18 @@ onMounted(() => {
       </div>
     </div>
     <!-- V2 Innovations Cards from API -->
-    <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
-      <!-- Control Message If Filter Return nothing -->
-      <div
-        v-if="isSearchActive && !isMatchingSearch && searchQuery.length > 0"
-        class="col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4 mb-6">
-        <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
-        <p class="text-gray-500 text-base mb-2 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
-        <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
-      </div>
+    <div
+      v-else-if="isSearchActive && hasActiveSearchQuery && !isMatchingSearch"
+      class="mb-8 mt-4 col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4">
+      <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
+      <p class="text-gray-500 text-base mb-2 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
+      <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
+    </div>
+    <div v-else-if="displayInnovations.length" class="mb-8 mt-4">
       <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
       <div class="flex flex-col gap-4">
         <article
-          v-for="innovation in limitedInnovations"
+          v-for="innovation in displayInnovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">
