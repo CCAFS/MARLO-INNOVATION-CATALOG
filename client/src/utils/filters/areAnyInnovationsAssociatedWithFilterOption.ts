@@ -1,6 +1,9 @@
+import type { DeepReadonly } from 'vue';
 import { FilterType } from '~/pages/index/vue/composables/useSharedValue';
 import { useInnovations } from '~/pages/index/vue/composables/useInnovations';
 import type { InnovationResume } from '~/interfaces/innovation-catalog.interface';
+
+export type InnovationForFilterAvailability = DeepReadonly<InnovationResume>;
 
 const equivalentFilterKeyMap: Record<FilterType, string> = {
   [FilterType.ScalingReadiness]: 'readinessScale',
@@ -11,7 +14,11 @@ const equivalentFilterKeyMap: Record<FilterType, string> = {
   [FilterType.ActorIds]: 'actors'
 };
 
-export const isInnovationAssociatedWithFilterOption = (innovations: InnovationResume[], filterType: FilterType, value: string | number): boolean => {
+export const isInnovationAssociatedWithFilterOption = (
+  innovations: readonly InnovationForFilterAvailability[],
+  filterType: FilterType,
+  value: string | number
+): boolean => {
   if (innovations.length === 0) {
     return false;
   }

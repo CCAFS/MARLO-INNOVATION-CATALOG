@@ -14,7 +14,7 @@ export const texts = {
       readinessExplorerSubtitle: 'Scaling Readiness:',
       readinessExplorerDescription:
         'Scaling Readiness is a framework that helps individuals and organizations effectively scale innovations to achieve meaningful impact.',
-      seeInnovations: 'See the relevant innovations below'
+      seeInnovations: 'See the relevant innovations'
     },
     innovationFilters: {
       filters: {
