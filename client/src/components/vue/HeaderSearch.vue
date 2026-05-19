@@ -21,7 +21,7 @@ watch(query, newQuery => {
 
 <template>
   <div
-    class="flex items-center gap-2 border border-border-light rounded-full px-4 py-2 w-full max-w-sm bg-bg-200/60 focus-within:border-primary-300 focus-within:bg-white transition-colors">
+    class="flex items-center gap-2 border border-border-light rounded-full px-4 py-2 w-full bg-bg-200/60 focus-within:border-primary-300 focus-within:bg-white transition-colors">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-4 w-4 text-text-600 shrink-0"

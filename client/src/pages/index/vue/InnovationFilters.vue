@@ -7,6 +7,7 @@ import { useSharedValue } from './composables/useSharedValue';
 import { useFilterCatalog } from './composables/useFilterCatalog';
 import { useFilterAvailability } from './composables/useFilterAvailability';
 import { ACTOR_FILTER_OPTIONS } from './constants/filterActors';
+import HeaderSearch from '~/components/vue/HeaderSearch.vue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
@@ -77,6 +78,7 @@ onMounted(() => {
 <template>
   <div class="relative w-full flex flex-col gap-4">
     <div v-show="isCatalogLoading" class="absolute inset-0 z-10 flex flex-col gap-4 bg-white">
+      <Skeleton width="100%" height="2.5rem" borderRadius="9999px" />
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <Skeleton v-for="i in 3" :key="i" width="100%" height="2.5rem" borderRadius="0.5rem" />
       </div>
@@ -86,6 +88,8 @@ onMounted(() => {
     </div>
 
     <div :class="{ 'invisible pointer-events-none': isCatalogLoading }" class="flex flex-col gap-4">
+      <HeaderSearch />
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div :class="filterFieldWrapperClass">
           <Select

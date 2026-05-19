@@ -1,27 +1,20 @@
 ---
 import InnovationLogo from '../images/innovation-catalogue-logo.svg';
-import HeaderSearch from './vue/HeaderSearch.vue';
 ---
 
 <header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md">
-  <div class="max-w-screen-2xl mx-auto px-6 lg:px-10 py-3 grid grid-cols-[215px_1fr_215px] items-center gap-4">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between gap-4">
     <a href="/" class="flex items-center gap-3">
       <InnovationLogo width={44} height={46} />
       <span class="text-text-700 font-semibold text-base lg:text-lg leading-tight">AICCRA E-catalog</span>
     </a>
 
-    <div class="flex justify-center">
-      <HeaderSearch client:load />
-    </div>
-
-    <div class="flex justify-end">
-      <a
-        href="https://aiccra.cgiar.org/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-400 transition-colors whitespace-nowrap">
-        Go to AICCRA Website
-      </a>
-    </div>
+    <a
+      href="https://aiccra.cgiar.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-400 transition-colors whitespace-nowrap">
+      Go to AICCRA Website
+    </a>
   </div>
 </header>
