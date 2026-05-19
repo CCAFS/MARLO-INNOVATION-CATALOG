@@ -65,8 +65,6 @@ export function useInnovations() {
     return apiData.value?.innovations ?? [];
   });
 
-  const displayInnovations = computed(() => limitedInnovations.value);
-
   // Methods
   const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
     try {
@@ -215,9 +213,7 @@ export function useInnovations() {
     }
 
     if (!query.trim()) {
-      filteredInnovations.value = [];
-      isMatchingSearch.value = false;
-      isSearchFiltering.value = false;
+      runSearch('');
       return;
     }
 
@@ -247,7 +243,6 @@ export function useInnovations() {
     searchQuery,
     filteredInnovations: readonly(filteredInnovations),
     limitedInnovations,
-    displayInnovations,
 
     // Computed
     offset,

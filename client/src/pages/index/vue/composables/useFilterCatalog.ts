@@ -6,7 +6,7 @@ const sdgs = ref<SdgResume[]>([]);
 const innovationTypes = ref<InnovationType[]>([]);
 const error = ref<Error | null>(null);
 const hasCachedCatalog = () => sdgs.value.length > 0 && innovationTypes.value.length > 0 && !error.value;
-const isLoading = ref(!hasCachedCatalog());
+const isLoading = ref(false);
 let loadPromise: Promise<void> | null = null;
 
 export function useFilterCatalog() {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
 import { useImageOptimization } from '~/utils/images/useImageOptimization';
@@ -34,12 +34,10 @@ const {
   onPageChange,
   isSearchActive,
   searchQuery,
-  displayInnovations,
+  limitedInnovations,
   isMatchingSearch,
   isSearchFiltering
 } = useInnovations();
-
-const hasActiveSearchQuery = computed(() => searchQuery.value.trim().length > 0);
 
 const handlePageChange = (event: any) => {
   onPageChange(event, value.value);
@@ -104,17 +102,17 @@ onMounted(() => {
     </div>
     <!-- V2 Innovations Cards from API -->
     <div
-      v-else-if="isSearchActive && hasActiveSearchQuery && !isMatchingSearch"
+      v-else-if="isSearchActive && searchQuery.trim().length > 0 && !isMatchingSearch"
       class="mb-8 mt-4 col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4">
       <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
       <p class="text-gray-500 text-base mb-2 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
       <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
     </div>
-    <div v-else-if="displayInnovations.length" class="mb-8 mt-4">
+    <div v-else-if="limitedInnovations.length" class="mb-8 mt-4">
       <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
       <div class="flex flex-col gap-4">
         <article
-          v-for="innovation in displayInnovations"
+          v-for="innovation in limitedInnovations"
           :key="innovation.id"
           class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
           <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">

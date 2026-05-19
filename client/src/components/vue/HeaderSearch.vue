@@ -11,7 +11,7 @@ watch(searchQuery, (newQuery, oldQuery) => {
   if (newQuery.trim()) {
     onSearchActive();
     handleSearch(newQuery);
-  } else if (oldQuery?.trim()) {
+  } else if (oldQuery.trim()) {
     handleSearch('');
     onSearchDeactive(value.value);
   }

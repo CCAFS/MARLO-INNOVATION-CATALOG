@@ -16,12 +16,12 @@ export const matchesInnovationSearch = (innovation: InnovationResume, rawQuery: 
   if (includesTerm(innovation.innovationType?.name, term)) return true;
 
   const countryMatch = innovation.countries?.some(
-    country => includesTerm(country.name, term) || includesTerm((country as { countryName?: string }).countryName, term)
+    country => includesTerm(country.name, term) || includesTerm(country.countryName, term)
   );
   if (countryMatch) return true;
 
   const regionMatch = innovation.regions?.some(
-    region => includesTerm(region.name, term) || includesTerm((region as { regionName?: string }).regionName, term)
+    region => includesTerm(region.name, term) || includesTerm(region.regionName, term)
   );
   if (regionMatch) return true;
 
