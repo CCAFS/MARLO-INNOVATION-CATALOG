@@ -1,8 +1,6 @@
 ---
 const currentYear = new Date().getFullYear();
-import { Image } from 'astro:assets';
 import { texts } from '~/content/texts';
-import Tractor from '~/images/tractor.png';
 
 interface Props {
   showGlossary?: boolean;
@@ -11,9 +9,9 @@ interface Props {
 const { showGlossary = false } = Astro.props;
 ---
 
-<footer class="text-white relative mb-0">
-  <div class="bg-[#1C3D2E] py-4 lg:py-6">
-    <div class="container mx-auto py-4 px-4 lg:py-5 lg:px-8 2xl:px-12">
+<footer class="relative mb-0 text-white">
+  <div class="bg-[#059899] py-4 lg:py-6">
+    <div class="container mx-auto px-4 py-4 lg:px-8 lg:py-5 2xl:px-12">
       <div class:list={['grid grid-cols-1 gap-6 pb-6 lg:pb-10', showGlossary ? 'lg:grid-cols-[1fr_0.5fr_0.5fr]' : 'lg:grid-cols-2 lg:gap-12']}>
         <div class="h-fit text-left text-xs lg:text-sm">
           <strong class="text-medium">{texts.footer.contact.title}</strong>
@@ -52,7 +50,7 @@ const { showGlossary = false } = Astro.props;
         }
       </div>
 
-      <div class="text-xs copyRight">
+      <div class="copyRight text-xs">
         <hr class="mb-3 lg:mb-5" />
         <span>Copyright &#169; 2013-{currentYear} Alliance of Bioversity International and CIAT.</span><br />
         <div class="flex flex-col gap-3 lg:flex-row lg:justify-between lg:gap-0">
