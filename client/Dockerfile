@@ -1,5 +1,5 @@
 #################### BUILD STAGE ####################
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -16,7 +16,7 @@ COPY . ./
 RUN npm run build
 
 #################### TEST STAGE ####################
-FROM node:20-alpine AS test
+FROM node:22-alpine AS test
 
 WORKDIR /usr/src/app
 
