@@ -7,7 +7,7 @@ import { useSharedValue } from './composables/useSharedValue';
 import { useFilterCatalog } from './composables/useFilterCatalog';
 import { useFilterAvailability } from './composables/useFilterAvailability';
 import { useInnovations } from './composables/useInnovations';
-import { ACTOR_FILTER_OPTIONS } from './constants/filterActors';
+import { ACTOR_FILTER_OPTIONS, getActorFilterButtonStyle } from './constants/filterActors';
 import HeaderSearch from '~/components/vue/HeaderSearch.vue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
@@ -153,11 +153,9 @@ onMounted(() => {
           v-for="actor in ACTOR_FILTER_OPTIONS"
           :key="actor.id"
           type="button"
-          @click="handleSelectActorsChange(actor.name)"
-          class="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-colors"
-          :class="
-            isActorSelected(actor.name) ? 'bg-gray-300 text-gray-900 border-gray-400' : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
-          ">
+          class="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-opacity hover:opacity-90"
+          :style="getActorFilterButtonStyle(actor, isActorSelected(actor.name))"
+          @click="handleSelectActorsChange(actor.name)">
           {{ actor.shortLabel }}
         </button>
         <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="handleClearFilters">
