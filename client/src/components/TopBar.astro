@@ -1,16 +1,20 @@
 ---
-import { Image } from 'astro:assets';
-import Logo from '../images/logo_aiccra_minimize.svg';
-import AiccraLogo from '../images/AICCRALogo.png';
+import InnovationLogo from '../images/innovation-catalogue-logo.svg';
 ---
 
-<!-- Mobile: padding más pequeño, logo responsive | Desktop (lg+): diseño original -->
-<div class="pt-2 pb-2 px-4 lg:pt-2 lg:pb-3 lg:px-2">
-  <div class="flex items-left">
-    <!-- Mobile: logo más pequeño (120px) | Desktop (lg+): tamaño original (182px) -->
-    <Logo width={'120px'} height={'49px'} class="mr-2 lg:w-[182px] lg:h-[75px]" />
-  </div>
-</div>
+<header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md">
+  <div class="max-w-screen-2xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3">
+      <InnovationLogo width={44} height={46} />
+      <span class="text-text-700 font-semibold text-base lg:text-lg leading-tight">AICCRA E-catalog</span>
+    </a>
 
-<!-- Mobile: altura reducida | Desktop (lg+): altura original -->
-<div class="h-[25px] lg:h-[35px] bg-[#0277A2]"></div>
+    <a
+      href="https://aiccra.cgiar.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-400 transition-colors whitespace-nowrap">
+      Go to AICCRA Website
+    </a>
+  </div>
+</header>

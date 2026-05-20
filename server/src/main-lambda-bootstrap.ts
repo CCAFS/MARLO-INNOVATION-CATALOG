@@ -11,7 +11,7 @@ export async function createApp() {
     const app = await NestFactory.create(AppModule, { logger: false });
     console.log('[Lambda] App NestJS creada. Configurando Swagger...');
 
-    // Swagger config (igual que en main.ts)
+    // Swagger config (same as in main.ts)
     const config = new DocumentBuilder()
       .setTitle('CampusMap Server')
       .setDescription('API de CampusMap')

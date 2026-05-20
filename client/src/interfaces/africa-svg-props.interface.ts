@@ -7,4 +7,5 @@ export interface AfricaSvgProps {
   isSelected?: boolean;
   isoCode: string;
   innovationCount?: number;
+  clickable?: boolean;
 }

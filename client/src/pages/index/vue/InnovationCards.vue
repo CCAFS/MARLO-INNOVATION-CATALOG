@@ -35,7 +35,8 @@ const {
   isSearchActive,
   searchQuery,
   limitedInnovations,
-  isMatchingSearch
+  isMatchingSearch,
+  isSearchFiltering
 } = useInnovations();
 
 const handlePageChange = (event: any) => {
@@ -66,15 +67,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Mobile: padding lateral | Desktop (xlg+): diseño original -->
-  <section class="container mx-auto px-4 pt-4 lg:px-4 xl:px-8 2xl:px-12">
+  <!-- Mobile: side padding | Desktop (xlg+): original layout -->
+  <section class="w-full pt-2">
     <!-- Loading Skeleton -->
-    <div v-if="isLoading" class="mb-8 mt-4">
-      <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
-        <article v-for="n in rowsPerPage" :key="n" class="border-1 border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
+    <div v-if="isLoading && !isSearchFiltering" class="mt-4 mb-8">
+      <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
+      <div class="flex flex-col gap-4">
+        <article v-for="n in rowsPerPage" :key="n" class="flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <!-- Badges Skeleton -->
-          <div class="flex items-center gap-2 mb-2 flex-wrap">
+          <div class="mb-2 flex flex-wrap items-center gap-2">
             <Skeleton width="4rem" height="1.5rem" borderRadius="16px" />
             <Skeleton width="5rem" height="1.5rem" borderRadius="16px" />
           </div>
@@ -86,38 +87,37 @@ onMounted(() => {
           </div>
 
           <!-- Summary Skeleton -->
-          <div class="mb-2 flex-grow">
+          <div class="mb-2 grow">
             <Skeleton width="100%" height="1rem" class="mb-1" />
             <Skeleton width="100%" height="1rem" class="mb-1" />
             <Skeleton width="70%" height="1rem" />
           </div>
 
           <!-- View more Skeleton -->
-          <div class="flex mt-auto">
+          <div class="mt-auto flex">
             <Skeleton width="5rem" height="1rem" class="ml-auto" />
           </div>
         </article>
       </div>
     </div>
     <!-- V2 Innovations Cards from API -->
-    <div v-else-if="apiData && apiData.innovations.length" class="mb-8 mt-4">
-      <!-- Control Message If Filter Return nothing -->
-      <div
-        v-if="isSearchActive && !isMatchingSearch && searchQuery.length > 0"
-        class="col-span-full flex flex-col items-center justify-center py-2 bg-white rounded-lg shadow-md lg:py-4 mb-6">
-        <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="pb-1 w-20 h-20 lg:w-auto" />
-        <p class="text-gray-500 text-base mb-2 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
-        <p class="text-gray-400 text-xs lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
-      </div>
-      <!-- Mobile: 1 columna | Tablet (md+): 2 columnas | Desktop (2xl+): 3 columnas -->
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+    <div
+      v-else-if="isSearchActive && searchQuery.trim().length > 0 && !isMatchingSearch"
+      class="col-span-full mt-4 mb-8 flex flex-col items-center justify-center rounded-lg bg-white py-2 shadow-md lg:py-4">
+      <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="h-20 w-20 pb-1 lg:w-auto" />
+      <p class="mb-2 text-base text-gray-500 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
+      <p class="text-xs text-gray-400 lg:text-sm">{{ texts.home.innovationCards.noResultsFound.subtitle }}</p>
+    </div>
+    <div v-else-if="limitedInnovations.length" class="mt-4 mb-8">
+      <!-- Mobile: 1 column | Tablet (md+): 2 columns | Desktop (2xl+): 3 columns -->
+      <div class="flex flex-col gap-4">
         <article
           v-for="innovation in limitedInnovations"
           :key="innovation.id"
-          class="border-1 border-green-600/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white overflow-hidden">
-          <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex gap-2 h-full">
+          class="h-[200px] overflow-hidden rounded-xl border border-green-600/80 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
+          <a :href="`/innovation/${innovation.projectInnovationId}`" class="flex h-full gap-2">
             <!-- Image section: 1/3 width -->
-            <div class="w-1/3 flex-shrink-0 overflow-hidden relative bg-gray-100">
+            <div class="relative w-1/3 shrink-0 overflow-hidden bg-gray-100">
               <!-- Placeholder/skeleton while loading -->
               <Skeleton v-if="!imageLoadingStates[innovation.id] || imageLoadingStates[innovation.id] === 'loading'" width="100%" height="100%" />
 
@@ -126,7 +126,7 @@ onMounted(() => {
                 v-if="innovation.projectInnovationId"
                 :src="getBlurPlaceholder(innovation.projectInnovationId)"
                 alt="innovation-placeholder"
-                class="w-full h-full object-cover sm:object-contain md:object-cover absolute inset-0 blur-md" />
+                class="absolute inset-0 h-full w-full object-cover blur-md sm:object-contain md:object-cover" />
 
               <!-- Main Image -->
               <img
@@ -136,7 +136,7 @@ onMounted(() => {
                 decoding="async"
                 @load="handleImageLoad(innovation.id)"
                 @error="e => handleImageError(e, innovation.id)"
-                class="w-full h-full object-cover sm:object-contain md:object-cover relative z-10 transition-opacity duration-300"
+                class="relative z-10 h-full w-full object-cover transition-opacity duration-300 sm:object-contain md:object-cover"
                 :class="{
                   'opacity-0': imageLoadingStates[innovation.id] === 'loading',
                   'opacity-100': imageLoadingStates[innovation.id] === 'loaded'
@@ -144,11 +144,11 @@ onMounted(() => {
             </div>
 
             <!-- Content section: 2/3 width -->
-            <div class="flex flex-col p-4 h-full text-inherit no-underline w-2/3">
-              <!-- Badges - Mobile: wrap permitido | Desktop: mantener en línea -->
-              <div class="flex items-center gap-2 mb-2 flex-wrap">
+            <div class="flex h-full w-2/3 flex-col p-4 text-inherit no-underline">
+              <!-- Badges - Mobile: wrapping allowed | Desktop: keep in one line -->
+              <div class="mb-2 flex flex-wrap items-center gap-2">
                 <!-- Trending chip -->
-                <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
+                <div class="inline-flex items-center gap-1 rounded-full border border-[#439255] bg-[#F7F7F7] px-2 py-0.5 text-[#439255]">
                   <svg height="14" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       fill-rule="evenodd"
@@ -161,27 +161,42 @@ onMounted(() => {
                   }}</span>
                 </div>
                 <!-- Country chip -->
-                <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
-                  <ImgGlobal class="w-3.5 h-3.5 svg-scale" width="14" height="14" style="width: 14px; height: 14px" viewBox="7 7 14 14" />
+                <div class="inline-flex items-center gap-1 rounded-full border border-[#439255] bg-[#F7F7F7] px-2 py-0.5 text-[#439255]">
+                  <ImgGlobal class="svg-scale h-3.5 w-3.5" width="14" height="14" style="width: 14px; height: 14px" viewBox="7 7 14 14" />
                   <span class="text-sm">{{ getCountryTextStructured([...innovation.countries], [...innovation.regions]).text }}</span>
                 </div>
+
+                <div
+                  v-if="getCountryTextStructured([...innovation.countries], [...innovation.regions], true).hasMore"
+                  class="inline-flex items-center gap-1 rounded-full border border-[#439255] bg-[#F7F7F7] px-2 py-0.5 text-[#439255]">
+                  <span
+                    class="tooltip text-sm"
+                    :aria-label="getCountryTextStructured([...innovation.countries], [...innovation.regions], true).additionalInfo">
+                    {{ getCountryTextStructured([...innovation.countries], [...innovation.regions], true).additionalText }}
+
+                    <span class="tooltiptext" aria-hidden="true">{{
+                      getCountryTextStructured([...innovation.countries], [...innovation.regions], true).additionalInfo
+                    }}</span>
+                  </span>
+                </div>
+
                 <!-- Year chip -->
-                <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 py-0.5 text-[#439255]">
-                  <i class="pi pi-calendar w-3.75 h-3.75" style="font-size: 14px"></i>
+                <div class="inline-flex items-center gap-1 rounded-full border border-[#439255] bg-[#F7F7F7] px-2 py-0.5 text-[#439255]">
+                  <i class="pi pi-calendar h-3.75 w-3.75" style="font-size: 14px"></i>
                   <span class="text-sm">{{ innovation.year || texts.home.innovationCards.innovationDetails.year }}</span>
                 </div>
               </div>
               <!-- Title -->
-              <h3 class="text-base font-semibold leading-tight text-[#1E1E1E] mb-2 line-clamp-2 md:text-md">
+              <h3 class="md:text-md mb-2 line-clamp-2 text-base leading-tight font-semibold text-[#1E1E1E]">
                 {{ innovation.title ?? texts.home.innovationCards.innovationDetails.title }}
               </h3>
               <!-- Summary -->
-              <p class="text-[#1E1E1E] line-clamp-1 invisible text-sm leading-5 mb-2 flex-grow text-justify sm:line-clamp-3 sm:visible">
+              <p class="invisible mb-2 line-clamp-1 grow text-justify text-sm leading-5 text-[#1E1E1E] sm:visible sm:line-clamp-3">
                 {{ innovation.narrative ?? texts.home.innovationCards.innovationDetails.narrative }}
               </p>
               <!-- View more -->
-              <div class="flex mt-auto">
-                <span class="ml-auto text-[#439255] text-sm font-light underline underline-offset-4 decoration-1">{{
+              <div class="mt-auto flex">
+                <span class="ml-auto text-sm font-light text-[#439255] underline decoration-1 underline-offset-4">{{
                   texts.home.innovationCards.innovationDetails.viewMore
                 }}</span>
               </div>
@@ -192,11 +207,11 @@ onMounted(() => {
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mb-8 mt-4">
-      <div class="text-center py-8 border-1 border-gray-200 rounded-xl p-4 md:p-4 shadow-sm bg-white flex flex-col items-center">
+    <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mt-4 mb-8">
+      <div class="flex flex-col items-center rounded-xl border border-gray-200 bg-white p-4 py-8 text-center shadow-sm md:p-4">
         <img :src="EmptyDataImg.src" :alt="imgEmptyDataStats.title" width="150" height="100" class="pb-2" />
-        <p class="text-gray-500 text-lg">{{ texts.home.innovationCards.noResultsAvailable.title }}</p>
-        <p v-if="error && !isLoading" class="text-red-500 text-lg mt-2">{{ texts.home.innovationCards.noResultsAvailable.subtitle }}</p>
+        <p class="text-lg text-gray-500">{{ texts.home.innovationCards.noResultsAvailable.title }}</p>
+        <p v-if="error && !isLoading" class="mt-2 text-lg text-red-500">{{ texts.home.innovationCards.noResultsAvailable.subtitle }}</p>
       </div>
     </div>
 
@@ -214,7 +229,7 @@ onMounted(() => {
 
     <!-- Paginator Skeleton -->
     <div v-else-if="totalRecords === 0 && isLoading" class="mt-8 mb-8">
-      <div class="flex justify-center items-center gap-4 mb-4">
+      <div class="mb-4 flex items-center justify-center gap-4">
         <Skeleton width="2rem" height="2rem" borderRadius="4px" />
         <div class="flex gap-2">
           <Skeleton width="2rem" height="2rem" borderRadius="50%" />
@@ -268,7 +283,9 @@ onMounted(() => {
   background: #e0e3e7 !important;
   border: none;
   color: transparent;
-  transition: background 0.3s ease, width 0.3s ease;
+  transition:
+    background 0.3s ease,
+    width 0.3s ease;
 }
 
 :deep(.p-paginator-page-selected) {

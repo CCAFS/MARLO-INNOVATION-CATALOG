@@ -1,13 +1,10 @@
-import { createApp, type Component } from 'vue';
+import type { App } from 'vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+import Aura from '@primeuix/themes/aura';
+import ToastService from 'primevue/toastservice';
 import 'primeicons/primeicons.css';
 
-// Este archivo se ejecuta para cada isla que Astro monta,
-// pero aquí es donde tienes acceso al "app" real de Vue.
-export default (App: Component, props: Record<string, any>, slots: any) => {
-  const app = createApp(App, props);
-
+export default (app: App) => {
   app.use(PrimeVue, {
     theme: {
       preset: Aura,
@@ -15,9 +12,5 @@ export default (App: Component, props: Record<string, any>, slots: any) => {
     }
   });
 
-  // registra globales si quieres:
-  // import Button from 'primevue/button';
-  // app.component('PButton', Button);
-
-  return app;
+  app.use(ToastService);
 };
