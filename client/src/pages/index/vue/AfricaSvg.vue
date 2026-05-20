@@ -5,7 +5,7 @@ import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
-import { getAmountByCountry, getCountryColor } from '~/utils/map/getAmountByCountry';
+import { getAmountByCountry, getCountryColor, getCountryInnovationCount } from '~/utils/map/getAmountByCountry';
 import { africaCountries } from './composables/useAfrica';
 
 const { setValue, value } = useSharedValue();
@@ -50,6 +50,11 @@ const getAmountTotalByCountries = computed(() => {
 
 // Function to handle country selection
 const toggleCountrySelection = (countryId: string) => {
+  const filteredCount = getAmountByCountries.value
+    ? getCountryInnovationCount(countryId, getAmountByCountries.value)
+    : 0;
+  if (filteredCount === 0) return;
+
   const currentCountries = value.value.countryIds || [];
   const countryIdNum = Number.parseInt(countryId);
   const index = currentCountries.indexOf(countryIdNum);
@@ -80,14 +85,17 @@ const countryList = computed(() => {
     pathD: africaSvgPaths[index],
     stroke: '#bababa',
     fill: '#ffffff',
-    innovationCount: 0
+    innovationCount: 0,
+    clickable: false
   }));
 
   // Apply dynamic colors and innovation counts based on API data
   list.forEach(item => {
     // Get color based on innovation count for this country
     if (getAmountByCountries.value && item.id) {
+      const filteredCount = getCountryInnovationCount(item.id, getAmountByCountries.value);
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
+      item.clickable = filteredCount > 0;
       // Add innovation count to the country data
       const countryData = getAmountTotalByCountries.value?.find(country => country.countryId === item.id);
       item.innovationCount = countryData ? countryData.innovationCount : 0;
@@ -112,6 +120,7 @@ const countryList = computed(() => {
       :stroke="country.stroke"
       :isoCode="country.isoCode"
       :innovation-count="country.innovationCount"
+      :clickable="country.clickable"
       :is-selected="isCountrySelected(country.id!)"
       @click="toggleCountrySelection(country.id!)" />
   </svg>
