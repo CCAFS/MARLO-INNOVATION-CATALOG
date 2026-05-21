@@ -36,6 +36,7 @@
       :x="75"
       :y="1"
       fill="#1E1E1E"
+      icon-variant="stroke"
       :pathD="CLEAR_SCALING_READINESS_ICON_PATH"
       :index="-1"
       :activeIndex="selectedIndex"

@@ -1,7 +1,10 @@
 export const texts = {
+  topBar: {
+    scrolledTitle: 'AICCRA Climate Innovations for Africa'
+  },
   home: {
     overviewStats: {
-      title: 'Explore Validated Climate Innovations for Africa',
+      title: 'Explore AICCRA Climate Innovations for Africa',
       subtitle: 'Discover and access a knowledge hub dedicated to climate-smart solutions for Africa.',
       cta: 'Explore Catalog'
     },

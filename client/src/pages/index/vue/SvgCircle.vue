@@ -1,14 +1,18 @@
 <script setup lang="ts">
-const props = defineProps<{
-  class: string;
-  filter: string;
-  x: number;
-  y: number;
-  fill: string;
-  activeIndex: number | null;
-  index: number;
-  pathD: string;
-}>();
+withDefaults(
+  defineProps<{
+    class: string;
+    filter: string;
+    x: number;
+    y: number;
+    fill: string;
+    activeIndex: number | null;
+    index: number;
+    pathD: string;
+    iconVariant?: 'fill' | 'stroke';
+  }>(),
+  { iconVariant: 'fill' }
+);
 
 const emit = defineEmits<{
   click: [index: number];
@@ -28,6 +32,14 @@ const emit = defineEmits<{
       fill="none"
       shape-rendering="geometricPrecision"
       style="pointer-events: none"></rect>
-    <path :d="pathD" fill="white" style="pointer-events: none"></path>
+    <path
+      v-if="iconVariant === 'stroke'"
+      :d="pathD"
+      fill="none"
+      stroke="white"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      style="pointer-events: none"></path>
+    <path v-else :d="pathD" fill="white" style="pointer-events: none"></path>
   </g>
 </template>
