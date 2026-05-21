@@ -1,20 +1,93 @@
 ---
 import InnovationLogo from '../images/logo_aiccra_minimize.svg';
+import { texts } from '../content/texts';
 ---
 
-<header class="fixed top-0 left-0 z-50 w-full bg-white/80 backdrop-blur-md">
-  <div class="mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-6 py-3 lg:px-10">
-    <a href="/" class="flex items-center gap-3">
+<header data-topbar class="fixed top-0 left-0 z-50 w-full bg-white/80 backdrop-blur-md">
+  <div class="relative mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-6 py-3 lg:px-10">
+    <a href="/" class="relative z-10 flex items-center gap-3">
       <InnovationLogo width={182} height={75} />
-      <!-- <span class="text-text-700 text-base leading-tight font-semibold lg:text-lg">AICCRA E-catalog</span> -->
     </a>
+
+    <p
+      data-topbar-title
+      class="topbar-scroll-title pointer-events-none absolute top-1/2 left-1/2 hidden text-xl font-semibold whitespace-nowrap text-[#079899] md:block"
+      aria-hidden="true">
+      {texts.topBar.scrolledTitle}
+    </p>
 
     <a
       href="https://aiccra.cgiar.org/"
       target="_blank"
       rel="noopener noreferrer"
-      class="bg-primary-500 hover:bg-primary-400 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap text-white transition-colors">
+      class="bg-primary-500 hover:bg-primary-400 relative z-10 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap text-white transition-colors">
       Go to AICCRA Website
     </a>
   </div>
 </header>
+
+<style>
+  .topbar-scroll-title {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 4px));
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  header.is-scrolled .topbar-scroll-title {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .topbar-scroll-title {
+      transform: translate(-50%, -50%);
+      transition: opacity 0.25s ease;
+    }
+
+    header.is-scrolled .topbar-scroll-title {
+      transform: translate(-50%, -50%);
+    }
+  }
+</style>
+
+<script>
+  const SCROLL_THRESHOLD = 200;
+
+  function initTopBarScroll() {
+    const header = document.querySelector<HTMLElement>('[data-topbar]');
+    const title = document.querySelector<HTMLElement>('[data-topbar-title]');
+    if (!header) return;
+
+    let ticking = false;
+
+    const updateScrollState = () => {
+      const isScrolled = window.scrollY > SCROLL_THRESHOLD;
+      header.classList.toggle('is-scrolled', isScrolled);
+      if (title) {
+        title.setAttribute('aria-hidden', String(!isScrolled));
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScrollState);
+      }
+    };
+
+    updateScrollState();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }
+
+  let cleanup = initTopBarScroll();
+
+  document.addEventListener('astro:page-load', () => {
+    cleanup?.();
+    cleanup = initTopBarScroll();
+  });
+</script>
