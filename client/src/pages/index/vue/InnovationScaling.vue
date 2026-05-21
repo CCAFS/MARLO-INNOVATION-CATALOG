@@ -59,7 +59,7 @@ onMounted(() => {
         :style="{ borderColor: backgroundColor, backgroundColor }">
         {{ value.scalingReadiness }}
       </div>
-      <div class="flex min-w-0 flex-1 flex-col gap-1">
+      <div class="flex min-w-0 flex-1 flex-col gap-1 text-black">
         <div class="text-sm font-semibold lg:text-base">{{ readinessText.text }}</div>
         <div class="text-xs font-light text-black lg:text-sm">
           {{ readinessText.description }}
