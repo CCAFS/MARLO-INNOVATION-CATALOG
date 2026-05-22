@@ -131,7 +131,7 @@ export const texts = {
         technicalSupport: 'Technical Support',
         technicalSupportDescription:
           'This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team',
-        technicalSupportEmail: 'MARLOSupport@cgiar.org'
+        technicalSupportEmail: 'alliance-ITsupport@cgiar.org'
       },
       share: 'Share'
     },
@@ -139,8 +139,8 @@ export const texts = {
   },
   footer: {
     contact: {
-      title: 'Contact',
-      email: 'MARLOSupport@cgiar.org'
+      title: 'Technical Contact',
+      email: 'Alliance-ITsupport@cgiar.org'
     },
     legal: {
       title: 'Legal',
