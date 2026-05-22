@@ -8,6 +8,18 @@
 @import './custom-icons.css';
 /* Global Styles */
 
+:root,
+html {
+  color-scheme: light only;
+  background-color: #ffffff;
+}
+
+body {
+  color-scheme: light only;
+  background-color: #ffffff;
+  color: var(--color-text-900);
+}
+
 * {
   font-family: 'Montserrat', sans-serif;
 }
