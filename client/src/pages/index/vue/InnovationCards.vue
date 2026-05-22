@@ -223,8 +223,8 @@ onMounted(() => {
         :totalRecords="totalRecords"
         :rowsPerPageOptions="[6, 12, 18, 24]"
         @page="handlePageChange"
-        template="PrevPageLink PageLinks NextPageLink"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" />
+        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+        currentPageReportTemplate="{first} - {last} of {totalRecords}" />
     </div>
 
     <!-- Paginator Skeleton -->
@@ -309,5 +309,9 @@ onMounted(() => {
 :deep(.svg-scale path) {
   transform: scale(0.5);
   transform-origin: center;
+}
+
+:deep(.p-paginator-current) {
+  font-size: 14px;
 }
 </style>
