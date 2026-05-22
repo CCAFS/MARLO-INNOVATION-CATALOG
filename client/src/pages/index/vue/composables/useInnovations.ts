@@ -7,6 +7,53 @@ import type { Filters } from '~/interfaces/search-filters.interface';
 import { matchesInnovationSearch } from '~/utils/search/matchesInnovationSearch';
 
 const SEARCH_DEBOUNCE_MS = 300;
+const POOL_LIMIT = 1000;
+
+const buildInnovationParams = (
+  filters: Filters,
+  pagination: { offset: number; limit: number }
+): Record<string, unknown> => {
+  const params: Record<string, unknown> = {
+    phase: phaseId,
+    offset: pagination.offset,
+    limit: pagination.limit
+  };
+
+  if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
+    params.readinessScale = filters.scalingReadiness + 1;
+  }
+  if (filters.innovationTypeId) {
+    params.innovationTypeId = filters.innovationTypeId;
+  }
+  if (filters.sdgId) {
+    params.sdgId = filters.sdgId;
+  }
+  if (filters.countryIds && filters.countryIds.length > 0) {
+    params.countryIds = filters.countryIds;
+  }
+  if (filters.actorName && filters.actorName.length > 0) {
+    params.actorName = filters.actorName;
+  }
+  if (filters.actorIds && filters.actorIds.length > 0) {
+    params.actorIds = filters.actorIds;
+  }
+
+  return params;
+};
+
+const sliceCatalogPage = (
+  catalog: InnovationCatalog,
+  pageOffset: number,
+  pageLimit: number
+): InnovationCatalog => {
+  const pool = catalog.innovations;
+
+  return {
+    ...catalog,
+    innovations: pool.slice(pageOffset, pageOffset + pageLimit),
+    totalCount: pool.length
+  };
+};
 
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalog | null>(null);
@@ -67,101 +114,49 @@ export function useInnovations() {
 
   // Methods
   const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
+    isLoading.value = true;
+    error.value = null;
+
     try {
-      isLoading.value = true;
-      error.value = null;
+      const poolParams = buildInnovationParams(filters, { offset: 0, limit: POOL_LIMIT });
 
-      const params: any = {
-        phase: phaseId,
-        offset: pageOffset,
-        limit: pageLimit
-      };
+      const [dataForCountry, totalData] = await Promise.all([
+        getInnovations(poolParams),
+        getInnovations({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
+      ]);
 
-      if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-        params.readinessScale = filters.scalingReadiness + 1;
-      }
-      if (filters.innovationTypeId) {
-        params.innovationTypeId = filters.innovationTypeId;
-      }
-      if (filters.sdgId) {
-        params.sdgId = filters.sdgId;
-      }
-      if (filters.countryIds && filters.countryIds.length > 0) {
-        params.countryIds = filters.countryIds;
-      }
-      if (filters.actorName && filters.actorName.length > 0) {
-        params.actorName = filters.actorName;
-      }
-      if (filters.actorIds && filters.actorIds.length > 0) {
-        params.actorIds = filters.actorIds;
-      }
+      apiDataForCountry.value = dataForCountry;
+      apiDataTotal.value = totalData;
 
-      const data = await getInnovations(params);
-      apiData.value = data;
-
-      if (data.totalCount !== undefined) {
-        totalRecords.value = data.totalCount;
-      }
-    } catch (err: any) {
+      const pool = dataForCountry.innovations;
+      totalRecords.value = pool.length;
+      apiData.value = sliceCatalogPage(dataForCountry, pageOffset, pageLimit);
+    } catch (err: unknown) {
       console.error('Error fetching data from API:', err);
-      error.value = err instanceof Error ? err : new Error(String(err));
+      const message = err instanceof Error ? err.message : String(err);
+      error.value = err instanceof Error ? err : new Error(message);
 
-      if (err.message.includes('ETIMEDOUT') || err.message.includes('503')) {
+      if (message.includes('ETIMEDOUT') || message.includes('503')) {
         error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
       }
+
+      apiDataForCountry.value = null;
+      apiData.value = null;
+      apiDataTotal.value = {
+        innovations: [],
+        totalCount: 0,
+        appliedFilters: {
+          phase: phaseId,
+          readinessScale: null,
+          innovationTypeId: null,
+          innovationId: null,
+          sdgId: null,
+          searchType: ''
+        }
+      };
+      totalRecords.value = 0;
     } finally {
       isLoading.value = false;
-
-      try {
-        const params: any = {
-          phase: phaseId,
-          offset: 0,
-          limit: 1000
-        };
-
-        if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-          params.readinessScale = filters.scalingReadiness + 1;
-        }
-        if (filters.innovationTypeId) {
-          params.innovationTypeId = filters.innovationTypeId;
-        }
-        if (filters.sdgId) {
-          params.sdgId = filters.sdgId;
-        }
-        if (filters.countryIds && filters.countryIds.length > 0) {
-          params.countryIds = filters.countryIds;
-        }
-        if (filters.actorName && filters.actorName.length > 0) {
-          params.actorName = filters.actorName;
-        }
-        if (filters.actorIds && filters.actorIds.length > 0) {
-          params.actorIds = filters.actorIds;
-        }
-
-        const dataForCountry = await getInnovations(params);
-        apiDataForCountry.value = dataForCountry;
-
-        const totalData = await getInnovations({ phase: phaseId.toString(), offset: 0, limit: 1000 });
-        apiDataTotal.value = totalData;
-      } catch (fetchError: any) {
-        console.error('Error fetching data for country filter from API:', fetchError);
-        error.value = fetchError instanceof Error ? fetchError : new Error(String(fetchError));
-        if (fetchError.message?.includes('ETIMEDOUT') || fetchError.message?.includes('503')) {
-          error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
-        }
-        apiDataTotal.value = {
-          innovations: [],
-          totalCount: 0,
-          appliedFilters: {
-            phase: phaseId,
-            readinessScale: null,
-            innovationTypeId: null,
-            innovationId: null,
-            sdgId: null,
-            searchType: ''
-          }
-        };
-      }
     }
   };
 
@@ -169,7 +164,6 @@ export function useInnovations() {
     try {
       const data = await getInnovationStats({ phaseId: phaseId.toString() });
       apiDataStats.value = data;
-      totalRecords.value = data.innovationCount || 0;
     } catch (err) {
       console.error('Error fetching info stats:', err);
     }
@@ -179,6 +173,13 @@ export function useInnovations() {
     currentPage.value = event.page;
     rowsPerPage.value = event.rows;
     const newOffset = event.page * event.rows;
+
+    if (apiDataForCountry.value) {
+      totalRecords.value = apiDataForCountry.value.innovations.length;
+      apiData.value = sliceCatalogPage(apiDataForCountry.value, newOffset, event.rows);
+      return;
+    }
+
     fetchInnovations(filters, newOffset, event.rows);
   };
 

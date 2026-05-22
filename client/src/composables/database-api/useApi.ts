@@ -9,6 +9,12 @@ import {
   type PDFInfo
 } from '~/interfaces/innovation-catalog.interface';
 import type { SearchComplete } from '~/interfaces/search-complete.interface';
+import {
+  filterInnovationCatalogResponse,
+  filterSearchCompleteResponse
+} from '~/utils/innovations/filterInnovationCatalogResponse';
+
+const isFullPoolRequest = (limit?: number) => !limit || limit >= 1000;
 
 export function useApi() {
   const apiBaseUrl = import.meta.env.PUBLIC_API || '';
@@ -28,7 +34,7 @@ export function useApi() {
 
     postCreatePost: (body: CreatePostRequest) => makeRequest<CreatePostResponse>('POST', `${apiBaseUrl}/posts`, { body }),
 
-    getInnovations: (params?: {
+    getInnovations: async (params?: {
       phase?: string;
       offset?: number;
       limit?: number;
@@ -36,7 +42,10 @@ export function useApi() {
       innovationTypeId?: number;
       sdgId?: number;
       countryIds?: number[];
-    }) => makeRequest<InnovationCatalog>('GET', `${apiBaseUrl}/innovations/search-simple`, { params }),
+    }) => {
+      const data = await makeRequest<InnovationCatalog>('GET', `${apiBaseUrl}/innovations/search-simple`, { params });
+      return filterInnovationCatalogResponse(data, { updateTotalCount: isFullPoolRequest(params?.limit) });
+    },
 
     getInnovationStats: (params?: { phaseId?: string }) =>
       makeRequest<InnovationCatalogStats>('GET', `${apiBaseUrl}/innovations/stats`, {
@@ -45,7 +54,7 @@ export function useApi() {
         retryDelay: 2000 // Wait 2 seconds between retries
       }),
 
-    getInnovationsComplete: (params?: {
+    getInnovationsComplete: async (params?: {
       phase?: string;
       offset?: number;
       limit?: number;
@@ -53,7 +62,10 @@ export function useApi() {
       innovationTypeId?: number;
       sdgId?: number;
       countryId?: number;
-    }) => makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params }),
+    }) => {
+      const data = await makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params });
+      return filterSearchCompleteResponse(data, { updateTotalCount: isFullPoolRequest(params?.limit) });
+    },
 
     getInnovationPDFById: (id: string | number) =>
       makeRequest<PDFInfo>('GET', `${apiBaseUrl}/innovations/pdf/url/custom`, {
