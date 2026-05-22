@@ -10,7 +10,6 @@ const equivalentFilterKeyMap: Record<FilterType, string> = {
   [FilterType.InnovationTypeId]: 'innovationType',
   [FilterType.SdgId]: 'sdgs',
   [FilterType.CountryIds]: 'countries',
-  [FilterType.ActorName]: 'actors',
   [FilterType.ActorIds]: 'actors'
 };
 
@@ -32,14 +31,12 @@ export const isInnovationAssociatedWithFilterOption = (
       return false;
     }
 
-    if (filterType === FilterType.ActorName || filterType === FilterType.ActorIds) {
+    if (filterType === FilterType.ActorIds) {
       if (Array.isArray(filterValue)) {
-        return filterValue.some((actor: { id?: number; actorTypeId?: number; name?: string; actorTypeName?: string }) => {
-          if (filterType === FilterType.ActorIds) {
-            return actor.id === value || actor.actorTypeId === value;
-          }
-          return actor.name === value || actor.actorTypeName === value;
-        });
+        return filterValue.some(
+          (actor: { actorId?: number; actorInfo?: { id?: number } }) =>
+            actor.actorId === value || actor.actorInfo?.id === value
+        );
       }
     }
 

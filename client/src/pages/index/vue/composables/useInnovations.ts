@@ -4,6 +4,8 @@ import { useApi } from '~/composables/database-api/useApi';
 import { phaseId } from '~/content/vars';
 import type { InnovationCatalog, InnovationCatalogStats, InnovationResume } from '~/interfaces/innovation-catalog.interface';
 import type { Filters } from '~/interfaces/search-filters.interface';
+import { matchesActorIdsFilter } from '~/utils/filters/matchesActorIdsFilter';
+import { searchCompleteToCatalog } from '~/utils/innovations/searchCompleteToCatalog';
 import { matchesInnovationSearch } from '~/utils/search/matchesInnovationSearch';
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -31,14 +33,22 @@ const buildInnovationParams = (
   if (filters.countryIds && filters.countryIds.length > 0) {
     params.countryIds = filters.countryIds;
   }
-  if (filters.actorName && filters.actorName.length > 0) {
-    params.actorName = filters.actorName;
-  }
-  if (filters.actorIds && filters.actorIds.length > 0) {
-    params.actorIds = filters.actorIds;
-  }
 
   return params;
+};
+
+const applyActorFilter = (catalog: InnovationCatalog, actorIds: number[] | null): InnovationCatalog => {
+  if (!actorIds?.length) {
+    return catalog;
+  }
+
+  const innovations = catalog.innovations.filter(innovation => matchesActorIdsFilter(innovation, actorIds));
+
+  return {
+    ...catalog,
+    innovations,
+    totalCount: innovations.length
+  };
 };
 
 const sliceCatalogPage = (
@@ -99,7 +109,7 @@ watch(apiDataForCountry, () => {
 });
 
 export function useInnovations() {
-  const { getInnovations, getInnovationStats } = useApi();
+  const { getInnovationsComplete, getInnovationStats } = useApi();
 
   // Computed
   const offset = computed(() => currentPage.value * rowsPerPage.value);
@@ -120,13 +130,14 @@ export function useInnovations() {
     try {
       const poolParams = buildInnovationParams(filters, { offset: 0, limit: POOL_LIMIT });
 
-      const [dataForCountry, totalData] = await Promise.all([
-        getInnovations(poolParams),
-        getInnovations({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
+      const [filteredComplete, totalComplete] = await Promise.all([
+        getInnovationsComplete(poolParams),
+        getInnovationsComplete({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
       ]);
 
+      const dataForCountry = applyActorFilter(searchCompleteToCatalog(filteredComplete), filters.actorIds);
       apiDataForCountry.value = dataForCountry;
-      apiDataTotal.value = totalData;
+      apiDataTotal.value = searchCompleteToCatalog(totalComplete);
 
       const pool = dataForCountry.innovations;
       totalRecords.value = pool.length;

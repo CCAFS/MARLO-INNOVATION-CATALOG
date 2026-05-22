@@ -7,7 +7,6 @@ export enum FilterType {
   InnovationTypeId = 'innovationTypeId',
   SdgId = 'sdgId',
   CountryIds = 'countryIds',
-  ActorName = 'actorName',
   ActorIds = 'actorIds'
 }
 
@@ -17,7 +16,6 @@ const value = ref<Filters>({
   innovationTypeId: null,
   sdgId: null,
   countryIds: null,
-  actorName: null,
   actorIds: null
 });
 
@@ -33,7 +31,6 @@ export function useSharedValue() {
       innovationTypeId: null,
       sdgId: null,
       countryIds: null,
-      actorName: null,
       actorIds: null
     };
   };

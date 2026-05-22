@@ -7,7 +7,12 @@ import { useSharedValue } from './composables/useSharedValue';
 import { useFilterCatalog } from './composables/useFilterCatalog';
 import { useFilterAvailability } from './composables/useFilterAvailability';
 import { useInnovations } from './composables/useInnovations';
-import { ACTOR_FILTER_OPTIONS, getActorFilterButtonStyle } from './constants/filterActors';
+import {
+  ACTOR_FILTER_OPTIONS,
+  getActorFilterButtonStyle,
+  isActorOptionSelected,
+  toggleActorOption
+} from './constants/filterActors';
 import HeaderSearch from '~/components/vue/HeaderSearch.vue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
@@ -45,7 +50,10 @@ const selectedCountries = computed(() => {
   return countryOptions.value.filter(country => value.value.countryIds?.includes(Number.parseInt(country.id)));
 });
 
-const isActorSelected = (actorName: string) => value.value.actorName?.includes(actorName) ?? false;
+const isActorSelected = (actorKey: string) => {
+  const option = ACTOR_FILTER_OPTIONS.find(actor => actor.key === actorKey);
+  return option ? isActorOptionSelected(option, value.value.actorIds) : false;
+};
 
 const handleSelectInnovationTypeChange = (newValue: InnovationType | null) => {
   setValue({ innovationTypeId: newValue?.id || null });
@@ -60,16 +68,10 @@ const handleSelectCountriesChange = (newValue: AfricaSvgProps[] | null) => {
   setValue({ countryIds: countryIds.length > 0 ? countryIds : null });
 };
 
-const handleSelectActorsChange = (actorName: string) => {
-  const actorNamesValue = value.value.actorName || [];
-  const isAlreadySelected = actorNamesValue.includes(actorName);
-
-  if (isAlreadySelected) {
-    const updatedActorNames = actorNamesValue.filter(actor => actor !== actorName);
-    setValue({ actorName: updatedActorNames.length > 0 ? updatedActorNames : null });
-  } else {
-    setValue({ actorName: [...actorNamesValue, actorName] });
-  }
+const handleSelectActorsChange = (actorKey: string) => {
+  const option = ACTOR_FILTER_OPTIONS.find(actor => actor.key === actorKey);
+  if (!option) return;
+  setValue({ actorIds: toggleActorOption(option, value.value.actorIds) });
 };
 
 const handleClearFilters = () => {
@@ -151,11 +153,11 @@ onMounted(() => {
         <span class="text-xs text-text-600 font-medium shrink-0">{{ texts.home.innovationFilters.filters.actors.title }}</span>
         <button
           v-for="actor in ACTOR_FILTER_OPTIONS"
-          :key="actor.id"
+          :key="actor.key"
           type="button"
           class="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-opacity hover:opacity-90"
-          :style="getActorFilterButtonStyle(actor, isActorSelected(actor.name))"
-          @click="handleSelectActorsChange(actor.name)">
+          :style="getActorFilterButtonStyle(actor, isActorSelected(actor.key))"
+          @click="handleSelectActorsChange(actor.key)">
           {{ actor.shortLabel }}
         </button>
         <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="handleClearFilters">

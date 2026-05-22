@@ -37,6 +37,7 @@ export interface InnovationResume {
   sdgs: Sdg[];
   regions: Region[];
   countries: Country[];
+  actors?: { actorId: number }[];
 }
 
 export interface InnovationDetail {
