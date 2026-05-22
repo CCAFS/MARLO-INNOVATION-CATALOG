@@ -45,7 +45,7 @@ const clarityScript = `
 `;
 ---
 
-<html lang="en">
+<html lang="en" class="bg-white">
   <head>
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
     <script is:inline set:html={gaScript} />
@@ -53,6 +53,8 @@ const clarityScript = `
     <meta charset="utf-8" />
     <link rel="icon" type="image/x-icon" href="/favicon-aiccra.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="generator" content={Astro.generator} />
     <!-- Basic SEO  -->
     <meta name="description" content={description} />
@@ -75,7 +77,7 @@ const clarityScript = `
     <meta name="twitter:image" content={domain + '/logo.png'} />
     <title>{title}</title>
   </head>
-  <body class="m-0 min-h-[100vh] overflow-x-hidden overflow-y-auto bg-white p-0">
+  <body class="m-0 min-h-[100vh] overflow-x-hidden overflow-y-auto bg-white p-0 text-text-900">
     <div id="screenshot-area" class="bg-white">
       <TopBar />
       <main class="pt-[100px]">
