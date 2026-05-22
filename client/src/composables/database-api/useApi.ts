@@ -61,6 +61,7 @@ export function useApi() {
       readinessScale?: number;
       innovationTypeId?: number;
       sdgId?: number;
+      countryIds?: number[];
       countryId?: number;
     }) => {
       const data = await makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params });
