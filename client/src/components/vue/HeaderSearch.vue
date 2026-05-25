@@ -10,9 +10,9 @@ const { searchQuery, handleSearch, onSearchActive, onSearchDeactive } = useInnov
 watch(searchQuery, (newQuery, oldQuery) => {
   if (newQuery.trim()) {
     onSearchActive();
-    handleSearch(newQuery);
+    handleSearch(newQuery, value.value);
   } else if (oldQuery.trim()) {
-    handleSearch('');
+    handleSearch('', value.value);
     onSearchDeactive(value.value);
   }
 });
