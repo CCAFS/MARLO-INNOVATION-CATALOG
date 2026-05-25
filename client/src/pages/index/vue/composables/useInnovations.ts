@@ -1,9 +1,76 @@
 // composables/useInnovations.ts
-import { ref, computed, readonly } from 'vue';
+import { ref, computed, readonly, watch } from 'vue';
 import { useApi } from '~/composables/database-api/useApi';
 import { phaseId } from '~/content/vars';
-import type { InnovationCatalog, InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
+import type { InnovationCatalog, InnovationCatalogStats, InnovationResume } from '~/interfaces/innovation-catalog.interface';
 import type { Filters } from '~/interfaces/search-filters.interface';
+import { matchesActorIdsFilter } from '~/utils/filters/matchesActorIdsFilter';
+import { searchCompleteToCatalog } from '~/utils/innovations/searchCompleteToCatalog';
+import { matchesInnovationSearch } from '~/utils/search/matchesInnovationSearch';
+import type { SearchComplete } from '~/interfaces/search-complete.interface';
+
+const SEARCH_DEBOUNCE_MS = 300;
+const POOL_LIMIT = 1000;
+
+const buildInnovationParams = (
+  filters: Filters,
+  pagination: { offset: number; limit: number }
+): Record<string, unknown> => {
+  const params: Record<string, unknown> = {
+    phase: phaseId,
+    offset: pagination.offset,
+    limit: pagination.limit
+  };
+
+  if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
+    params.readinessScale = filters.scalingReadiness + 1;
+  }
+  if (filters.innovationTypeId) {
+    params.innovationTypeId = filters.innovationTypeId;
+  }
+  if (filters.sdgId) {
+    params.sdgId = filters.sdgId;
+  }
+  if (filters.countryIds && filters.countryIds.length > 0) {
+    params.countryIds = filters.countryIds;
+  }
+
+  return params;
+};
+
+const applyActorFilter = (catalog: InnovationCatalog, actorIds: number[] | null): InnovationCatalog => {
+  if (!actorIds?.length) {
+    return catalog;
+  }
+
+  const innovations = catalog.innovations.filter(innovation => matchesActorIdsFilter(innovation, actorIds));
+
+  return {
+    ...catalog,
+    innovations,
+    totalCount: innovations.length
+  };
+};
+
+const sliceCatalogPage = (
+  catalog: InnovationCatalog,
+  pageOffset: number,
+  pageLimit: number
+): InnovationCatalog => {
+  const pool = catalog.innovations;
+
+  return {
+    ...catalog,
+    innovations: pool.slice(pageOffset, pageOffset + pageLimit),
+    totalCount: pool.length
+  };
+};
+
+const hasBackendFilters = (filters: Filters) =>
+  (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) ||
+  Boolean(filters.innovationTypeId) ||
+  Boolean(filters.sdgId) ||
+  Boolean(filters.countryIds?.length);
 
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalog | null>(null);
@@ -17,103 +84,133 @@ const rowsPerPage = ref(6);
 const totalRecords = ref(0);
 const isSearchActive = ref(false);
 const isMatchingSearch = ref(false);
+const isSearchFiltering = ref(false);
 
 // Search-related state
 const searchQuery = ref('');
-const filteredInnovations = ref<any[]>([]);
+const filteredInnovations = ref<InnovationResume[]>([]);
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let totalCompleteCache: SearchComplete | null = null;
+let totalCompletePromise: Promise<SearchComplete> | null = null;
+let fetchRequestId = 0;
+
+const getSearchPool = (): InnovationResume[] => {
+  return apiDataForCountry.value?.innovations ?? apiData.value?.innovations ?? [];
+};
+
+const runSearch = (query: string) => {
+  const trimmed = query.trim();
+  if (!trimmed) {
+    filteredInnovations.value = [];
+    isMatchingSearch.value = false;
+    isSearchFiltering.value = false;
+    return;
+  }
+
+  filteredInnovations.value = getSearchPool().filter(innovation => matchesInnovationSearch(innovation, trimmed));
+  isMatchingSearch.value = filteredInnovations.value.length > 0;
+  isSearchFiltering.value = false;
+};
+
+watch(apiDataForCountry, () => {
+  if (isSearchActive.value && searchQuery.value.trim()) {
+    runSearch(searchQuery.value);
+  }
+});
 
 export function useInnovations() {
-  const { getInnovations, getInnovationStats } = useApi();
+  const { getInnovationsComplete, getInnovationStats } = useApi();
 
   // Computed
   const offset = computed(() => currentPage.value * rowsPerPage.value);
   const limit = computed(() => rowsPerPage.value);
 
+  const limitedInnovations = computed(() => {
+    if (isSearchActive.value) {
+      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    }
+    return apiData.value?.innovations ?? [];
+  });
+
   // Methods
+  const fetchTotalComplete = () => {
+    if (totalCompleteCache) {
+      return Promise.resolve(totalCompleteCache);
+    }
+
+    if (totalCompletePromise) {
+      return totalCompletePromise;
+    }
+
+    totalCompletePromise = getInnovationsComplete({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
+      .then(data => {
+        totalCompleteCache = data;
+        return data;
+      })
+      .finally(() => {
+        totalCompletePromise = null;
+      });
+
+    return totalCompletePromise;
+  };
+
   const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
+    const requestId = ++fetchRequestId;
+    isLoading.value = true;
+    error.value = null;
+
     try {
-      isLoading.value = true;
-      error.value = null;
+      const poolParams = buildInnovationParams(filters, { offset: 0, limit: POOL_LIMIT });
+      const hasServerSideFilters = hasBackendFilters(filters);
+      const filteredPromise = hasServerSideFilters ? getInnovationsComplete(poolParams) : fetchTotalComplete();
 
-      const params: any = {
-        phase: phaseId,
-        offset: pageOffset,
-        limit: pageLimit
-      };
+      const [filteredComplete, totalComplete] = await Promise.all([
+        filteredPromise,
+        fetchTotalComplete()
+      ]);
 
-      if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-        params.readinessScale = filters.scalingReadiness + 1;
-      }
-      if (filters.innovationTypeId) {
-        params.innovationTypeId = filters.innovationTypeId;
-      }
-      if (filters.sdgId) {
-        params.sdgId = filters.sdgId;
-      }
-      if (filters.countryIds && filters.countryIds.length > 0) {
-        params.countryIds = filters.countryIds;
-      }
-      if (filters.actorName && filters.actorName.length > 0) {
-        params.actorName = filters.actorName;
-      }
-      if (filters.actorIds && filters.actorIds.length > 0) {
-        params.actorIds = filters.actorIds;
+      if (requestId !== fetchRequestId) {
+        return;
       }
 
-      const data = await getInnovations(params);
-      apiData.value = data;
+      const dataForCountry = applyActorFilter(searchCompleteToCatalog(filteredComplete), filters.actorIds);
+      apiDataForCountry.value = dataForCountry;
+      apiDataTotal.value = searchCompleteToCatalog(totalComplete);
 
-      if (data.totalCount !== undefined) {
-        totalRecords.value = data.totalCount;
+      const pool = dataForCountry.innovations;
+      totalRecords.value = pool.length;
+      apiData.value = sliceCatalogPage(dataForCountry, pageOffset, pageLimit);
+    } catch (err: unknown) {
+      if (requestId !== fetchRequestId) {
+        return;
       }
-    } catch (err: any) {
+
       console.error('Error fetching data from API:', err);
-      error.value = err instanceof Error ? err : new Error(String(err));
+      const message = err instanceof Error ? err.message : String(err);
+      error.value = err instanceof Error ? err : new Error(message);
 
-      if (err.message.includes('ETIMEDOUT') || err.message.includes('503')) {
+      if (message.includes('ETIMEDOUT') || message.includes('503')) {
         error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
       }
-    } finally {
-      isLoading.value = false;
 
-      try {
-        const params: any = {
+      apiDataForCountry.value = null;
+      apiData.value = null;
+      apiDataTotal.value = {
+        innovations: [],
+        totalCount: 0,
+        appliedFilters: {
           phase: phaseId,
-          offset: 0,
-          limit: 1000
-        };
-
-        if (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) {
-          params.readinessScale = filters.scalingReadiness + 1;
+          readinessScale: null,
+          innovationTypeId: null,
+          innovationId: null,
+          sdgId: null,
+          searchType: ''
         }
-        if (filters.innovationTypeId) {
-          params.innovationTypeId = filters.innovationTypeId;
-        }
-        if (filters.sdgId) {
-          params.sdgId = filters.sdgId;
-        }
-        if (filters.countryIds && filters.countryIds.length > 0) {
-          params.countryIds = filters.countryIds;
-        }
-        if (filters.actorName && filters.actorName.length > 0) {
-          params.actorName = filters.actorName;
-        }
-        if (filters.actorIds && filters.actorIds.length > 0) {
-          params.actorIds = filters.actorIds;
-        }
-
-        const dataForCountry = await getInnovations(params);
-        apiDataForCountry.value = dataForCountry;
-
-        const totalData = await getInnovations({ phase: phaseId.toString(), offset: 0, limit: 1000 });
-        apiDataTotal.value = totalData;
-      } catch (error: any) {
-        console.error('Error fetching data for country filter from API:', error);
-        error.value = error instanceof Error ? error : new Error(String(error));
-        if (error.message.includes('ETIMEDOUT') || error.message.includes('503')) {
-          error.value = new Error('VPN connection timeout. Please check your VPN connection and try again.');
-        }
+      };
+      totalRecords.value = 0;
+    } finally {
+      if (requestId === fetchRequestId) {
+        isLoading.value = false;
       }
     }
   };
@@ -122,7 +219,6 @@ export function useInnovations() {
     try {
       const data = await getInnovationStats({ phaseId: phaseId.toString() });
       apiDataStats.value = data;
-      totalRecords.value = data.innovationCount || 0;
     } catch (err) {
       console.error('Error fetching info stats:', err);
     }
@@ -132,13 +228,19 @@ export function useInnovations() {
     currentPage.value = event.page;
     rowsPerPage.value = event.rows;
     const newOffset = event.page * event.rows;
+
+    if (apiDataForCountry.value) {
+      totalRecords.value = apiDataForCountry.value.innovations.length;
+      apiData.value = sliceCatalogPage(apiDataForCountry.value, newOffset, event.rows);
+      return;
+    }
+
     fetchInnovations(filters, newOffset, event.rows);
   };
 
-  const onSearchActive = (filters: Filters) => {
+  const onSearchActive = () => {
     isSearchActive.value = true;
     currentPage.value = 0;
-    fetchInnovations(filters, 0, apiData.value?.totalCount || rowsPerPage.value);
   };
 
   const onSearchDeactive = (filters: Filters) => {
@@ -147,45 +249,36 @@ export function useInnovations() {
     fetchInnovations(filters, 0, rowsPerPage.value);
   };
 
-  // Handle search with debouncing
+  const clearSearch = () => {
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = null;
+    }
+    searchQuery.value = '';
+    filteredInnovations.value = [];
+    isMatchingSearch.value = false;
+    isSearchActive.value = false;
+    isSearchFiltering.value = false;
+  };
+
   const handleSearch = (query: string) => {
     searchQuery.value = query;
 
-    isLoading.value = true;
-
-    // Clear previous timer
     if (searchDebounceTimer) {
       clearTimeout(searchDebounceTimer);
     }
 
-    // Set new debounce timer (1 second)
-    searchDebounceTimer = setTimeout(() => {
-      if (query.trim() === '') {
-        // Reset to original data when search is empty
-        filteredInnovations.value = [];
-        isMatchingSearch.value = false;
-        isLoading.value = false;
-      } else {
-        // Create shallow copy and filter
-        const innovations = apiData.value?.innovations || [];
-        filteredInnovations.value = [...innovations].filter(innovation => {
-          const searchTerm = query.toLowerCase();
-          return innovation.title?.toLowerCase().includes(searchTerm) || innovation.projectInnovationId?.toString().includes(searchTerm);
-        });
-        // Set isMatchingSearch based on whether results were found
-        isMatchingSearch.value = filteredInnovations.value.length > 0;
-        isLoading.value = false;
-      }
-    }, 1000);
-  };
-
-  // Computed for limited innovations (max 6)
-  const limitedInnovations = computed(() => {
-    if (isSearchActive.value && filteredInnovations.value.length > 0) {
-      return filteredInnovations.value.slice(0, rowsPerPage.value);
+    if (!query.trim()) {
+      runSearch('');
+      return;
     }
-    return apiData.value?.innovations.slice(0, rowsPerPage.value) || [];
-  });
+
+    isSearchFiltering.value = true;
+
+    searchDebounceTimer = setTimeout(() => {
+      runSearch(query);
+    }, SEARCH_DEBOUNCE_MS);
+  };
 
   return {
     // State (now shared across all components)
@@ -200,9 +293,10 @@ export function useInnovations() {
     totalRecords: readonly(totalRecords),
     isSearchActive: readonly(isSearchActive),
     isMatchingSearch: readonly(isMatchingSearch),
+    isSearchFiltering: readonly(isSearchFiltering),
 
     // Search state
-    searchQuery: readonly(searchQuery),
+    searchQuery,
     filteredInnovations: readonly(filteredInnovations),
     limitedInnovations,
 
@@ -216,6 +310,7 @@ export function useInnovations() {
     onPageChange,
     onSearchActive,
     onSearchDeactive,
-    handleSearch
+    handleSearch,
+    clearSearch
   };
 }

@@ -78,7 +78,7 @@ PostgreSQL Database
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Astro | ^5.13.7 | Static site generator and framework |
+| Astro | ^6.3.1 | Static site generator and framework |
 | Vue | ^3.5.21 | Reactive UI components |
 | PrimeVue | ^4.3.9 | Component library |
 | TailwindCSS | ^4.1.13 | Utility-first CSS framework |

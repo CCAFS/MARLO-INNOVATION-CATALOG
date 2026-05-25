@@ -1,12 +1,12 @@
 # MARLO Innovation Catalog - Claude Code Context
 
 ## Project Overview
-Modern web application for MARLO's innovation catalog built with Astro 5.13.7, Vue 3.5.21, and TypeScript.
+Modern web application for MARLO's innovation catalog built with Astro 6.3.1, Vue 3.5.21, and TypeScript.
 
 ## Technology Stack
 
 ### Core
-- **Astro 5.13.7**: Static site generator with islands architecture
+- **Astro 6.3.1**: Static site generator with islands architecture
 - **Vue 3.5.21**: Reactive components with `<script setup>` composition API
 - **TypeScript**: Strict mode with configured path aliases
 - **Vite**: Build tool integrated with Astro
@@ -19,7 +19,7 @@ Modern web application for MARLO's innovation catalog built with Astro 5.13.7, V
 - **Montserrat**: Primary font family
 
 ### Development & Deployment
-- **Node.js 20**: Runtime environment
+- **Node.js 22**: Runtime environment (>= 22.12.0 required by Astro 6)
 - **Docker**: Multi-stage containerization
 - **Nginx**: Production static file server
 

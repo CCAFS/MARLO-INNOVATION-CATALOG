@@ -1,12 +1,16 @@
 ---
-const { title, description } = Astro.props;
+interface Props {
+  title: string;
+  description?: string;
+  showGlossary?: boolean;
+}
+
+const { title, description, showGlossary = false } = Astro.props;
 import { domain } from './../content/vars.ts';
 import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
 import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
-import NewsletterWidget from '~/components/NewsletterWidget.vue';
-import FeedbackWidget from '~/components/FeedbackWidget.vue';
 
 const link = Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
@@ -41,7 +45,7 @@ const clarityScript = `
 `;
 ---
 
-<html lang="en">
+<html lang="en" class="bg-white">
   <head>
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
     <script is:inline set:html={gaScript} />
@@ -49,6 +53,8 @@ const clarityScript = `
     <meta charset="utf-8" />
     <link rel="icon" type="image/x-icon" href="/favicon-aiccra.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="generator" content={Astro.generator} />
     <!-- Basic SEO  -->
     <meta name="description" content={description} />
@@ -71,15 +77,13 @@ const clarityScript = `
     <meta name="twitter:image" content={domain + '/logo.png'} />
     <title>{title}</title>
   </head>
-  <body class="bg-white overflow-x-hidden overflow-y-auto min-h-[100vh] m-0 p-0">
+  <body class="m-0 min-h-[100vh] overflow-x-hidden overflow-y-auto bg-white p-0 text-text-900">
     <div id="screenshot-area" class="bg-white">
       <TopBar />
-      <div class="max-w-screen-2xl mx-auto">
+      <main class="pt-[100px]">
         <slot />
-      </div>
-      <Footer />
+      </main>
+      <Footer showGlossary={showGlossary} />
     </div>
-    <NewsletterWidget client:only />
-    <FeedbackWidget client:only />
   </body>
 </html>

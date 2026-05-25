@@ -1,18 +1,23 @@
 export const texts = {
+  topBar: {
+    scrolledTitle: 'AICCRA Climate Innovations for Africa'
+  },
   home: {
     overviewStats: {
-      title: 'Explore Validated Climate Innovations for Africa'
+      title: 'Explore AICCRA Climate Innovations for Africa',
+      subtitle: 'Discover and access a knowledge hub dedicated to climate-smart solutions for Africa.',
+      cta: 'Explore Catalog'
     },
     readinessExplorer: {
       advice: 'Click on a country to see how many and which AICCRA innovations are being implemented there.',
       responsibleScalingTitle: 'AICCRA Scaling Framework',
       responsibleScalingDescription:
         '<ol class="list-decimal pl-4"><li>Technical excellence - Innovations must perform reliably and add value in real-world conditions.</li><li>Demand and investment - Scaling requires demonstrated interest from users and financial or institutional support to enable adoption.</li><li>Sustained use - Innovations need to be embedded into systems (policy, markets, institutions) to last beyond projects.</li></ol>',
-      readinessExplorerTitle: 'Innovations by Scaling Readiness',
+      readinessExplorerTitle: 'Scaling Readiness',
       readinessExplorerSubtitle: 'Scaling Readiness:',
       readinessExplorerDescription:
         'Scaling Readiness is a framework that helps individuals and organizations effectively scale innovations to achieve meaningful impact.',
-      seeInnovations: 'See the relevant innovations below'
+      seeInnovations: 'See the relevant innovations'
     },
     innovationFilters: {
       filters: {
@@ -35,7 +40,7 @@ export const texts = {
       },
       search: {
         title: 'Search',
-        placeholder: 'Search...'
+        placeholder: 'Search innovations...'
       }
     },
     innovationCards: {
@@ -126,7 +131,7 @@ export const texts = {
         technicalSupport: 'Technical Support',
         technicalSupportDescription:
           'This information comes from the Knowledge and Data Sharing system MARLO, to any question please contact the support team',
-        technicalSupportEmail: 'MARLOSupport@cgiar.org'
+        technicalSupportEmail: 'alliance-ITsupport@cgiar.org'
       },
       share: 'Share'
     },
@@ -134,8 +139,8 @@ export const texts = {
   },
   footer: {
     contact: {
-      title: 'Contact',
-      email: 'MARLOSupport@cgiar.org'
+      title: 'Technical Contact',
+      email: 'Alliance-ITsupport@cgiar.org'
     },
     legal: {
       title: 'Legal',

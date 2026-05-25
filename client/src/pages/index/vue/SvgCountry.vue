@@ -26,8 +26,15 @@ const tooltipText = computed(() => {
   return `${props.title}: ${count} ${innovationText}`;
 });
 
+const pathClass = computed(() =>
+  props.clickable
+    ? 'cursor-pointer hover:opacity-80 transition-all duration-200'
+    : 'cursor-default'
+);
+
 // Handle click
 const handleClick = () => {
+  if (!props.clickable) return;
   emit('click', props.id);
 };
 </script>
@@ -41,7 +48,7 @@ const handleClick = () => {
     :stroke="strokeColor"
     :stroke-width="1"
     :id="props.id"
-    class="cursor-pointer hover:opacity-80 transition-all duration-200"
+    :class="pathClass"
     @click="handleClick">
     <title>{{ tooltipText }}</title>
   </path>

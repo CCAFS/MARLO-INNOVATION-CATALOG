@@ -13,11 +13,15 @@ interface CountryTextResult {
 type Country = CountryV2 | CountryComplete;
 type Region = RegionV2 | RegionComplete;
 
+const getCountryLabel = (c: Country): string | undefined => c.name || c.countryName;
+
+const getRegionLabel = (r: Region): string | undefined => ('name' in r ? r.name : undefined) || r.regionName;
+
 // Alternative function that returns structured data
 const getCountryTextStructured = (countries: Country[], regions: Region[], isMore?: boolean): CountryTextResult => {
   // Add more defensive checks
-  const validCountries = Array.isArray(countries) ? countries.filter(c => c && (c.name || c.countryName)) : [];
-  const validRegions = Array.isArray(regions) ? regions.filter(r => r && (r.name || r.regionName)) : [];
+  const validCountries = Array.isArray(countries) ? countries.filter(c => c && getCountryLabel(c)) : [];
+  const validRegions = Array.isArray(regions) ? regions.filter(r => r && getRegionLabel(r)) : [];
 
   if (validCountries.length === 0 && validRegions.length === 0) {
     return { text: 'Global', hasMore: false };
@@ -35,20 +39,16 @@ const getCountryTextStructured = (countries: Country[], regions: Region[], isMor
     if (totalAdditional > 0) {
       additionalText = `+${totalAdditional} more`;
       hasAdditional = true;
-      additionalInfo = validCountries
-        .map(c => c.name || c.countryName)
-        .concat(validRegions.map(r => r.name || r.regionName))
-        .slice(1)
-        .join(', ');
+      additionalInfo = validCountries.map(getCountryLabel).concat(validRegions.map(getRegionLabel)).slice(1).join(', ');
     }
   }
 
   const mainText =
     validCountries.length > 0
-      ? validCountries[0].name || validCountries[0].countryName || 'Global'
+      ? getCountryLabel(validCountries[0]) || 'Global'
       : validRegions.length > 0
-      ? validRegions[0].name || validRegions[0].regionName || 'Global'
-      : 'Global';
+        ? getRegionLabel(validRegions[0]) || 'Global'
+        : 'Global';
 
   return {
     text: mainText,

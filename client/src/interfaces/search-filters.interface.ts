@@ -3,6 +3,5 @@ export interface Filters {
   innovationTypeId: number | null;
   sdgId: number | null;
   countryIds: number[] | null;
-  actorName: string[] | null;
   actorIds: number[] | null;
 }

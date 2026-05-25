@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import Icon1 from '../../../images/icon-1.svg';
+import Icon2 from '../../../images/icon-2.svg';
+import Icon3 from '../../../images/icon-3.svg';
+import type { InnovationCatalogStats } from '~/interfaces/innovation-catalog.interface';
+import { useApi } from '~/composables/database-api/useApi';
+import { phaseId } from '~/content/vars';
+
+async function fetchStatsInnovations(): Promise<InnovationCatalogStats> {
+  const { getInnovationStats } = useApi();
+  try {
+    const response = await getInnovationStats({
+      phaseId: phaseId.toString()
+    });
+    return response;
+  } catch (error) {
+    console.error('Failed to fetch stats:', error);
+    return {
+      innovationCount: 0,
+      countryCount: 0,
+      averageScalingReadiness: 0,
+      phaseId: phaseId
+    };
+  }
+}
+
+const statsData = await fetchStatsInnovations();
+
+const stats = [
+  {
+    title: 'Total innovations:',
+    value: String(statsData?.innovationCount ?? 0),
+    imagePath: Icon1
+  },
+  {
+    title: 'Countries:',
+    value: String(statsData?.countryCount ?? 0),
+    imagePath: Icon2
+  },
+  {
+    title: 'Average scaling readiness:',
+    value: `${(statsData?.averageScalingReadiness ?? 0).toFixed(1)}/10`,
+    imagePath: Icon3
+  }
+];
+---
+
+<div class="z-20 w-fit max-w-4xl" aria-label="Catalog statistics">
+  <div
+    class="mx-4 flex flex-col items-center justify-center gap-4 rounded-3xl border border-white/40 bg-[#E8F2F0]/50 px-6 py-5 shadow-lg backdrop-blur-2xl sm:flex-row sm:gap-0 sm:py-4"
+    id="innovation-catalog">
+    {
+      stats.map((stat, index) => (
+        <>
+          <div class="flex w-full items-center gap-3 sm:w-max">
+            <div class="bg-primary-100/70 flex shrink-0 items-center justify-center rounded-lg p-1.5">
+              <Image height="40" src={stat.imagePath} alt="" class="h-8 w-8 md:h-9 md:w-9" loading="eager" />
+            </div>
+            <div class="flex flex-col items-start justify-center">
+              <p class="text-xs font-medium text-black sm:text-sm">{stat.title}</p>
+              <p class="text-2xl leading-tight font-bold text-black sm:text-3xl">{stat.value}</p>
+            </div>
+          </div>
+          {index < stats.length - 1 && (
+            <>
+              <div class="h-px w-full bg-white/40 sm:hidden" aria-hidden="true" />
+              <div class="mx-4 hidden h-10 w-px self-center bg-white/50 sm:block lg:mx-8" aria-hidden="true" />
+            </>
+          )}
+        </>
+      ))
+    }
+  </div>
+</div>

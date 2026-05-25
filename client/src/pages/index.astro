@@ -2,13 +2,13 @@
 export const prerender = true;
 
 import MainLayout from '@layouts/MainLayout.astro';
-import OverviewStats from './index/astro/OverviewStats.astro';
+import Hero from './index/astro/Hero.astro';
 import Home from './index/vue/Home.vue';
-import SolutionStories from './index/astro/SolutionStories.astro';
 ---
 
 <MainLayout title="AICCRA Innovation Catalog">
-  <OverviewStats />
-  <Home client:load />
-  <SolutionStories />
+  <Hero />
+  <div class="mt-12">
+    <Home client:load />
+  </div>
 </MainLayout>

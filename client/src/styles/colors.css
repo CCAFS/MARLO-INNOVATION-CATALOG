@@ -30,4 +30,6 @@
   --color-bg-300: rgba(221, 224, 228, 1);
   --color-border-light: rgba(201, 201, 201, 1);
   --color-yecksin-100: rgba(255, 0, 0, 0.8);
+  --color-framework-bg: #1b3d2f;
+  --color-framework-accent: #76b82a;
 }
