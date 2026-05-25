@@ -5,48 +5,16 @@ import SvgCountry from './SvgCountry.vue';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import { useSharedValue } from './composables/useSharedValue';
 import { useInnovations } from './composables/useInnovations';
-import { getAmountByCountry, getCountryColor, getCountryInnovationCount } from '~/utils/map/getAmountByCountry';
+import { getAmountByCountryFacets, getCountryColor, getCountryInnovationCount } from '~/utils/map/getAmountByCountry';
 import { africaCountries } from './composables/useAfrica';
 
 const { setValue, value } = useSharedValue();
-const { apiDataForCountry, apiDataTotal } = useInnovations(); // Now uses the same singleton instance
+const { apiFacets, apiTotalFacets } = useInnovations();
 
 // Make getAmountByCountries reactive using computed
-const getAmountByCountries = computed(() => {
-  if (!apiDataForCountry.value || !apiDataForCountry.value.innovations) {
-    console.log('No API data available yet');
-    return null;
-  }
-  // Create a deep mutable copy of the readonly data
-  const mutableData = {
-    ...apiDataForCountry.value,
-    innovations: apiDataForCountry.value.innovations.map(innovation => ({
-      ...innovation,
-      sdgs: [...innovation.sdgs],
-      countries: [...innovation.countries],
-      regions: [...innovation.regions]
-    }))
-  };
-  return getAmountByCountry(mutableData);
-});
+const getAmountByCountries = computed(() => getAmountByCountryFacets(apiFacets.value?.countries));
 
-const getAmountTotalByCountries = computed(() => {
-  if (!apiDataTotal.value || !apiDataTotal.value.innovations) {
-    console.log('No total API data available yet');
-    return null;
-  }
-  // Create a deep mutable copy of the readonly data
-  const mutableData = {
-    ...apiDataTotal.value,
-    innovations: apiDataTotal.value.innovations.map(innovation => ({
-      ...innovation,
-      sdgs: [...innovation.sdgs],
-      countries: [...innovation.countries],
-      regions: [...innovation.regions]
-    }))
-  };
-  return getAmountByCountry(mutableData);
-});
+const getAmountTotalByCountries = computed(() => getAmountByCountryFacets(apiTotalFacets.value?.countries));
 
 // Function to handle country selection
 const toggleCountrySelection = (countryId: string) => {
@@ -92,12 +60,12 @@ const countryList = computed(() => {
   // Apply dynamic colors and innovation counts based on API data
   list.forEach(item => {
     // Get color based on innovation count for this country
-    if (getAmountByCountries.value && item.id) {
+    if (item.id) {
       const filteredCount = getCountryInnovationCount(item.id, getAmountByCountries.value);
       item.fill = getCountryColor(item.id, getAmountByCountries.value);
       item.clickable = filteredCount > 0;
       // Add innovation count to the country data
-      const countryData = getAmountTotalByCountries.value?.find(country => country.countryId === item.id);
+      const countryData = getAmountTotalByCountries.value.find(country => country.countryId === item.id);
       item.innovationCount = countryData ? countryData.innovationCount : 0;
     }
   });

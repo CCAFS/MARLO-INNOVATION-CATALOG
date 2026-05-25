@@ -1,14 +1,10 @@
 import { computed } from 'vue';
-import { FilterType } from './useSharedValue';
 import { useInnovations } from './useInnovations';
 import { useFilterCatalog } from './useFilterCatalog';
 import { africaCountries } from './useAfrica';
-import {
-  isInnovationAssociatedWithFilterOption,
-  type InnovationForFilterAvailability
-} from '~/utils/filters/areAnyInnovationsAssociatedWithFilterOption';
 import type { AfricaSvgProps } from '~/interfaces/africa-svg-props.interface';
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
+import type { InnovationFacetCount } from '~/interfaces/innovation-facets.interface';
 
 function compareByAvailability(a: { disabled: boolean }, b: { disabled: boolean }): number {
   if (a.disabled === b.disabled) return 0;
@@ -19,16 +15,17 @@ function sortByAvailability<T extends { disabled: boolean }>(items: T[]): T[] {
   return [...items].sort(compareByAvailability);
 }
 
-function withAvailability<T extends { id: number }>(
-  items: T[],
-  filterType: FilterType,
-  innovations: readonly InnovationForFilterAvailability[] | null
-): Array<T & { disabled: boolean }> {
-  const hasCatalog = innovations !== null && innovations.length > 0;
+const hasFacetCount = (counts: readonly InnovationFacetCount[] | null, id: number): boolean => {
+  if (!counts) return false;
+  return counts.some(item => item.id === id && item.count > 0);
+};
+
+function withAvailability<T extends { id: number }>(items: T[], counts: readonly InnovationFacetCount[] | null): Array<T & { disabled: boolean }> {
+  const hasCatalog = counts !== null;
 
   const withFlags = items.map(item => ({
     ...item,
-    disabled: hasCatalog ? !isInnovationAssociatedWithFilterOption(innovations, filterType, item.id) : false
+    disabled: hasCatalog ? !hasFacetCount(counts, item.id) : false
   }));
 
   return hasCatalog ? sortByAvailability(withFlags) : withFlags;
@@ -36,40 +33,36 @@ function withAvailability<T extends { id: number }>(
 
 function withCountryAvailability(
   countries: AfricaSvgProps[],
-  innovations: readonly InnovationForFilterAvailability[] | null
+  counts: readonly InnovationFacetCount[] | null
 ): Array<AfricaSvgProps & { disabled: boolean }> {
-  const hasCatalog = innovations !== null && innovations.length > 0;
+  const hasCatalog = counts !== null;
 
   const withFlags = countries.map(country => ({
     ...country,
-    disabled: hasCatalog ? !isInnovationAssociatedWithFilterOption(innovations, FilterType.CountryIds, Number.parseInt(country.id)) : false
+    disabled: hasCatalog ? !hasFacetCount(counts, Number.parseInt(country.id)) : false
   }));
 
   return hasCatalog ? sortByAvailability(withFlags) : withFlags;
 }
 
 export function useFilterAvailability() {
-  const { apiDataTotal } = useInnovations();
+  const { apiFacets } = useInnovations();
   const { sdgs, innovationTypes } = useFilterCatalog();
 
-  const innovationsForAvailability = computed((): readonly InnovationForFilterAvailability[] | null => {
-    const catalog = apiDataTotal.value;
-    if (!catalog || catalog.totalCount === 0) {
-      return null;
-    }
-    return catalog.innovations;
-  });
+  const sdgCounts = computed(() => apiFacets.value?.sdgs ?? null);
+  const innovationTypeCounts = computed(() => apiFacets.value?.innovationTypes ?? null);
+  const countryCounts = computed(() => apiFacets.value?.countries ?? null);
 
   const sdgOptions = computed(
-    (): Array<SdgResume & { disabled: boolean }> => withAvailability(sdgs.value as SdgResume[], FilterType.SdgId, innovationsForAvailability.value)
+    (): Array<SdgResume & { disabled: boolean }> => withAvailability(sdgs.value as SdgResume[], sdgCounts.value)
   );
 
   const innovationTypeOptions = computed(
     (): Array<InnovationType & { disabled: boolean }> =>
-      withAvailability(innovationTypes.value as InnovationType[], FilterType.InnovationTypeId, innovationsForAvailability.value)
+      withAvailability(innovationTypes.value as InnovationType[], innovationTypeCounts.value)
   );
 
-  const countryOptions = computed(() => withCountryAvailability(africaCountries, innovationsForAvailability.value));
+  const countryOptions = computed(() => withCountryAvailability(africaCountries, countryCounts.value));
 
   return {
     sdgOptions,

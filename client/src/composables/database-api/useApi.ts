@@ -13,8 +13,20 @@ import {
   filterInnovationCatalogResponse,
   filterSearchCompleteResponse
 } from '~/utils/innovations/filterInnovationCatalogResponse';
+import type { InnovationFacets } from '~/interfaces/innovation-facets.interface';
 
 const isFullPoolRequest = (limit?: number) => !limit || limit >= 1000;
+
+const buildQueryString = (params?: Record<string, any>) => {
+  const queryParams = new URLSearchParams();
+
+  Object.entries(params ?? {}).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    queryParams.append(key, Array.isArray(value) ? value.join(',') : value.toString());
+  });
+
+  return queryParams.toString();
+};
 
 export function useApi() {
   const apiBaseUrl = import.meta.env.PUBLIC_API || '';
@@ -42,6 +54,8 @@ export function useApi() {
       innovationTypeId?: number;
       sdgId?: number;
       countryIds?: number[];
+      actorIds?: number[];
+      search?: string;
     }) => {
       const data = await makeRequest<InnovationCatalog>('GET', `${apiBaseUrl}/innovations/search-simple`, { params });
       return filterInnovationCatalogResponse(data, { updateTotalCount: isFullPoolRequest(params?.limit) });
@@ -63,9 +77,33 @@ export function useApi() {
       sdgId?: number;
       countryIds?: number[];
       countryId?: number;
+      actorIds?: number[];
+      search?: string;
     }) => {
       const data = await makeRequest<SearchComplete>('GET', `${apiBaseUrl}/innovations/search-complete`, { params });
       return filterSearchCompleteResponse(data, { updateTotalCount: isFullPoolRequest(params?.limit) });
+    },
+
+    getInnovationFacets: async (params?: {
+      phase?: string;
+      readinessScale?: number;
+      innovationTypeId?: number;
+      sdgId?: number;
+      countryIds?: number[];
+      actorIds?: number[];
+      search?: string;
+    }) => {
+      const queryString = buildQueryString(params);
+      const requestUrl = `${apiBaseUrl}/innovations/facets${queryString ? '?' + queryString : ''}`;
+      const response = await fetch(requestUrl);
+
+      if (!response.ok) {
+        const error = new Error(`Request failed with status ${response.status}`);
+        (error as Error & { status?: number }).status = response.status;
+        throw error;
+      }
+
+      return (await response.json()) as InnovationFacets;
     },
 
     getInnovationPDFById: (id: string | number) =>
