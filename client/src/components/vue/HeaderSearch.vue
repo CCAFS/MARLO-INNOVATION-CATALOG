@@ -20,10 +20,11 @@ watch(searchQuery, (newQuery, oldQuery) => {
 
 <template>
   <div
-    class="flex items-center gap-2 border border-border-light rounded-full px-4 py-2 w-full bg-bg-200/60 focus-within:border-primary-300 focus-within:bg-white transition-colors">
+    id="innovation-catalog"
+    class="border-border-light bg-bg-200/60 focus-within:border-primary-300 flex w-full items-center gap-2 rounded-full border px-4 py-2 transition-colors focus-within:bg-white">
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="h-4 w-4 text-text-600 shrink-0"
+      class="text-text-600 h-4 w-4 shrink-0"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -34,7 +35,6 @@ watch(searchQuery, (newQuery, oldQuery) => {
       v-model="searchQuery"
       type="search"
       :placeholder="texts.home.innovationFilters.search.placeholder"
-      class="bg-transparent text-sm text-text-800 placeholder-text-600 outline-none w-full"
-    />
+      class="text-text-800 placeholder-text-600 w-full bg-transparent text-sm outline-none" />
   </div>
 </template>
