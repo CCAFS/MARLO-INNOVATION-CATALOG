@@ -1,5 +1,5 @@
 // utils/map/getAmountByCountry.ts
-import type { InnovationCatalogV2 } from '~/interfaces/innovation-catalog.interface';
+import type { InnovationCatalog } from '~/interfaces/innovation-catalog.interface';
 
 export interface CountryInnovationData {
   countryId: string;
@@ -14,6 +14,13 @@ export interface GreyChromaticScale {
   max: string;
   steps: string[];
 }
+
+type InnovationCountry = InnovationCatalog['innovations'][number]['countries'][number];
+
+const getCanonicalCountryId = (country: InnovationCountry): string | null => {
+  const countryId = country.idCountry ?? country.id;
+  return countryId === undefined || countryId === null ? null : countryId.toString();
+};
 
 /**
  * Grey chromatic scale for mapping innovation counts to colors
@@ -41,7 +48,7 @@ export const GREY_CHROMATIC_SCALE: GreyChromaticScale = {
  * @param innovationsData - The innovation catalog data
  * @returns Array of countries with their innovation counts and colors
  */
-export function getAmountByCountry(innovationsData: InnovationCatalogV2 | null): CountryInnovationData[] {
+export function getAmountByCountry(innovationsData: InnovationCatalog | null): CountryInnovationData[] {
   if (!innovationsData?.innovations) {
     return [];
   }
@@ -53,7 +60,9 @@ export function getAmountByCountry(innovationsData: InnovationCatalogV2 | null):
   innovationsData.innovations.forEach(innovation => {
     if (innovation.countries && innovation.countries.length > 0) {
       innovation.countries.forEach(country => {
-        const countryId = country.id.toString();
+        const countryId = getCanonicalCountryId(country);
+        if (!countryId) return;
+
         const countryName = country.name || country.countryName || 'Unknown';
 
         if (countryMap.has(countryId)) {

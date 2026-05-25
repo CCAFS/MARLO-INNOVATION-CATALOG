@@ -5,6 +5,10 @@ import type { InnovationResume } from '~/interfaces/innovation-catalog.interface
 
 export type InnovationForFilterAvailability = DeepReadonly<InnovationResume>;
 
+const matchesFilterValue = (candidate: string | number | undefined, value: string | number): boolean => {
+  return candidate?.toString() === value.toString();
+};
+
 const equivalentFilterKeyMap: Record<FilterType, string> = {
   [FilterType.ScalingReadiness]: 'readinessScale',
   [FilterType.InnovationTypeId]: 'innovationType',
@@ -42,6 +46,12 @@ export const isInnovationAssociatedWithFilterOption = (
 
     if (filterType === FilterType.InnovationTypeId) {
       return (filterValue as { id?: number })?.id === value;
+    }
+
+    if (filterType === FilterType.CountryIds && Array.isArray(filterValue)) {
+      return filterValue.some((country: { id?: number; idCountry?: number }) => {
+        return matchesFilterValue(country.idCountry ?? country.id, value);
+      });
     }
 
     if (Array.isArray(filterValue)) {
