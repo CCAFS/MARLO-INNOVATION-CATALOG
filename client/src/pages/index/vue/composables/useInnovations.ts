@@ -7,6 +7,7 @@ import type { Filters } from '~/interfaces/search-filters.interface';
 import { matchesActorIdsFilter } from '~/utils/filters/matchesActorIdsFilter';
 import { searchCompleteToCatalog } from '~/utils/innovations/searchCompleteToCatalog';
 import { matchesInnovationSearch } from '~/utils/search/matchesInnovationSearch';
+import type { SearchComplete } from '~/interfaces/search-complete.interface';
 
 const SEARCH_DEBOUNCE_MS = 300;
 const POOL_LIMIT = 1000;
@@ -65,6 +66,12 @@ const sliceCatalogPage = (
   };
 };
 
+const hasBackendFilters = (filters: Filters) =>
+  (filters.scalingReadiness !== null && filters.scalingReadiness !== undefined) ||
+  Boolean(filters.innovationTypeId) ||
+  Boolean(filters.sdgId) ||
+  Boolean(filters.countryIds?.length);
+
 // Move state OUTSIDE the function to make it shared across all components
 const apiData = ref<InnovationCatalog | null>(null);
 const apiDataForCountry = ref<InnovationCatalog | null>(null);
@@ -83,6 +90,9 @@ const isSearchFiltering = ref(false);
 const searchQuery = ref('');
 const filteredInnovations = ref<InnovationResume[]>([]);
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let totalCompleteCache: SearchComplete | null = null;
+let totalCompletePromise: Promise<SearchComplete> | null = null;
+let fetchRequestId = 0;
 
 const getSearchPool = (): InnovationResume[] => {
   return apiDataForCountry.value?.innovations ?? apiData.value?.innovations ?? [];
@@ -123,17 +133,45 @@ export function useInnovations() {
   });
 
   // Methods
+  const fetchTotalComplete = () => {
+    if (totalCompleteCache) {
+      return Promise.resolve(totalCompleteCache);
+    }
+
+    if (totalCompletePromise) {
+      return totalCompletePromise;
+    }
+
+    totalCompletePromise = getInnovationsComplete({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
+      .then(data => {
+        totalCompleteCache = data;
+        return data;
+      })
+      .finally(() => {
+        totalCompletePromise = null;
+      });
+
+    return totalCompletePromise;
+  };
+
   const fetchInnovations = async (filters: Filters, pageOffset = 0, pageLimit = 6) => {
+    const requestId = ++fetchRequestId;
     isLoading.value = true;
     error.value = null;
 
     try {
       const poolParams = buildInnovationParams(filters, { offset: 0, limit: POOL_LIMIT });
+      const hasServerSideFilters = hasBackendFilters(filters);
+      const filteredPromise = hasServerSideFilters ? getInnovationsComplete(poolParams) : fetchTotalComplete();
 
       const [filteredComplete, totalComplete] = await Promise.all([
-        getInnovationsComplete(poolParams),
-        getInnovationsComplete({ phase: phaseId.toString(), offset: 0, limit: POOL_LIMIT })
+        filteredPromise,
+        fetchTotalComplete()
       ]);
+
+      if (requestId !== fetchRequestId) {
+        return;
+      }
 
       const dataForCountry = applyActorFilter(searchCompleteToCatalog(filteredComplete), filters.actorIds);
       apiDataForCountry.value = dataForCountry;
@@ -143,6 +181,10 @@ export function useInnovations() {
       totalRecords.value = pool.length;
       apiData.value = sliceCatalogPage(dataForCountry, pageOffset, pageLimit);
     } catch (err: unknown) {
+      if (requestId !== fetchRequestId) {
+        return;
+      }
+
       console.error('Error fetching data from API:', err);
       const message = err instanceof Error ? err.message : String(err);
       error.value = err instanceof Error ? err : new Error(message);
@@ -167,7 +209,9 @@ export function useInnovations() {
       };
       totalRecords.value = 0;
     } finally {
-      isLoading.value = false;
+      if (requestId === fetchRequestId) {
+        isLoading.value = false;
+      }
     }
   };
 
