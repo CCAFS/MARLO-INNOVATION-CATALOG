@@ -4,21 +4,20 @@
 
 ### Base Framework
 
-- **Astro 5.13.7**: Modern web framework that enables creating fast websites with less JavaScript
+- **Astro 6.3.1**: Modern web framework that enables creating fast websites with less JavaScript
 - **Vue 3.5.21**: JavaScript framework for reactive user interfaces
 - **TypeScript**: JavaScript superset with static typing for greater robustness
 
 ### Styles and UI
 
-- **Tailwind CSS 4.1.13**: Utility-first CSS framework for rapid design
-- **PrimeVue 4.3.9**: Vue component library with professional theme
+- **Tailwind CSS 4.2.4**: Utility-first CSS framework for rapid design
+- **PrimeVue 4.5.5**: Vue component library with professional theme
 - **PrimeIcons 7.0.0**: Complete iconography for interfaces
-- **TailwindCSS-PrimeUI 0.6.1**: Integration between Tailwind and PrimeVue
 
 ### Development Tools
 
 - **Vite**: Modern and fast build tool (integrated with Astro)
-- **Node.js 20**: JavaScript runtime for development
+- **Node.js 22**: JavaScript runtime for development
 - **Docker**: Containerization for deployment
 
 ## Project Architecture
@@ -53,7 +52,7 @@ src/
 
 - `.vue` files with `<script setup>` for reactive components
 - Use of `client:load` for client-side hydration
-- Composables for reusable logic (`useSharedValue.ts`, `usePublicAPI.ts`)
+- Composables for reusable logic (`useSharedValue.ts`, `useInnovations.ts`, `useFilterCatalog.ts`)
 
 #### State Management
 
@@ -71,7 +70,7 @@ src/
 
 #### Tailwind + PrimeVue
 
-- Custom configuration with `tailwindcss-primeui`
+- Tailwind utilities with PrimeVue theme configuration
 - Global styles in `global.css`
 - Montserrat font for consistent typography
 

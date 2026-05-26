@@ -12,10 +12,9 @@ Modern web application for MARLO's innovation catalog built with Astro 6.3.1, Vu
 - **Vite**: Build tool integrated with Astro
 
 ### UI & Styling
-- **Tailwind CSS 4.1.13**: Utility-first CSS framework
-- **PrimeVue 4.3.9**: Professional Vue component library
+- **Tailwind CSS 4.2.4**: Utility-first CSS framework
+- **PrimeVue 4.5.5**: Professional Vue component library
 - **PrimeIcons 7.0.0**: Icon library
-- **TailwindCSS-PrimeUI 0.6.1**: Tailwind + PrimeVue integration
 - **Montserrat**: Primary font family
 
 ### Development & Deployment
@@ -46,7 +45,7 @@ src/
 - **Astro (.astro)**: Use for static, SEO-friendly components
 - **Vue (.vue)**: Use for reactive, interactive components
 - **Hydration**: Apply `client:load` directive for client-side interactivity
-- **Composables**: Shared logic in `useSharedValue.ts`, `usePublicAPI.ts`
+- **Composables**: Shared logic in `useSharedValue.ts`, `useInnovations.ts`, and `useFilterCatalog.ts`
 
 ### State Management
 - Vue composables for shared reactive state

@@ -37,8 +37,9 @@ export function getActorFilterButtonStyle(actor: FilterActorOption, isSelected: 
   return {
     backgroundColor: actor.color,
     borderColor: actor.color,
+    boxShadow: isSelected ? `0 0 3px 1px ${actor.color}` : 'none',
     color: '#ffffff',
-    opacity: isSelected ? '1' : '0.7'
+    opacity: isSelected ? '1' : '0.6'
   };
 }
 
