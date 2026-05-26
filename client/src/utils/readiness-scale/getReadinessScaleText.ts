@@ -71,7 +71,7 @@ export default function getReadinessScaleText(readinessScale: number | null | un
       text: 'Proven Innovation',
       number: '9',
       textComplet: '9 - Proven Innovation',
-      description: 'The innovation is validated for its ability to achieve a specific innovation.'
+      description: 'The innovation is validated for its ability to achieve a specific impact under uncontrolled conditions.'
     }
   ];
 

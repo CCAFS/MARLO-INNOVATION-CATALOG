@@ -210,7 +210,7 @@ onMounted(() => {
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mt-4 mb-8">
+    <div v-else-if="!isLoading && apiData && !apiData.innovations.length" class="mt-4 mb-8">
       <div class="flex flex-col items-center rounded-xl border border-gray-200 bg-white p-4 py-8 text-center shadow-sm md:p-4">
         <img :src="EmptyDataImg.src" :alt="imgEmptyDataStats.title" width="150" height="100" class="pb-2" />
         <p class="text-lg text-gray-500">{{ texts.home.innovationCards.noResultsAvailable.title }}</p>

@@ -24,6 +24,32 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* Fallback styles so PrimeVue skeletons are visible before theme CSS finishes loading. */
+.p-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--p-skeleton-background, rgba(0, 0, 0, 0.08));
+  border-radius: var(--p-skeleton-border-radius, 0.25rem);
+}
+
+.p-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: var(
+    --p-skeleton-animation-background,
+    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0))
+  );
+  animation: p-skeleton-animation 1.2s infinite;
+}
+
+@keyframes p-skeleton-animation {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* Tooltip container - Hoverable text with dotted underline - Vanilla element */
 
 .tooltip {
