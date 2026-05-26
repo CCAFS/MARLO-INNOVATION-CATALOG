@@ -38,7 +38,7 @@ export function getActorFilterButtonStyle(actor: FilterActorOption, isSelected: 
     backgroundColor: actor.color,
     borderColor: actor.color,
     color: '#ffffff',
-    opacity: isSelected ? '1' : '0.7'
+    opacity: isSelected ? '1' : '0.6'
   };
 }
 

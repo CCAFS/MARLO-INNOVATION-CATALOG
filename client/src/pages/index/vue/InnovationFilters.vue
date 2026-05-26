@@ -7,12 +7,7 @@ import { useSharedValue } from './composables/useSharedValue';
 import { useFilterCatalog } from './composables/useFilterCatalog';
 import { useFilterAvailability } from './composables/useFilterAvailability';
 import { useInnovations } from './composables/useInnovations';
-import {
-  ACTOR_FILTER_OPTIONS,
-  getActorFilterButtonStyle,
-  isActorOptionSelected,
-  toggleActorOption
-} from './constants/filterActors';
+import { ACTOR_FILTER_OPTIONS, getActorFilterButtonStyle, isActorOptionSelected, toggleActorOption } from './constants/filterActors';
 import HeaderSearch from '~/components/vue/HeaderSearch.vue';
 
 import type { InnovationType, SdgResume } from '~/interfaces/innovation-catalog.interface';
@@ -85,10 +80,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full flex flex-col gap-4">
+  <div class="relative flex w-full flex-col gap-4">
     <div v-show="isCatalogLoading" class="absolute inset-0 z-10 flex flex-col gap-4 bg-white">
       <Skeleton width="100%" height="2.5rem" borderRadius="9999px" />
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
         <Skeleton v-for="i in 3" :key="i" width="100%" height="2.5rem" borderRadius="0.5rem" />
       </div>
       <div class="flex flex-wrap gap-2">
@@ -96,10 +91,10 @@ onMounted(() => {
       </div>
     </div>
 
-    <div :class="{ 'invisible pointer-events-none': isCatalogLoading }" class="flex flex-col gap-4">
+    <div :class="{ 'pointer-events-none invisible': isCatalogLoading }" class="flex flex-col gap-4">
       <HeaderSearch />
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
         <div :class="filterFieldWrapperClass">
           <Select
             id="innovation-typology"
@@ -150,17 +145,17 @@ onMounted(() => {
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <span class="text-xs text-text-600 font-medium shrink-0">{{ texts.home.innovationFilters.filters.actors.title }}</span>
+        <span class="text-text-600 shrink-0 text-xs font-medium">{{ texts.home.innovationFilters.filters.actors.title }}</span>
         <button
           v-for="actor in ACTOR_FILTER_OPTIONS"
           :key="actor.key"
           type="button"
-          class="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer border transition-opacity hover:opacity-90"
+          class="cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-90"
           :style="getActorFilterButtonStyle(actor, isActorSelected(actor.key))"
           @click="handleSelectActorsChange(actor.key)">
           {{ actor.shortLabel }}
         </button>
-        <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer px-2" @click="handleClearFilters">
+        <button type="button" class="cursor-pointer px-2 text-xs text-gray-500 hover:text-gray-700" @click="handleClearFilters">
           {{ texts.home.innovationFilters.filters.clearFilters }}
         </button>
       </div>
