@@ -1,6 +1,5 @@
 import { phaseId } from '~/content/vars';
 import { useApiRequest } from './useApiRequest';
-import type { User, Post, CreatePostRequest, CreatePostResponse } from '~/interfaces/api-example.interface';
 import {
   type InnovationType,
   type InnovationCatalog,
@@ -9,10 +8,7 @@ import {
   type PDFInfo
 } from '~/interfaces/innovation-catalog.interface';
 import type { SearchComplete } from '~/interfaces/search-complete.interface';
-import {
-  filterInnovationCatalogResponse,
-  filterSearchCompleteResponse
-} from '~/utils/innovations/filterInnovationCatalogResponse';
+import { filterInnovationCatalogResponse, filterSearchCompleteResponse } from '~/utils/innovations/filterInnovationCatalogResponse';
 import type { InnovationFacets } from '~/interfaces/innovation-facets.interface';
 
 const isFullPoolRequest = (limit?: number) => !limit || limit >= 1000;
@@ -37,14 +33,6 @@ export function useApi() {
     apiBaseUrl,
     isLoading,
     error,
-
-    getUsers: (params?: Record<string, any>) => makeRequest<User[]>('GET', `${apiBaseUrl}/users`, { params }),
-
-    getUserById: (id: string | number) => makeRequest<User>('GET', `${apiBaseUrl}/users/${id}`),
-
-    getPosts: (params?: Record<string, any>) => makeRequest<Post[]>('GET', `${apiBaseUrl}/posts`, { params }),
-
-    postCreatePost: (body: CreatePostRequest) => makeRequest<CreatePostResponse>('POST', `${apiBaseUrl}/posts`, { body }),
 
     getInnovations: async (params?: {
       phase?: string;
@@ -174,32 +162,3 @@ export function useApi() {
       })
   };
 }
-
-/*
-Usage example:
-
-import { useApi } from '~/composables/useApi';
-import type { User, Post } from '~/interfaces/api-example.interface';
-
-const { getUsers, getUserById, getPosts, postCreatePost, isLoading, error } = useApi();
-
-// Simple GET - returns User[]
-const users = await getUsers();
-console.log(users[0].name); // TypeScript knows this is a string
-
-// GET with ID - returns User
-const user = await getUserById('123');
-console.log(user.email); // TypeScript autocomplete works!
-
-// GET with query params - returns Post[]
-const posts = await getPosts({ limit: 10, offset: 0 });
-console.log(posts[0].title); // Fully typed
-
-// POST with body - returns CreatePostResponse
-const newPost = await postCreatePost({
-  title: 'New Post',
-  body: 'Content here',
-  userId: 1
-});
-console.log(newPost.id); // TypeScript validates the response structure
-*/
