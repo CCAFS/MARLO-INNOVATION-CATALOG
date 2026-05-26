@@ -30,13 +30,13 @@ const {
   rowsPerPage,
   totalRecords,
   fetchInnovations,
-  fetchStats,
   onPageChange,
   isSearchActive,
   searchQuery,
   limitedInnovations,
   isMatchingSearch,
-  isSearchFiltering
+  isSearchFiltering,
+  handleSearch
 } = useInnovations();
 
 const handlePageChange = (event: any) => {
@@ -54,6 +54,10 @@ watch(
     // Only reset if filters actually changed
     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
       currentPage.value = 0;
+      if (isSearchActive.value && searchQuery.value.trim()) {
+        handleSearch(searchQuery.value, newValue);
+        return;
+      }
       handleFetchInnovations(0, rowsPerPage.value);
     }
   },
@@ -62,7 +66,6 @@ watch(
 
 onMounted(() => {
   handleFetchInnovations();
-  fetchStats();
 });
 </script>
 
@@ -102,7 +105,7 @@ onMounted(() => {
     </div>
     <!-- V2 Innovations Cards from API -->
     <div
-      v-else-if="isSearchActive && searchQuery.trim().length > 0 && !isMatchingSearch"
+      v-else-if="isSearchActive && searchQuery.trim().length > 0 && !isSearchFiltering && !isMatchingSearch"
       class="col-span-full mt-4 mb-8 flex flex-col items-center justify-center rounded-lg bg-white py-2 shadow-md lg:py-4">
       <img height="{100}" :src="ImgNotSearchResults.src" alt="No Search Results Found" class="h-20 w-20 pb-1 lg:w-auto" />
       <p class="mb-2 text-base text-gray-500 lg:text-lg">{{ texts.home.innovationCards.noResultsFound.title }}</p>
@@ -207,7 +210,7 @@ onMounted(() => {
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!isLoading && (!apiData || !apiData.innovations.length)" class="mt-4 mb-8">
+    <div v-else-if="!isLoading && apiData && !apiData.innovations.length" class="mt-4 mb-8">
       <div class="flex flex-col items-center rounded-xl border border-gray-200 bg-white p-4 py-8 text-center shadow-sm md:p-4">
         <img :src="EmptyDataImg.src" :alt="imgEmptyDataStats.title" width="150" height="100" class="pb-2" />
         <p class="text-lg text-gray-500">{{ texts.home.innovationCards.noResultsAvailable.title }}</p>
@@ -216,7 +219,7 @@ onMounted(() => {
     </div>
 
     <!-- Paginator -->
-    <div v-if="totalRecords > 0 && !isSearchActive" class="mt-8 mb-8">
+    <div v-if="totalRecords > 0" class="mt-8 mb-8">
       <Paginator
         :first="currentPage * rowsPerPage"
         :rows="rowsPerPage"

@@ -36,7 +36,7 @@ onMounted(() => {
         v-if="isHydrated"
         class="text-xs leading-5 font-light text-black lg:text-sm [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-4"
         v-html="texts.home.readinessExplorer.responsibleScalingDescription"></div>
-      <div v-else class="text-xs font-light text-white/70">Loading...</div>
+      <div v-else class="text-xs font-light text-black">Loading...</div>
     </div>
 
     <div class="flex flex-col gap-2">

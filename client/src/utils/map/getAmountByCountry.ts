@@ -1,5 +1,6 @@
 // utils/map/getAmountByCountry.ts
 import type { InnovationCatalog } from '~/interfaces/innovation-catalog.interface';
+import type { InnovationFacetCount } from '~/interfaces/innovation-facets.interface';
 
 export interface CountryInnovationData {
   countryId: string;
@@ -100,6 +101,24 @@ export function getAmountByCountry(innovationsData: InnovationCatalog | null): C
   });
 
   return countryData.sort((a, b) => b.innovationCount - a.innovationCount);
+}
+
+export function getAmountByCountryFacets(countries: readonly InnovationFacetCount[] | null | undefined): CountryInnovationData[] {
+  if (!countries?.length) {
+    return [];
+  }
+
+  const maxCount = Math.max(...countries.map(country => country.count));
+
+  return countries
+    .map(country => ({
+      countryId: country.id.toString(),
+      countryName: country.name ?? 'Unknown',
+      innovationCount: country.count,
+      fill: getGreyColorByCount(country.count, maxCount),
+      stroke: '#bababa'
+    }))
+    .sort((a, b) => b.innovationCount - a.innovationCount);
 }
 
 /**
