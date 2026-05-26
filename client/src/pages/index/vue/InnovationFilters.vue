@@ -50,6 +50,17 @@ const isActorSelected = (actorKey: string) => {
   return option ? isActorOptionSelected(option, value.value.actorIds) : false;
 };
 
+const selectedActorFilterOptions = computed(() => ACTOR_FILTER_OPTIONS.filter(actor => isActorSelected(actor.key)));
+
+const unselectedActorFilterOptions = computed(() => ACTOR_FILTER_OPTIONS.filter(actor => !isActorSelected(actor.key)));
+
+const orderedActorFilterOptions = computed(() => [...selectedActorFilterOptions.value, ...unselectedActorFilterOptions.value]);
+
+const getActorFilterButtonClass = (isSelected: boolean) => [
+  'actor-filter-chip cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-[box-shadow,opacity] duration-200 ease-out hover:opacity-90',
+  isSelected ? 'shadow-md ring-2 ring-white/80' : 'shadow-sm'
+];
+
 const handleSelectInnovationTypeChange = (newValue: InnovationType | null) => {
   setValue({ innovationTypeId: newValue?.id || null });
 };
@@ -146,15 +157,17 @@ onMounted(() => {
 
       <div class="flex flex-wrap items-center gap-2">
         <span class="text-text-600 shrink-0 text-xs font-medium">{{ texts.home.innovationFilters.filters.actors.title }}</span>
-        <button
-          v-for="actor in ACTOR_FILTER_OPTIONS"
-          :key="actor.key"
-          type="button"
-          class="cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-90"
-          :style="getActorFilterButtonStyle(actor, isActorSelected(actor.key))"
-          @click="handleSelectActorsChange(actor.key)">
-          {{ actor.shortLabel }}
-        </button>
+        <TransitionGroup name="actor-filter" tag="div" class="relative flex min-w-0 flex-wrap items-center gap-2">
+          <button
+            v-for="actor in orderedActorFilterOptions"
+            :key="actor.key"
+            type="button"
+            :class="getActorFilterButtonClass(isActorSelected(actor.key))"
+            :style="getActorFilterButtonStyle(actor, isActorSelected(actor.key))"
+            @click="handleSelectActorsChange(actor.key)">
+            {{ actor.shortLabel }}
+          </button>
+        </TransitionGroup>
         <button type="button" class="cursor-pointer px-2 text-xs text-gray-500 hover:text-gray-700" @click="handleClearFilters">
           {{ texts.home.innovationFilters.filters.clearFilters }}
         </button>
@@ -162,3 +175,27 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.actor-filter-chip {
+  will-change: transform, opacity;
+}
+
+.actor-filter-move,
+.actor-filter-enter-active,
+.actor-filter-leave-active {
+  transition:
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 180ms ease-out;
+}
+
+.actor-filter-enter-from,
+.actor-filter-leave-to {
+  opacity: 0;
+  transform: translateY(2px);
+}
+
+.actor-filter-leave-active {
+  position: absolute;
+}
+</style>
