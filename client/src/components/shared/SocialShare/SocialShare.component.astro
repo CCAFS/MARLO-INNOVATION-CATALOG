@@ -1,18 +1,18 @@
 ---
 import BasicButton from '../button/BasicButton/BasicButton.component.astro';
+import { texts } from '~/content/texts';
 
 interface Props {
   url?: string;
-  title?: string;
+  shareMessage?: string;
   isJustIcon?: boolean;
   className?: string;
 }
 
-const { url, title, isJustIcon, className } = Astro.props;
+const { url, shareMessage: shareMessageProp, isJustIcon, className } = Astro.props;
 
-// Get the current page URL - use pathname only to construct on client side
 const sharePath = url || Astro.url.pathname;
-const shareTitle = 'Discover how this innovation is driving real impact in climate-smart agriculture, explore the full story here:';
+const shareTitle = shareMessageProp ?? texts.innovation.shareMessage;
 ---
 
 <div class="social-share-container group relative overflow-visible" data-share-path={sharePath} data-share-title={shareTitle}>
@@ -22,43 +22,40 @@ const shareTitle = 'Discover how this innovation is driving real impact in clima
     icon="pi pi-share-alt"
     classList={`w-full justify-center border-accent-300 !text-accent-300 mb-2 hover:!bg-accent-300 hover:!text-white cursor-pointer ${className}`}
   />
-  <!-- Invisible hover area extension for isJustIcon mode -->
   {isJustIcon && <div class="invisible-hover-extension absolute top-0 -bottom-4 -left-3 z-0 w-8" />}
-  <!-- Dropdown wrapper with padding to bridge the gap -->
   <div class={`dropdown-wrapper hidden group-hover:block absolute top-full w-full pt-1 z-10`}>
     <div
       class={`social-share-dropdown bg-white border border-border-light rounded-lg shadow-lg ${isJustIcon ? 'w-max absolute right-0' : 'overflow-hidden w-full'}`}>
-      <!-- LinkedIn -->
       <a
         href="#"
         data-network="linkedin"
         target="_blank"
+        rel="noopener noreferrer"
         class="share-link text-text-800 flex items-center gap-3 px-4 py-3 text-xs transition-colors duration-200 hover:bg-gray-200">
         <i class="pi pi-linkedin text-base text-[#0A66C2]"></i>
         <span>Share on LinkedIn</span>
       </a>
 
-      <!-- Facebook -->
       <a
         href="#"
         data-network="facebook"
         target="_blank"
+        rel="noopener noreferrer"
         class="share-link text-text-800 border-border-light flex items-center gap-3 border-t px-4 py-3 text-xs transition-colors duration-200 hover:bg-gray-200">
         <i class="pi pi-facebook text-base text-[#1877F2]"></i>
         <span>Share on Facebook</span>
       </a>
 
-      <!-- Twitter/X -->
       <a
         href="#"
         data-network="twitter"
         target="_blank"
+        rel="noopener noreferrer"
         class="share-link text-text-800 border-border-light flex items-center gap-3 border-t px-4 py-3 text-xs transition-colors duration-200 hover:bg-gray-200">
         <i class="pi pi-twitter text-base text-[#000000]"></i>
         <span>Share on X (Twitter)</span>
       </a>
 
-      <!-- Copy Link -->
       <button
         type="button"
         class="copy-link-btn text-text-800 border-border-light flex w-full cursor-pointer items-center gap-3 border-t px-4 py-3 text-left text-xs transition-colors duration-200 hover:bg-gray-200">
@@ -71,36 +68,32 @@ const shareTitle = 'Discover how this innovation is driving real impact in clima
 
 <script>
   import getSharingLink from '~/utils/share-link/getSharingLink';
+  import type { ShareParams } from '~/interfaces/share-params.interface';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Get the actual current URL from the browser
-    const currentUrl = window.location.href;
-
-    // Update all share links with the correct URL
+  function initSocialShareLinks() {
     document.querySelectorAll('.social-share-container').forEach(container => {
       const sharePath = container.getAttribute('data-share-path') || '';
       const shareTitle = container.getAttribute('data-share-title') || 'Check out this innovation';
 
-      // Construct full URL - use sharePath if it's already a full URL, otherwise combine with origin
       const shareUrl = sharePath.startsWith('http') ? sharePath : `${window.location.origin}${sharePath}`;
 
-      // Update social share links
       container.querySelectorAll('.share-link').forEach(link => {
-        const network = link.getAttribute('data-network') as 'linkedin' | 'facebook' | 'twitter';
+        const network = link.getAttribute('data-network') as ShareParams['network'];
 
-        const shareParams: any = { url: shareUrl, network };
-        if (network === 'twitter') {
+        const shareParams: ShareParams = { url: shareUrl, network };
+        if (network === 'twitter' || network === 'linkedin') {
           shareParams.title = shareTitle;
+        }
+        if (network === 'twitter') {
           shareParams.hashtags = 'Innovation,Research,AICCRA';
         }
 
-        const shareLink = getSharingLink(shareParams);
-        link.setAttribute('href', shareLink);
+        link.setAttribute('href', getSharingLink(shareParams));
       });
 
-      // Update copy link button
       const copyButton = container.querySelector('.copy-link-btn');
-      if (copyButton) {
+      if (copyButton && copyButton.dataset.copyBound !== 'true') {
+        copyButton.dataset.copyBound = 'true';
         copyButton.addEventListener('click', async e => {
           e.preventDefault();
           const textSpan = copyButton.querySelector('.copy-link-text');
@@ -110,13 +103,12 @@ const shareTitle = 'Discover how this innovation is driving real impact in clima
               await navigator.clipboard.writeText(shareUrl);
               const originalText = textSpan.textContent;
               textSpan.textContent = 'Copied!';
-              console.log('✅ Copied to clipboard:', shareUrl);
 
               setTimeout(() => {
                 textSpan.textContent = originalText;
               }, 2000);
             } catch (err) {
-              console.error('❌ Failed to copy:', err);
+              console.error('Failed to copy:', err);
               textSpan.textContent = 'Failed to copy';
               setTimeout(() => {
                 textSpan.textContent = 'Copy hyperlink';
@@ -126,7 +118,11 @@ const shareTitle = 'Discover how this innovation is driving real impact in clima
         });
       }
     });
-  });
+  }
+
+  initSocialShareLinks();
+  document.addEventListener('DOMContentLoaded', initSocialShareLinks);
+  document.addEventListener('astro:page-load', initSocialShareLinks);
 </script>
 
 <style>
@@ -138,7 +134,6 @@ const shareTitle = 'Discover how this innovation is driving real impact in clima
     min-width: 100%;
   }
 
-  /* Ensure dropdown stays visible on hover - the wrapper includes padding to bridge the gap */
   .social-share-container:hover .dropdown-wrapper,
   .dropdown-wrapper:hover {
     display: block;

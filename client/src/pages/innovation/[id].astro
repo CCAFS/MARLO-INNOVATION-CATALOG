@@ -157,6 +157,7 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
 <MainLayout
   title={innovation.title}
   description={innovation.narrative}
+  ogDescription={texts.innovation.shareMessage}
   ogImage={innovationOgImage}
   ogImageAlt={innovation.title}
   showGlossary={true}
@@ -178,7 +179,7 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
         <div class="flex flex-wrap gap-2 flex-shrink-0">
           <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
           <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
-          <SocialShare title={innovation.title} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
+          <SocialShare shareMessage={texts.innovation.shareMessage} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
           <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
         </div>
       </div>
@@ -572,7 +573,7 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
             classList={'w-full justify-center border-primary-300 text-primary-300 mb-2 hover:bg-primary-300 '}
           /> -->
           <div class="mb-2">
-            <SocialShare title={innovation.title} className="!mb-0" />
+            <SocialShare shareMessage={texts.innovation.shareMessage} className="!mb-0" />
           </div>
           <DownloadImage />
         </div>
