@@ -92,6 +92,9 @@ export const texts = {
       internal: 'Internal',
       external: 'N/A'
     },
+    prmsInnovations: {
+      title: 'PRMS innovations'
+    },
     evidence: {
       title: 'Evidence',
       reference: {
