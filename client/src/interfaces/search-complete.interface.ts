@@ -79,6 +79,14 @@ export interface Innovation {
   contactPersons: ContactPerson[];
   contributingOrganizations: ContributingOrganization[];
   bundles: InnovationBundle[];
+  prmsInnovations?: PrmsInnovation[];
+}
+
+export interface PrmsInnovation {
+  id: number;
+  prmsResultId: number;
+  title: string;
+  pdfLink: string;
 }
 
 export interface Phase {
