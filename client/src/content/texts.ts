@@ -74,6 +74,8 @@ export const texts = {
   },
   innovation: {
     goBack: 'Go back to innovations catalog',
+    shareMessage:
+      'Discover how this innovation is driving real impact in climate-smart agriculture, explore the full story here:',
     innovationDetails: {
       title: 'No Title Available',
       narrative: 'No summary available for this innovation.'
