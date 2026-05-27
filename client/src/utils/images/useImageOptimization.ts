@@ -1,5 +1,10 @@
 import { ref, computed } from 'vue';
 import ImgNotAvailable from '~/images/no-img-available.png';
+import {
+  getInnovationImageUrl,
+  INNOVATION_IMAGE_PREFIX,
+  INNOVATION_IMAGE_S3_BUCKET
+} from '~/utils/images/getInnovationImageUrl';
 
 export type ImageLoadingState = 'loading' | 'loaded' | 'error';
 
@@ -17,8 +22,8 @@ const DEFAULT_OPTIONS: ImageOptimizationOptions = {
   quality: 75,
   blurWidth: 30,
   blurQuality: 20,
-  s3Bucket: 'aiccra-innovations-images.s3.us-east-1.amazonaws.com',
-  imagePrefix: 'image-'
+  s3Bucket: INNOVATION_IMAGE_S3_BUCKET,
+  imagePrefix: INNOVATION_IMAGE_PREFIX
 };
 
 /**
@@ -44,13 +49,12 @@ export function useImageOptimization(options: ImageOptimizationOptions = {}) {
   const getOptimizedUrl = (imageId?: string | number): string => {
     if (!imageId) return ImgNotAvailable.src;
 
-    const url = `https://${mergedOptions.s3Bucket}/${mergedOptions.imagePrefix}${imageId}`;
-    const params = new URLSearchParams({
-      w: mergedOptions.width!.toString(),
-      q: mergedOptions.quality!.toString()
+    return getInnovationImageUrl(imageId, {
+      width: mergedOptions.width,
+      quality: mergedOptions.quality,
+      s3Bucket: mergedOptions.s3Bucket,
+      imagePrefix: mergedOptions.imagePrefix
     });
-
-    return `${url}?${params.toString()}`;
   };
 
   /**
@@ -61,13 +65,12 @@ export function useImageOptimization(options: ImageOptimizationOptions = {}) {
   const getBlurPlaceholder = (imageId?: string | number): string => {
     if (!imageId) return ImgNotAvailable.src;
 
-    const url = `https://${mergedOptions.s3Bucket}/${mergedOptions.imagePrefix}${imageId}`;
-    const params = new URLSearchParams({
-      w: mergedOptions.blurWidth!.toString(),
-      q: mergedOptions.blurQuality!.toString()
+    return getInnovationImageUrl(imageId, {
+      width: mergedOptions.blurWidth,
+      quality: mergedOptions.blurQuality,
+      s3Bucket: mergedOptions.s3Bucket,
+      imagePrefix: mergedOptions.imagePrefix
     });
-
-    return `${url}?${params.toString()}`;
   };
 
   /**

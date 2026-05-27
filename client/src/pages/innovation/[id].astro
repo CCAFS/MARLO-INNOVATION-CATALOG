@@ -23,6 +23,7 @@ import CommentCards from './vue/CommentCards.vue';
 import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 import { texts } from '~/content/texts';
 import { phaseId } from '~/content/vars';
+import { getInnovationImageUrl } from '~/utils/images/getInnovationImageUrl';
 
 interface staticPaths {
   params: { id: string };
@@ -149,9 +150,17 @@ const actorsInfo = getActorsByGroup(innovation.actors);
 
 const prmsItems = innovation.prmsInnovations?.filter(p => p.title?.trim()) ?? [];
 
+const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
+
 ---
 
-<MainLayout title={innovation.title} description={innovation.narrative} showGlossary={true}>
+<MainLayout
+  title={innovation.title}
+  description={innovation.narrative}
+  ogImage={innovationOgImage}
+  ogImageAlt={innovation.title}
+  showGlossary={true}
+>
   <!-- Mobile: side padding | Desktop (lg+): original layout -->
   <article class="container mx-auto m-auto my-auto px-4 lg:p-0 xl:px-16 2xl:px-20">
     <!-- Return link - Mobile: reduced margin, smaller text | Desktop (lg+): original layout -->
