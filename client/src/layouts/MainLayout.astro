@@ -2,10 +2,20 @@
 interface Props {
   title: string;
   description?: string;
+  ogDescription?: string;
   showGlossary?: boolean;
+  ogImage?: string;
+  ogImageAlt?: string;
 }
 
-const { title, description, showGlossary = false } = Astro.props;
+const {
+  title,
+  description,
+  ogDescription: ogDescriptionProp,
+  showGlossary = false,
+  ogImage: ogImageProp,
+  ogImageAlt: ogImageAltProp
+} = Astro.props;
 import { domain } from './../content/vars.ts';
 import '../styles/global.css';
 import Footer from '~/components/shared/footer/Footer.component.astro';
@@ -13,6 +23,11 @@ import TopBar from '../components/TopBar.astro';
 import '../styles/global.css';
 
 const link = Astro.url.href;
+const defaultOgImage = domain + '/logo.png';
+const defaultOgImageAlt = 'AICCRA Innovation Catalog Logo';
+const ogImage = ogImageProp ?? defaultOgImage;
+const ogImageAlt = ogImageAltProp ?? defaultOgImageAlt;
+const ogDescription = ogDescriptionProp ?? description ?? '';
 const gaId = import.meta.env.PUBLIC_GA_ID;
 const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
 
@@ -62,19 +77,19 @@ const clarityScript = `
 
     <!-- Open Graph (for Facebook, LinkedIn, WhatsApp) -->
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content="article" />
     <meta property="og:url" content={link} />
-    <meta property="og:image" content={domain + '/logo.png'} />
-    <meta property="og:image:alt" content="AICCRA Innovation Catalog Logo" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:logo" content={domain + '/logo.png'} />
     <meta property="og:site_name" content="AICCRA Innovation Catalog" />
 
     <!-- Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={domain + '/logo.png'} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
     <title>{title}</title>
   </head>
   <body class="m-0 min-h-[100vh] overflow-x-hidden overflow-y-auto bg-white p-0 text-text-900">

@@ -13,6 +13,6 @@
 
 export default {
     facebook: 'https://www.facebook.com/sharer/sharer.php?u=@u',
-    linkedin: 'https://www.linkedin.com/feed/?shareActive=true&text=@u', //https://www.linkedin.com/sharing/share-offsite/?url={url}
+    linkedin: 'https://www.linkedin.com/feed/?shareActive=true&text=@t%0A%0A@u',
     twitter: 'https://twitter.com/intent/tweet?url=@u&text=@t&via=@tu&hashtags=@h'
 }
