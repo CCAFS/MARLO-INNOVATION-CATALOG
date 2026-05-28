@@ -74,11 +74,29 @@ export const texts = {
   },
   innovation: {
     goBack: 'Go back to innovations catalog',
-    shareMessage:
-      'Discover how this innovation is driving real impact in climate-smart agriculture, explore the full story here:',
+    shareMessage: 'Discover how this innovation is driving real impact in climate-smart agriculture, explore the full story here:',
+    shareMenu: {
+      linkedin: 'Share on LinkedIn',
+      facebook: 'Share on Facebook',
+      twitter: 'Share on X (Twitter)',
+      copyLink: 'Copy hyperlink',
+      copied: 'Copied!',
+      copyFailed: 'Failed to copy',
+      buttonLabel: 'Share'
+    },
     innovationDetails: {
       title: 'No Title Available',
       narrative: 'No summary available for this innovation.'
+    },
+    downloadSummaryPdf: 'Download Summary PDF',
+    heroActions: {
+      pdf: 'PDF',
+      image: 'Image'
+    },
+    scalingStageBadge: 'Scaling Stage',
+    narrativeExpand: {
+      readMore: 'See more',
+      readLess: 'See less'
     },
     keymetrics: {
       title: 'Key metrics',

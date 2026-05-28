@@ -10,7 +10,7 @@ import type { GetStaticPaths } from 'astro';
 import MainLayout from '@layouts/MainLayout.astro';
 import { innovationCatalog } from '~/jsons/innovation-list';
 import BasicButton from '~/components/shared/button/BasicButton/BasicButton.component.astro';
-import SocialShare from '~/components/shared/SocialShare/SocialShare.component.astro';
+import SocialShareMenu from '~/components/vue/SocialShareMenu.vue';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
 import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
@@ -24,11 +24,6 @@ import CustomToastWrapper from './vue/CustomToastWrapper.vue';
 import { texts } from '~/content/texts';
 import { phaseId } from '~/content/vars';
 import { getInnovationImageUrl } from '~/utils/images/getInnovationImageUrl';
-
-interface staticPaths {
-  params: { id: string };
-  props: { innovation: InnovationComplete };
-}
 
 const stats = [
   {
@@ -143,7 +138,6 @@ if (!innovation) {
   return Astro.redirect('/404');
 }
 
-
 const countryText = getCountryTextStructured(innovation.countries, innovation.regions, true);
 
 const actorsInfo = getActorsByGroup(innovation.actors);
@@ -151,7 +145,16 @@ const actorsInfo = getActorsByGroup(innovation.actors);
 const prmsItems = innovation.prmsInnovations?.filter(p => p.title?.trim()) ?? [];
 
 const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
+const heroImageUrl = getInnovationImageUrl(innovation.projectInnovationId, { width: 1200, quality: 75 });
+const readinessText = getReadinessScaleText(innovation.readinessScale);
 
+const heroIconButtonClass =
+  'inline-flex items-center justify-center px-4 py-2.25 border rounded-lg text-xs xl:text-sm 2xl:text-base leading-[10px] font-medium cursor-pointer gap-1 w-[36px] h-[36px] min-w-[36px] !mb-0 !border-white/70 !text-white bg-white/10 hover:!bg-white/25 hover:!text-white hover:!border-transparent backdrop-blur-sm';
+
+const NARRATIVE_CHAR_LIMIT = 350;
+const fullNarrative = innovation.narrative ?? texts.innovation.innovationDetails.narrative;
+const isNarrativeTruncated = fullNarrative.length > NARRATIVE_CHAR_LIMIT;
+const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARRATIVE_CHAR_LIMIT).trimEnd()}…` : fullNarrative;
 ---
 
 <MainLayout
@@ -160,223 +163,288 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
   ogDescription={texts.innovation.shareMessage}
   ogImage={innovationOgImage}
   ogImageAlt={innovation.title}
-  showGlossary={true}
->
-  <!-- Mobile: side padding | Desktop (lg+): original layout -->
-  <article class="container mx-auto m-auto my-auto px-4 lg:p-0 xl:px-16 2xl:px-20 [&_a]:break-all">
-    <!-- Return link - Mobile: reduced margin, smaller text | Desktop (lg+): original layout -->
-    <a href="/" class="my-6 mb-4 text-primary-300 text-xs font-semibold flex items-center gap-2 hover:underline lg:my-12 lg:mb-8 lg:text-sm xl:text-sm 2xl:text-base">
+  showGlossary={true}>
+  <article class="container mx-auto px-4 lg:px-0 xl:px-16 2xl:px-20 [&_a]:break-all">
+    <a href="/" class="text-primary-300 my-6 mb-4 flex items-center gap-2 text-xs font-semibold hover:underline lg:my-10 lg:mb-6 lg:text-sm">
       <span class="pi pi-arrow-left text-xs lg:text-sm"></span>
-      <p>{texts.innovation.goBack}</p>
+      <span>{texts.innovation.goBack}</span>
     </a>
 
-    <!-- Title and main options -->
-    <section class="max-width">
-      <!-- Mobile: vertical stack on small screens | Desktop (lg+): horizontal with gap -->
-      <div class="flex flex-col gap-3 mb-2.5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-4">
-        <!-- Mobile: smaller text, reduced margin | Desktop (lg+): original size -->
-        <h1 class="text-sm font-bold mb-2 flex-1 min-w-0 lg:text-base lg:mb-4 xl:text-lg 2xl:text-xl">{innovation.title ?? texts.innovation.innovationDetails.title}</h1>
-        <div class="flex flex-wrap gap-2 flex-shrink-0">
-          <!--           <BasicButton hasIcon icon="pi pi-bookmark" classList={'bg-white-100 text-primary-300 border border-border-light px-3 py-1 rounded'} /> -->
-          <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className="!border-border-light px-3 py-1 rounded mb-0 !w-[36px]" />
-          <SocialShare shareMessage={texts.innovation.shareMessage} isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
-          <DownloadImage isJustIcon className={'!border-border-light px-3 py-1 rounded mb-0 !w-[36px]'} />
-        </div>
+    <!-- Hero -->
+    <section class="bg-bg-200 relative mb-4 h-auto overflow-hidden rounded-xl sm:h-[280px] lg:h-[360px]">
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <img src={heroImageUrl} alt="" class="absolute inset-0 h-full w-full object-cover blur-xs" loading="eager" decoding="async" />
+        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/40"></div>
       </div>
-      <!-- Mobile: smaller text, reduced margin | Desktop (lg+): original size -->
-      <p class="text-xs font-[400] mb-4 text-text-600 text-justify lg:text-sm lg:mb-6 xl:text-base 2xl:text-lg">{innovation.narrative ?? texts.innovation.innovationDetails.narrative}</p>
-    </section>
 
-    <!-- Main Content - Mobile: 1-column stack | Desktop (lg+): original 4-column grid -->
-    <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-4 lg:mb-12">
-      <!-- Mobile: col-span-1 (full width) | Desktop (lg+): col-span-3 -->
-      <section class="col-span-1 lg:col-span-3">
-        <!-- Key Metrics - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.keymetrics.title}</p>
-          <!-- Mobile: flex column stack, reduced gap | Desktop (md+): flex row with gap | Desktop (lg+): justify around with padding -->
-          <div class="flex flex-col gap-4 mt-3 lg:flex-row lg:flex-wrap lg:gap-12 lg:mt-4 lg:justify-around lg:px-12 xl:px-24">
-            <!-- Geoscope - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
-            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
-              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
-                {(<Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
-              </div>
-              <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.location}</span>
-                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
-                  {
-                    countryText.hasMore ? (
-                      <>
-                        <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
-                        <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
-                          {countryText.additionalText}
-                          <span class="tooltiptext">{countryText.additionalInfo}</span>
-                        </em>
-                      </>
-                    ) : (
-                      <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{countryText.text}</span>
-                    )
-                  }
-                </span>
-              </div>
+      <div class="relative z-10 flex flex-col gap-4 p-4 sm:h-full sm:justify-between sm:p-6 lg:p-8">
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-secondary-300 rounded-full px-3 py-1 text-xs font-semibold text-white sm:text-sm">
+            {innovation.innovationType?.name || 'N/A'}
+          </span>
+          <span class="bg-primary-300 rounded-full px-3 py-1 text-xs font-semibold text-white sm:text-sm">
+            {readinessText.textComplet}
+          </span>
+        </div>
+
+        <div>
+          <h1 class="text-lg leading-snug font-bold text-white sm:text-2xl lg:text-3xl">
+            {innovation.title ?? texts.innovation.innovationDetails.title}
+          </h1>
+          <div class="mt-4 flex flex-wrap items-end gap-4">
+            <div class="flex flex-col items-center gap-1">
+              <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className={heroIconButtonClass} />
+              <span class="text-xs text-white/90">{texts.innovation.heroActions.pdf}</span>
             </div>
-            <!-- Typology - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
-            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
-              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
-                {(<Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
-              </div>
-              <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.innovationTypology}</span>
-                <span class="text-xs text-text-800 font-normal w-full md:w-[150px] lg:w-[250px] lg:text-xs xl:text-sm 2xl:text-base">{innovation.innovationType?.name || 'N/A'}</span>
-              </div>
+
+            <div class="flex flex-col items-center gap-1">
+              <DownloadImage isJustIcon className={heroIconButtonClass} />
+              <span class="text-xs text-white/90">{texts.innovation.heroActions.image}</span>
             </div>
-            <!-- Scaling Readiness - Mobile: flex-row left-aligned | Desktop (lg+): flex-col centered -->
-            <div class="flex flex-row items-center gap-3 lg:flex-col lg:text-center lg:gap-0">
-              <div class="w-[32px] h-[32px] mb-0 flex items-center justify-center lg:w-[40px] lg:h-[40px] lg:mb-1">
-                {(<Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class={'pb-1 w-6 h-6 lg:w-8 lg:h-8'} />)}
-              </div>
-              <div class="flex flex-col items-start lg:items-center">
-                <span class="text-[10px] text-primary-300 font-bold lg:text-xs xl:text-xs 2xl:text-sm">{texts.innovation.keymetrics.scalingReadiness}</span>
-                <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base"
-                  >{getReadinessScaleText(innovation.readinessScale).textComplet}</span
-                >
-              </div>
+
+            <div class="flex flex-col items-center gap-1">
+              <SocialShareMenu
+                client:load
+                sharePath={Astro.url.pathname}
+                shareMessage={texts.innovation.shareMessage}
+                variant="hero"
+                trigger-class={heroIconButtonClass}
+              />
+              <span class="text-xs text-white/90">{texts.innovation.aside.share}</span>
             </div>
           </div>
         </div>
-        <!-- Description - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <!-- Adapted and scaled context / What needs to be adapted? -->
+      </div>
+    </section>
+
+    <div
+      class="mb-6 lg:mb-8"
+      data-narrative-wrapper={isNarrativeTruncated ? '' : undefined}
+      data-read-more={texts.innovation.narrativeExpand.readMore}
+      data-read-less={texts.innovation.narrativeExpand.readLess}>
+      {
+        isNarrativeTruncated ? (
+          <>
+            <p class="text-text-600 text-justify text-sm leading-relaxed lg:text-base" data-narrative-short>
+              {truncatedNarrative}
+            </p>
+            <p class="text-text-600 hidden text-justify text-sm leading-relaxed lg:text-base" data-narrative-full>
+              {fullNarrative}
+            </p>
+            <button type="button" class="text-primary-300 mt-2 text-sm font-semibold hover:underline" data-narrative-toggle aria-expanded="false">
+              {texts.innovation.narrativeExpand.readMore}
+            </button>
+          </>
+        ) : (
+          <p class="text-text-600 text-justify text-sm leading-relaxed lg:text-base">{fullNarrative}</p>
+        )
+      }
+    </div>
+
+    <div class="mb-8 grid grid-cols-1 gap-6 lg:mb-12 lg:grid-cols-4 lg:gap-8">
+      <section class="order-2 col-span-1 flex flex-col gap-4 lg:order-1 lg:col-span-3">
+        <!-- Metric cards -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div class="border-border-light rounded-xl border bg-white p-4">
+            <div class="mb-2 flex h-9 w-9 items-center justify-center">
+              <Image height="32" quality={stats[0].quality} src={stats[0].imagePath} alt={stats[0].title} class="h-7 w-7" />
+            </div>
+            <p class="text-primary-300 text-[10px] font-bold tracking-wide uppercase">{texts.innovation.keymetrics.location}</p>
+            <p class="text-text-800 mt-1 text-sm font-medium">
+              {
+                countryText.hasMore ? (
+                  <>
+                    {countryText.text}
+                    <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
+                      {countryText.additionalText}
+                      <span class="tooltiptext">{countryText.additionalInfo}</span>
+                    </em>
+                  </>
+                ) : (
+                  countryText.text
+                )
+              }
+            </p>
+          </div>
+          <div class="border-border-light rounded-xl border bg-white p-4">
+            <div class="mb-2 flex h-9 w-9 items-center justify-center">
+              <Image height="32" quality={stats[1].quality} src={stats[1].imagePath} alt={stats[1].title} class="h-7 w-7" />
+            </div>
+            <p class="text-primary-300 text-[10px] font-bold tracking-wide uppercase">{texts.innovation.keymetrics.innovationTypology}</p>
+            <p class="text-text-800 mt-1 text-sm font-medium">{innovation.innovationType?.name || 'N/A'}</p>
+          </div>
+          <div class="border-border-light rounded-xl border bg-white p-4">
+            <div class="mb-2 flex h-9 w-9 items-center justify-center">
+              <Image height="32" quality={stats[2].quality} src={stats[2].imagePath} alt={stats[2].title} class="h-7 w-7" />
+            </div>
+            <p class="text-primary-300 text-[10px] font-bold tracking-wide uppercase">{texts.innovation.keymetrics.scalingReadiness}</p>
+            <p class="text-text-800 mt-1 text-sm font-medium">{readinessText.textComplet}</p>
+          </div>
+        </div>
+
+        <!-- Main content sections -->
+        <div class="border-border-light text-text-300 flex w-full flex-col gap-6 rounded-xl border bg-white p-4 lg:p-6">
           {
-            innovation.reasonKnowledgePotential == null || innovation.reasonKnowledgePotential === '' ? (
-              <></>
-            ) : (
-              <>
-                <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.reasonKnowledgePotential}</p>
-                <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
-                  {innovation.reasonKnowledgePotential}
-                </p>
-              </>
+            innovation.reasonKnowledgePotential != null && innovation.reasonKnowledgePotential !== '' && (
+              <div>
+                <div class="mb-2 flex items-center gap-2">
+                  <i class="pi pi-sliders-h text-primary-300" />
+                  <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.reasonKnowledgePotential}</h2>
+                </div>
+                <p class="text-text-800 text-justify text-sm leading-relaxed">{innovation.reasonKnowledgePotential}</p>
+              </div>
             )
           }
-          <!-- Expected outcomes - Mobile: smaller text | Desktop (lg+): original size -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.knowledgeResultsNarrative}</p>
-            <p class="text-xs text-text-900 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
-            {
-              innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
-              <span class="text-gray-500">{texts.innovation.defaultValue}</span>
-              ) : (
-              innovation.knowledgeResultsNarrative
-              )
-            }
+
+          <div>
+            <div class="mb-2 flex items-center gap-2">
+              <i class="pi pi-chart-line text-primary-300"></i>
+              <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.knowledgeResultsNarrative}</h2>
+            </div>
+            <p class="text-text-900 text-justify text-sm leading-relaxed">
+              {
+                innovation.knowledgeResultsNarrative == null || innovation.knowledgeResultsNarrative === '' ? (
+                  <span class="text-gray-500">{texts.innovation.defaultValue}</span>
+                ) : (
+                  innovation.knowledgeResultsNarrative
+                )
+              }
             </p>
-          <!-- Intended beneficiaries/users -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.beneficiariesNarrative}</p>
-          <p class="text-xs text-text-800 font-normal mt-2 text-justify lg:text-xs xl:text-sm 2xl:text-base">
-            {
-              innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
-                <span class="text-gray-500">{texts.innovation.defaultValue}</span>
-              ) : (
-                innovation.beneficiariesNarrative
-              )
-            }
-          </p>
+          </div>
 
+          <div>
+            <div class="mb-2 flex items-center gap-2">
+              <i class="pi pi-users text-primary-300"></i>
+              <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.beneficiariesNarrative}</h2>
+            </div>
+            <p class="text-text-800 text-justify text-sm leading-relaxed">
+              {
+                innovation.beneficiariesNarrative == null || innovation.beneficiariesNarrative === '' ? (
+                  <span class="text-gray-500">{texts.innovation.defaultValue}</span>
+                ) : (
+                  innovation.beneficiariesNarrative
+                )
+              }
+            </p>
+          </div>
 
-          {prmsItems.length > 0 && (
-            <>
-              <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.prmsInnovations.title}</p>
-              <ul class="pl-4 mt-2">
-                {prmsItems.map(prms => (
-                  <li class="py-1 list-disc">
-                    {prms.pdfLink?.trim() ? (
-                      <a
-                        class="text-xs text-primary-500 underline font-semibold lg:text-xs xl:text-sm 2xl:text-base"
-                        href={prms.pdfLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {prms.title}
-                      </a>
-                    ) : (
-                      <span class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{prms.title}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-          <!-- Bundle innovations -->
-          {innovation.bundles != null && innovation.bundles.length > 0 && (
-          <>
-            <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.bundles.title}</p>
-            <p class="text-xs text-text-800 w-max font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
-            <div class="w-full pb-1">
-              {innovation.bundles.map(bundle => (
-                <div class="mb-2">
-                  <div class="inline-flex items-center gap-1 border-1 border-[#439255] bg-[#F7F7F7] rounded-full px-2 text-[#439255]">
-                  {
-                    (bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== "") ? (
-                    <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
-                      fill="#439255" />
-                    </svg>
-                    <span class="text-sm">{bundle.selectedInnovationReadinessScale ? bundle.selectedInnovationReadinessScale - 1 : texts.innovation.bundles.external}</span>
-                    ) : <span class="text-sm">{texts.innovation.bundles.external}</span>
-                  }
+          {
+            prmsItems.length > 0 && (
+              <div>
+                <div class="mb-2 flex items-center gap-2">
+                  <i class="pi pi-list text-primary-300" />
+                  <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.prmsInnovations.title}</h2>
                 </div>
-                <span class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal ml-2">{bundle.selectedInnovationName}</span>
-              </div>
-              ))}
-              </div>
-            </p>
-          </>
-          )}
-          <!-- Piece of evidence -->
-          <p class="text-xs font-semibold text-primary-300 mt-3 lg:text-sm lg:mt-4 xl:text-base 2xl:text-lg">{texts.innovation.evidence.title}</p>
-          <p class="text-xs text-text-800 font-normal mt-2 lg:text-xs xl:text-sm 2xl:text-base">
-            {
-              innovation.references == null || innovation.references.length === 0 ? (
-                <span class="text-gray-500">{texts.innovation.defaultValue}</span>
-              ) : (
-                <ul class="pl-4">
-                  {
-                  innovation.references.map(reference => 
-                    reference.hasEvidenceByDeliverable ? (
-                      <li class="py-1 list-disc">
-                        <p class="text-sm font-normal">{reference.deliverableName ? reference.deliverableName : texts.innovation.evidence.reference.deliverableName}</p>
-                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.disseminationUrl ? reference.disseminationUrl : "#"}>{reference.disseminationUrl ? reference.disseminationUrl : texts.innovation.evidence.reference.link}</a>
-                      </li>
-                    ) : (
-                      <li class="py-1 list-disc">
-                        <p class="text-sm font-normal">{reference.reference ? reference.reference : texts.innovation.evidence.reference.reference}</p>
-                        <a class="text-xs text-text-500 underline text-primary-500 font-semibold" href={reference.link ? reference.link : "#"}>{reference.link ? reference.link : texts.innovation.evidence.reference.link}</a>
-                      </li>
-                    )
-                  )
-                }
+                <ul class="mt-2 list-disc pl-5">
+                  {prmsItems.map(prms => (
+                    <li class="py-1">
+                      {prms.pdfLink?.trim() ? (
+                        <a class="text-primary-500 text-sm font-semibold underline" href={prms.pdfLink} target="_blank" rel="noopener noreferrer">
+                          {prms.title}
+                        </a>
+                      ) : (
+                        <span class="text-text-800 text-sm">{prms.title}</span>
+                      )}
+                    </li>
+                  ))}
                 </ul>
-              )
-            }
-          </p>
+              </div>
+            )
+          }
+          {
+            innovation.bundles != null && innovation.bundles.length > 0 && (
+              <div>
+                <div class="mb-2 flex items-center gap-2">
+                  <i class="pi pi-box text-primary-300" />
+                  <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.bundles.title}</h2>
+                </div>
+                <div class="w-full pb-1">
+                  {innovation.bundles.map(bundle => (
+                    <div class="mb-2">
+                      <div class="inline-flex items-center gap-1 rounded-full border border-[#439255] bg-[#F7F7F7] px-2 text-[#439255]">
+                        {bundle.selectedInnovationReadinessScale !== null || bundle.selectedInnovationReadinessScale !== '' ? (
+                          <>
+                            <svg height="10" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M2.2557 7.24802C2.06283 7.40936 1.80123 7.5 1.52847 7.5C1.2557 7.5 0.994106 7.40936 0.801231 7.24802C0.608356 7.08668 0.5 6.86785 0.5 6.63968C0.5 6.41151 0.608356 6.19269 0.801231 6.03135L4.22721 3.16636L4.2344 3.16034C4.51432 2.93101 4.89053 2.80256 5.28234 2.80256C5.67416 2.80256 6.05037 2.93101 6.33028 3.16034L6.33748 3.16636L8.08593 4.62895L10.4984 2.49483L9.42939 1.60059C9.32171 1.51041 9.2484 1.39555 9.21871 1.27053C9.18902 1.14551 9.20428 1.01594 9.26258 0.898171C9.32087 0.780405 9.41957 0.67973 9.54623 0.608862C9.67288 0.537994 9.8218 0.500112 9.97417 0.5H13.7291C13.9335 0.5 14.1296 0.567942 14.2742 0.688881C14.4188 0.809819 14.5 0.973847 14.5 1.14488V4.28501C14.4999 4.41247 14.4546 4.53705 14.3699 4.64299C14.2851 4.74894 14.1648 4.83151 14.024 4.88027C13.8832 4.92903 13.7283 4.9418 13.5789 4.91696C13.4294 4.89213 13.2921 4.8308 13.1843 4.74073L11.9529 3.71064L9.17344 6.17064L9.14569 6.19386C8.86577 6.42319 8.48956 6.55164 8.09775 6.55164C7.70594 6.55164 7.32973 6.42319 7.04981 6.19386L7.04262 6.18784L5.28183 4.71579L2.2557 7.24802Z"
+                                fill="#439255"
+                              />
+                            </svg>
+                            <span class="text-sm">
+                              {bundle.selectedInnovationReadinessScale
+                                ? bundle.selectedInnovationReadinessScale - 1
+                                : texts.innovation.bundles.external}
+                            </span>
+                          </>
+                        ) : (
+                          <span class="text-sm">{texts.innovation.bundles.external}</span>
+                        )}
+                      </div>
+                      <span class="text-text-800 ml-2 text-xs font-normal xl:text-sm 2xl:text-base">{bundle.selectedInnovationName}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+          <div>
+            <div class="mb-2 flex items-center gap-2">
+              <i class="pi pi-file text-primary-300"></i>
+              <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.evidence.title}</h2>
+            </div>
+            <div class="text-text-800 text-sm">
+              {
+                innovation.references == null || innovation.references.length === 0 ? (
+                  <span class="text-gray-500">{texts.innovation.defaultValue}</span>
+                ) : (
+                  <ul class="pl-4">
+                    {innovation.references.map(reference =>
+                      reference.hasEvidenceByDeliverable ? (
+                        <li class="list-disc py-1">
+                          <p class="text-sm font-normal">
+                            {reference.deliverableName ? reference.deliverableName : texts.innovation.evidence.reference.deliverableName}
+                          </p>
+                          <a
+                            class="text-text-500 text-primary-500 text-xs font-semibold underline"
+                            href={reference.disseminationUrl ? reference.disseminationUrl : '#'}>
+                            {reference.disseminationUrl ? reference.disseminationUrl : texts.innovation.evidence.reference.link}
+                          </a>
+                        </li>
+                      ) : (
+                        <li class="list-disc py-1">
+                          <p class="text-sm font-normal">
+                            {reference.reference ? reference.reference : texts.innovation.evidence.reference.reference}
+                          </p>
+                          <a class="text-text-500 text-primary-500 text-xs font-semibold underline" href={reference.link ? reference.link : '#'}>
+                            {reference.link ? reference.link : texts.innovation.evidence.reference.link}
+                          </a>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                )
+              }
+            </div>
+          </div>
         </div>
-        <!-- Community solution stories - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <section class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 relative lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.communitySolutionStories.title}</p>
+
+        <section class="border-border-light text-text-300 relative w-full rounded-xl border bg-white p-4 lg:p-6">
+          <div class="mb-4 flex items-center gap-2">
+            <i class="pi pi-comments text-primary-300"></i>
+            <h2 class="text-primary-300 text-sm font-semibold lg:text-base">{texts.innovation.communitySolutionStories.title}</h2>
+          </div>
 
           <!-- Comment stories -->
           <div data-comment-cards>
             <CommentCards innovationId={innovation.projectInnovationId} client:load />
           </div>
-          
+
           <!-- Input container -->
           <form class="mt-4 lg:mt-6" id="community-story-form" data-innovation-id={innovation.projectInnovationId}>
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.communitySolutionStories.form.prompt}</p>
-            <!-- Content Form - Mobile: no left margin | Desktop (lg+): original margin -->
-            <div class="mt-2 flex flex-col gap-1 lg:ml-4">
+            <p class="text-text-800 text-xs font-bold tracking-wide uppercase">{texts.innovation.communitySolutionStories.form.prompt}</p>
+            <div class="mt-3 flex flex-col gap-2">
               <!-- Name Input -->
               <Input
                 label={texts.innovation.communitySolutionStories.form.name.label}
@@ -395,7 +463,7 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
                 required
               />
               <!-- Comment Input -->
-               <Input
+              <Input
                 label={texts.innovation.communitySolutionStories.form.comment.label}
                 placeholder={texts.innovation.communitySolutionStories.form.comment.placeholder}
                 id="story-input"
@@ -406,176 +474,152 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
               />
 
               <!-- Submit Button with CAPTCHA - Mobile: vertical stack | Desktop (sm+): horizontal -->
-              <div class="flex flex-col gap-3 mt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+              <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
-                <div
-                  class="cf-turnstile"
-                  data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-                  data-theme="light"
-                ></div>
+                <div class="cf-turnstile overflow-hidden rounded-sm" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-theme="light"></div>
                 <BasicButton
                   text={texts.innovation.communitySolutionStories.form.send}
                   type="submit"
-                  classList="!bg-lime-500 text-white px-8 py-2.5 rounded hover:!bg-lime-800 transition-colors duration-300 sm:px-10 sm:py-3"
+                  classList="!bg-primary-400 !border-primary-400 text-white px-8 py-2.5 rounded hover:!bg-primary-300 transition-colors duration-300 sm:px-10 sm:py-3"
                 />
               </div>
+            </div>
           </form>
         </section>
       </section>
-      <!-- Aside Sidebar - Mobile: col-span-1 (full width), order first | Desktop (lg+): col-span-1, order last -->
-      <aside class="col-span-1 order-first lg:order-last">
-        <!-- Download PDF button - Mobile: reduced bottom margin | Desktop (lg+): original margin -->
-        <PDFLink id={innovation.projectInnovationId.toString()} className="w-full mb-4 lg:mb-6" />
-        <!-- Quick Information - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.title}</p>
+
+      <aside class="order-1 col-span-1 lg:sticky lg:top-24 lg:order-2 lg:self-start">
+        <PDFLink
+          id={innovation.projectInnovationId.toString()}
+          buttonText={texts.innovation.downloadSummaryPdf}
+          className="border-primary-300! bg-primary-300! hover:!bg-primary-400! hover:!text-white! mb-4 w-full text-white! lg:mb-4"
+        />
+
+        <div class="mb-4 grid grid-cols-2 gap-2">
+          <SocialShareMenu client:load sharePath={Astro.url.pathname} shareMessage={texts.innovation.shareMessage} variant="sidebar" />
+          <DownloadImage className="!border-accent-500! !text-accent-500! hover:!bg-accent-500! hover:!text-white! mb-0! w-full justify-center" />
+        </div>
+
+        <div class="border-border-light text-text-300 mb-4 w-full rounded-xl border bg-white p-4 lg:mb-4">
+          <p class="text-primary-300 mb-4 text-sm font-semibold lg:text-base">{texts.innovation.aside.title}</p>
 
           <div class="mb-3 lg:mb-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.leadOrganization}</p>
+            <p class="text-text-800 text-xs font-semibold lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.leadOrganization}</p>
             {
               innovation.contactPersons && innovation.contactPersons.length > 0 ? (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}{innovation.contactPersons[0].institutionName}</p>
+                <p class="text-xs font-normal text-gray-600 xl:text-sm 2xl:text-base">
+                  {innovation.contactPersons[0].institutionAcronym ? innovation.contactPersons[0].institutionAcronym + ' - ' : ''}
+                  {innovation.contactPersons[0].institutionName}
+                </p>
               ) : (
-                <p class="text-xs xl:text-sm 2xl:text-base text-gray-600 font-normal">{texts.innovation.defaultValue}</p>
+                <p class="text-xs font-normal text-gray-600 xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</p>
               )
             }
           </div>
           <!-- Key actors -->
           <div class="mb-3 lg:mb-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.keyActors}</p>
-            
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-1">
-                {
-                  actorsInfo.length > 0 ? (
-                    actorsInfo.map(actor => (
-                        <div class="relative tooltip not-underline flex flex-row items-start gap-2 md:flex-col md:items-center md:justify-center">
-                          <Image
-                          src={actor.imgUrl}
-                          alt={Array.isArray(actor.actorInfoName) ? actor.actorInfoName.join(', ') : (actor.actorInfoName || 'Actor Icon')}
-                          quality={'max'}
-                          class="w-full max-w-[78px] h-auto object-contain shrink-0"
-                          />
-                          <span class="tooltiptext hidden md:block">
-                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
-                                <ul class="flex flex-col items-baseline ">
-                                  <li class="text-white text-[12px] font-normal list-disc list-inside pl-4">{name}</li>
-                                </ul>
-                              )) : <p class="text-[12px]">{actor.actorInfoName}</p>}
-                          </span>
-                          <div class="md:hidden flex-1 min-w-0 bg-white border border-border-light rounded shadow-md p-2 whitespace-normal break-words z-10">
-                            <ul>
-                              {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.map(name => (
-                                <li class="text-[8px] text-text-800 font-normal list-disc list-inside break-words">{name}</li>
-                              )) : <p class="text-[8px] break-words">{actor.actorInfoName}</p>}
-                            </ul>
-                          </div>
-                      </div>
-                    ))
-                  ) : (
-                    <ul class="pl-2 col-span-3">
-                      <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
-                    </ul>
-                  )
-                }
-              </div>
+            <p class="text-text-800 text-xs font-semibold lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.keyActors}</p>
+
+            <div class="flex flex-col gap-2">
+              {
+                actorsInfo.length > 0 ? (
+                  actorsInfo.map(actor => (
+                    <div class="flex flex-row items-center gap-2">
+                      <Image
+                        src={actor.imgUrl}
+                        alt={Array.isArray(actor.actorInfoName) ? actor.actorInfoName.join(', ') : actor.actorInfoName || 'Actor Icon'}
+                        quality={'max'}
+                        class="h-[56px] w-[56px] shrink-0 object-contain"
+                      />
+                      <span class="text-text-800 text-xs font-normal">
+                        {Array.isArray(actor.actorInfoName) ? actor.actorInfoName.join(', ') : actor.actorInfoName}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <ul class="pl-2">
+                    <li class="text-text-800 list-inside list-disc text-xs font-normal xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</li>
+                  </ul>
+                )
+              }
+            </div>
           </div>
-          <!-- Key organizations -->
           <div>
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.keyOrganizations}</p>
-            <ul class="pl-2">
+            <p class="text-text-800 mb-2 text-xs font-semibold lg:text-sm">{texts.innovation.aside.keyOrganizations}</p>
+            <ul class="space-y-2">
               {
                 innovation.contributingOrganizations && innovation.contributingOrganizations.length > 0 ? (
                   innovation.contributingOrganizations.map(org => (
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">
-                      {org.city ? org.city + ' - ' : ''}
-                      {org.institutionAcronym ? org.institutionAcronym + ' - ' : ''}
-                      {org.institutionName}
-                      </li>
+                    <li class="text-text-800 flex items-start gap-2 text-xs lg:text-sm">
+                      <i class="pi pi-building text-primary-300 mt-0.5 shrink-0" />
+                      <span>
+                        {org.city ? org.city + ' - ' : ''}
+                        {org.institutionAcronym ? org.institutionAcronym + ' - ' : ''}
+                        {org.institutionName}
+                      </span>
+                    </li>
                   ))
                 ) : (
-                  <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
+                  <li class="text-text-800 text-xs lg:text-sm">{texts.innovation.defaultValue}</li>
                 )
               }
             </ul>
           </div>
           <!-- SDGs: Sustainable Development Goals contribution -->
           <div class="mt-3 lg:mt-4">
-            <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base mb-2">{texts.innovation.aside.sdgs}</p>
-              {
-                innovation.sdgs && innovation.sdgs.length > 0 ? (
-                  <div class="grid grid-cols-4 lg:grid-cols-3 gap-2 justify-items-center">
-                    {innovation.sdgs.sort((a, b) => a.sdgId - b.sdgId).map(sdg => (
-                      sdg.sdgId && (
-                        <img 
-                          src={`https://marlo-pdf-resources-dev.s3.us-east-1.amazonaws.com/sdg/E-WEB-Goal-${sdg.sdgId}.png`}
-                          alt={sdg.sdgShortName}
-                          class="w-full max-w-[78px] h-auto object-contain mx-auto"
-                        />
-                      )
-                    ))}
-                  </div>) : (
-                  <ul>
-                    <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">{texts.innovation.defaultValue}</li>
-                  </ul>
-                )
-              }
+            <p class="text-text-800 mb-2 text-xs font-semibold lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.sdgs}</p>
+            {
+              innovation.sdgs && innovation.sdgs.length > 0 ? (
+                <div class="grid grid-cols-4 justify-items-center gap-2 lg:grid-cols-3">
+                  {innovation.sdgs
+                    .sort((a, b) => a.sdgId - b.sdgId)
+                    .map(
+                      sdg =>
+                        sdg.sdgId && (
+                          <img
+                            src={`https://marlo-pdf-resources-dev.s3.us-east-1.amazonaws.com/sdg/E-WEB-Goal-${sdg.sdgId}.png`}
+                            alt={sdg.sdgShortName}
+                            class="mx-auto h-auto w-full max-w-[78px] object-contain"
+                          />
+                        )
+                    )}
+                </div>
+              ) : (
+                <ul>
+                  <li class="text-text-800 list-inside list-disc text-xs font-normal xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</li>
+                </ul>
+              )
+            }
           </div>
         </div>
-        <!-- Contact information - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-2 lg:text-sm xl:text-base 2xl:text-lg">{texts.innovation.aside.contactInformation.title}</p>
 
-          <div class="mb-2">
-            <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.contactInformation.subtitle}</p>
-            <ul>
-              {
-                innovation.contactPersons && innovation.contactPersons.length > 0 ? (
-                  innovation.contactPersons.map(contact =>
-                    contact.contactPersons && contact.contactPersons.length > 0 ? (
-                      contact.contactPersons.map(person => (
-                        <>
-                          <li class="text-xs xl:text-sm 2xl:text-base text-text-800 font-normal list-disc list-inside">
-                            {person.userName} -{' '}
-                            <a class="underline text-primary-500" href={`mailto:${person.userEmail}`}>
-                              {person.userEmail}
-                            </a>
-                          </li>
-                        </>
-                      ))
-                    ) : (
-                      <span class="text-xs xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</span>
-                    )
+        <div class="bg-framework-bg w-full rounded-xl p-4 text-white lg:p-5">
+          <p class="mb-3 text-sm font-semibold lg:text-base">{texts.innovation.aside.contactInformation.title}</p>
+
+          <p class="mb-2 text-xs text-white/90 lg:text-sm">{texts.innovation.aside.contactInformation.subtitle}</p>
+          <ul class="space-y-1">
+            {
+              innovation.contactPersons && innovation.contactPersons.length > 0 ? (
+                innovation.contactPersons.map(contact =>
+                  contact.contactPersons && contact.contactPersons.length > 0 ? (
+                    contact.contactPersons.map(person => (
+                      <li class="text-xs lg:text-sm">
+                        <span class="font-medium">{person.userName}</span>
+                        {' — '}
+                        <a class="underline hover:text-white/80" href={`mailto:${person.userEmail}`}>
+                          {person.userEmail}
+                        </a>
+                      </li>
+                    ))
+                  ) : (
+                    <li class="text-xs lg:text-sm">{texts.innovation.defaultValue}</li>
                   )
-                ) : (
-                  <span class="text-xs xl:text-sm 2xl:text-base">{texts.innovation.defaultValue}</span>
                 )
-              }
-            </ul>
-            <div class="mt-2">
-              <p class="text-xs font-semibold text-text-800 lg:text-xs xl:text-sm 2xl:text-base">{texts.innovation.aside.contactInformation.technicalSupport}</p>
-              <p class="text-xs text-text-800 font-normal lg:text-xs xl:text-sm 2xl:text-base">
-                {texts.innovation.aside.contactInformation.technicalSupportDescription}
-              </p>
-              <a
-                href="mailto:MARLOSupport@cgiar.org"
-                class="text-[11px] xl:text-sm 2xl:text-base text-primary-500 underline hover:underline">{texts.innovation.aside.contactInformation.technicalSupportEmail}</a
-              >
-            </div>
-          </div>
-        </div>
-        <!-- Share - Mobile: reduced padding | Desktop (lg+): original padding -->
-        <div class="w-full p-3 mb-4 border border-border-light rounded-xl bg-white-100 text-text-300 lg:p-4 lg:mb-6">
-          <p class="text-xs font-semibold text-primary-300 mb-3 lg:text-sm lg:mb-4 xl:text-base 2xl:text-lg">{texts.innovation.aside.share}</p>
-          <!--           <BasicButton
-            text="Save to favorites"
-            hasIcon
-            icon="pi pi-bookmark"
-            classList={'w-full justify-center border-primary-300 text-primary-300 mb-2 hover:bg-primary-300 '}
-          /> -->
-          <div class="mb-2">
-            <SocialShare shareMessage={texts.innovation.shareMessage} className="!mb-0" />
-          </div>
-          <DownloadImage />
+              ) : (
+                <li class="text-xs lg:text-sm">{texts.innovation.defaultValue}</li>
+              )
+            }
+          </ul>
         </div>
       </aside>
     </div>
@@ -589,13 +633,43 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
 <script>
   import { useApi } from '~/composables/database-api/useApi';
 
+  function initNarrativeExpand() {
+    document.querySelectorAll('[data-narrative-toggle]').forEach(button => {
+      if ((button as HTMLButtonElement).dataset.narrativeBound) return;
+      (button as HTMLButtonElement).dataset.narrativeBound = 'true';
+
+      button.addEventListener('click', () => {
+        const wrapper = button.closest('[data-narrative-wrapper]');
+        if (!wrapper) return;
+
+        const shortEl = wrapper.querySelector('[data-narrative-short]');
+        const fullEl = wrapper.querySelector('[data-narrative-full]');
+        const readMore = wrapper.getAttribute('data-read-more') ?? 'See more';
+        const readLess = wrapper.getAttribute('data-read-less') ?? 'See less';
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+
+        shortEl?.classList.toggle('hidden', !expanded);
+        fullEl?.classList.toggle('hidden', expanded);
+        button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        button.textContent = expanded ? readMore : readLess;
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNarrativeExpand);
+  } else {
+    initNarrativeExpand();
+  }
+  document.addEventListener('astro:page-load', initNarrativeExpand);
+
   // Only initialize once
   if (!(window as any).__formInitialized) {
     (window as any).__formInitialized = true;
 
     document.addEventListener('DOMContentLoaded', function () {
       const form = document.getElementById('community-story-form') as HTMLFormElement;
-      
+
       if (!form) return;
 
       form.addEventListener('submit', async function (event) {
@@ -631,7 +705,7 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
 
         // Submit the comment data with CAPTCHA token
         // Disable CAPTCHA verification for now
-          try {
+        try {
           // Verify Turnstile token with Cloudflare
           const turnstileSecretKey = import.meta.env.PUBLIC_TURNSTILE_SECRET_KEY;
           if (turnstileSecretKey) {
@@ -654,15 +728,19 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
           const { postInnovationComment } = useApi();
           await postInnovationComment(commentData);
 
-          (globalThis as any).onUseToast?.({ severity: 'success', summary: 'Success', detail: 'Your story has been submitted successfully.', life: 8000 });
+          (globalThis as any).onUseToast?.({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Your story has been submitted successfully.',
+            life: 8000
+          });
           form.reset();
           (window as any).turnstile?.reset?.();
-          
+
           // Dispatch custom event to refresh comments
           window.dispatchEvent(new CustomEvent('refresh-comments'));
           console.log('Refresh event dispatched');
         } catch (error) {
-          
           (globalThis as any).onUseToast?.({ severity: 'error', summary: 'Error', detail: 'Failed to submit. ' + error, life: 8000 });
           (window as any).turnstile?.reset?.();
         } finally {
@@ -671,7 +749,6 @@ const innovationOgImage = getInnovationImageUrl(innovation.projectInnovationId);
             submitButton.textContent = 'Send';
           }
         }
-
       });
     });
   }
