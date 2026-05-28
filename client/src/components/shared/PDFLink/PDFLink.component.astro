@@ -5,17 +5,18 @@ interface Props {
   id: string;
   isJustIcon?: boolean;
   className?: string;
+  buttonText?: string;
 }
 
-const { id, isJustIcon, className } = Astro.props;
+const { id, isJustIcon, className, buttonText = 'Download PDF' } = Astro.props;
 ---
 
-<pdf-link class="pdf-link-container group relative overflow-visible" data-id={id}>
+<pdf-link class="pdf-link-container group relative overflow-visible" data-id={id} data-button-text={buttonText}>
   <BasicButton
-    {...isJustIcon ? {} : { text: 'Download PDF' }}
+    {...isJustIcon ? {} : { text: buttonText }}
     hasIcon
     icon="pi pi-file-pdf"
-    classList={`w-full justify-center border-secondary-300 text-secondary-300 mb-2 hover:!bg-secondary-300 hover:!text-white cursor-pointer ${className}`}
+    classList={`w-full justify-center mb-2 cursor-pointer ${className ? className : 'border-secondary-300 text-secondary-300 hover:!bg-secondary-300 hover:!text-white'}`}
   />
 
   <!-- Modal -->
@@ -89,6 +90,7 @@ const { id, isJustIcon, className } = Astro.props;
       const form = this.querySelector('.pdf-form');
       const closeButtons = this.querySelectorAll('.modal-close');
       const innovationId = this.getAttribute('data-id');
+      const buttonText = this.getAttribute('data-button-text') || 'Download PDF';
 
       if (btnDownload && innovationId && modal && form) {
         // Show modal when download button is clicked
@@ -160,7 +162,7 @@ const { id, isJustIcon, className } = Astro.props;
           } finally {
             // Reset button state
             submitButton.disabled = false;
-            submitButton.textContent = 'Download PDF';
+            submitButton.textContent = buttonText;
           }
         });
       }
