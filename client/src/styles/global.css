@@ -24,6 +24,11 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* PrimeVue tooltip font size */
+.p-tooltip .p-tooltip-text {
+  font-size: 12px;
+}
+
 /* Fallback styles so PrimeVue skeletons are visible before theme CSS finishes loading. */
 .p-skeleton {
   position: relative;

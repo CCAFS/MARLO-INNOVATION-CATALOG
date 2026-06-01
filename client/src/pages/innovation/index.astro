@@ -1,7 +1,57 @@
 ---
 import MainLayout from '@layouts/MainLayout.astro';
+import BasicButton from '../../components/shared/button/BasicButton/BasicButton.component.astro';
 ---
 
 <MainLayout title="Innovation Page">
-  <p>Hola Soy una descripción</p>
+  <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">
+    <div class="mx-auto max-w-2xl text-center">
+      <!-- 404 Icon/Number -->
+      <div class="mb-8">
+        <div class="relative inline-block">
+          <!-- Large 404 number -->
+          <h1 class="text-primary-100 text-[120px] leading-none font-bold select-none md:text-[180px]">404</h1>
+          <!-- Icon overlay -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-primary-300 rounded-full p-6 shadow-lg">
+              <svg class="h-16 w-16 text-white md:h-20 md:w-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error message -->
+      <h2 class="text-text-800 mb-4 text-2xl font-bold md:text-3xl">Innovation Not Found</h2>
+      <p class="text-text-600 mx-auto mb-8 max-w-md text-base md:text-lg">
+        The innovation you're looking for doesn't exist or may have been removed from our catalog.
+      </p>
+
+      <!-- Action buttons -->
+      <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a href="/" class="w-full sm:w-auto">
+          <BasicButton
+            text="Go to Homepage"
+            hasIcon
+            icon="pi pi-home"
+            classList="w-full sm:w-auto bg-white text-primary-300 border border-primary-300 hover:bg-primary-100 px-6 py-3 justify-center"
+          />
+        </a>
+      </div>
+
+      <!-- Additional help section -->
+      <div class="border-border-light mt-12 border-t py-8">
+        <p class="text-text-600 mb-4 text-sm">Need help? Contact our support team</p>
+        <a href="mailto:Alliance-ITsupport@cgiar.org" class="text-primary-300 inline-flex items-center gap-2 text-sm font-semibold hover:underline">
+          <span class="pi pi-envelope"></span>
+          Alliance-ITsupport@cgiar.org
+        </a>
+      </div>
+    </div>
+  </div>
 </MainLayout>

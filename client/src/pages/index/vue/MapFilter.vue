@@ -40,6 +40,7 @@
       :pathD="CLEAR_SCALING_READINESS_ICON_PATH"
       :index="-1"
       :activeIndex="selectedIndex"
+      tooltip="Clear filter"
       @click="handleClearScalingReadiness" />
     <defs>
       <filter id="filter0_d_532_106" x="18" y="14" width="372" height="372" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">

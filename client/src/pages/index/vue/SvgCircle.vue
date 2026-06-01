@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import vTooltip from 'primevue/tooltip';
+
 withDefaults(
   defineProps<{
     class: string;
@@ -10,6 +12,7 @@ withDefaults(
     index: number;
     pathD: string;
     iconVariant?: 'fill' | 'stroke';
+    tooltip?: string;
   }>(),
   { iconVariant: 'fill' }
 );
@@ -19,7 +22,13 @@ const emit = defineEmits<{
 }>();
 </script>
 <template>
-  <g :class="class" :filter="filter" @click="emit('click', index)" style="pointer-events: auto">
+  <g
+    :class="class"
+    :filter="filter"
+    @click="emit('click', index)"
+    style="pointer-events: auto"
+    v-tooltip="tooltip ?? undefined">
+    <title v-if="tooltip">{{ tooltip }}</title>
     <rect :x="x" :y="y" width="37" height="37" rx="18.5" :fill="fill" shape-rendering="crispEdges"></rect>
     <rect
       :x="x + 2.5"

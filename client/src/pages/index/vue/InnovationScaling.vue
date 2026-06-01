@@ -30,22 +30,6 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 text-black">
-    <div class="flex flex-col gap-2">
-      <h2 class="text-sm font-bold lg:text-base xl:text-lg">{{ texts.home.readinessExplorer.responsibleScalingTitle }}</h2>
-      <div
-        v-if="isHydrated"
-        class="text-xs leading-5 font-light text-black lg:text-sm [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-4"
-        v-html="texts.home.readinessExplorer.responsibleScalingDescription"></div>
-      <div v-else class="text-xs font-light text-black">Loading...</div>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <h2 class="text-sm font-bold lg:text-base xl:text-lg">{{ texts.home.readinessExplorer.readinessExplorerTitle }}</h2>
-      <p class="text-xs leading-5 font-light text-black lg:text-sm">
-        {{ texts.home.readinessExplorer.readinessExplorerDescription }}
-      </p>
-    </div>
-
     <div v-if="value.scalingReadiness !== null && value.scalingReadiness !== undefined" class="text-framework-accent text-xs font-medium lg:text-sm">
       {{ texts.home.readinessExplorer.readinessExplorerSubtitle }}
     </div>
@@ -65,6 +49,22 @@ onMounted(() => {
           {{ readinessText.description }}
         </div>
       </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <h2 class="text-sm font-bold lg:text-base xl:text-lg">{{ texts.home.readinessExplorer.responsibleScalingTitle }}</h2>
+      <div
+        v-if="isHydrated"
+        class="text-xs leading-5 font-light text-black lg:text-sm [&_li]:mb-1 [&_ol]:list-decimal [&_ol]:pl-4"
+        v-html="texts.home.readinessExplorer.responsibleScalingDescription"></div>
+      <div v-else class="text-xs font-light text-black">Loading...</div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <h2 class="text-sm font-bold lg:text-base xl:text-lg">{{ texts.home.readinessExplorer.readinessExplorerTitle }}</h2>
+      <p class="text-xs leading-5 font-light text-black lg:text-sm">
+        {{ texts.home.readinessExplorer.readinessExplorerDescription }}
+      </p>
     </div>
 
     <div class="flex w-full items-center justify-center gap-2 text-sm font-medium text-[#0B5DA6]">
