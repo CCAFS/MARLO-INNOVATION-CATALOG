@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
-import Button from 'primevue/button';
 import Menu from 'primevue/menu';
 import type { MenuItem } from 'primevue/menuitem';
 import getSharingLink from '~/utils/share-link/getSharingLink';
 import type { ShareParams } from '~/interfaces/share-params.interface';
 import { texts } from '~/content/texts';
+import type { Button } from 'primevue';
 
 const HOVER_HIDE_DELAY_MS = 200;
 
@@ -25,7 +25,7 @@ const props = withDefaults(
 );
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
-const buttonRef = ref<InstanceType<typeof Button> | HTMLElement | null>(null);
+const buttonRef = ref<InstanceType<typeof Button> | HTMLButtonElement | null>(null);
 const copyLabel = ref(texts.innovation.shareMenu.copyLink);
 const menuId = `social-share-menu-${props.variant}`;
 
@@ -51,7 +51,7 @@ const heroTriggerClass = computed(
 );
 
 const sidebarButtonClass =
-  'w-full h-full min-h-[36px] justify-center !mb-0 !text-xs !border-primary-300 !text-primary-300 hover:!bg-primary-300 hover:!text-white';
+  'basic-button inline-flex items-center justify-center gap-1 px-4 py-2.25 border rounded-lg text-xs leading-[10px] font-medium cursor-pointer w-full min-h-[36px] border-primary-300 text-primary-300 hover:bg-primary-300 hover:text-white hover:border-transparent';
 
 const buttonPt = {
   root: { class: '!text-xs' },
@@ -217,19 +217,10 @@ onBeforeUnmount(() => {
       @click="toggle">
       <i class="pi pi-share-alt text-[1rem]" aria-hidden="true"></i>
     </button>
-    <Button
-      v-else
-      ref="buttonRef"
-      type="button"
-      icon="pi pi-share-alt"
-      size="small"
-      :label="texts.innovation.shareMenu.buttonLabel"
-      outlined
-      :class="sidebarButtonClass"
-      :pt="buttonPt"
-      aria-haspopup="true"
-      :aria-controls="menuId"
-      @click="toggle" />
+    <button v-else ref="buttonRef" type="button" :class="sidebarButtonClass" aria-haspopup="true" :aria-controls="menuId" @click="toggle">
+      <i class="pi pi-share-alt text-[12px]!" />
+      <span class="text-[12px]">{{ texts.innovation.shareMenu.buttonLabel }}</span>
+    </button>
     <Menu :id="menuId" ref="menu" :model="menuItems" popup append-to="body" :pt="menuPt" @show="onMenuShow" />
   </div>
 </template>
