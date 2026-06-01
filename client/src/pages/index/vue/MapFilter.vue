@@ -323,12 +323,13 @@ const selectedIndex = computed(() => {
 const handleClick = (index: number) => {
   const isAlreadySelected = value.value.scalingReadiness === index;
   setValue({
-    scalingReadiness: isAlreadySelected ? null : index
+    scalingReadiness: isAlreadySelected ? null : index,
+    countryIds: null
   });
 };
 
 const handleClearScalingReadiness = () => {
-  if (value.value.scalingReadiness === null) return;
-  setValue({ scalingReadiness: null });
+  if (value.value.scalingReadiness === null && !value.value.countryIds?.length) return;
+  setValue({ scalingReadiness: null, countryIds: null });
 };
 </script>
