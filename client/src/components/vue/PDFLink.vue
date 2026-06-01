@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { useApi } from '~/composables/database-api/useApi';
 
@@ -63,12 +62,18 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <Button
-    :icon="'pi pi-file-pdf'"
-    :label="isJustIcon ? undefined : buttonText"
-    outlined
-    :class="['cursor-pointer mb-2 justify-center', className ?? 'border-secondary-300 text-secondary-300 hover:!bg-secondary-300 hover:!text-white']"
-    @click="visible = true" />
+  <button
+    type="button"
+    :class="[
+      'basic-button inline-flex items-center justify-center px-4 py-2.25 border rounded-lg',
+      'text-xs xl:text-sm 2xl:text-base leading-[10px] font-medium cursor-pointer mb-2',
+      isJustIcon ? 'w-[36px] h-[36px] gap-0' : 'gap-1',
+      className ?? 'border-secondary-300 text-secondary-300'
+    ]"
+    @click="visible = true">
+    <i class="pi pi-file-pdf text-[1rem]" />
+    <span v-if="!isJustIcon">{{ buttonText }}</span>
+  </button>
 
   <Dialog
     v-model:visible="visible"
