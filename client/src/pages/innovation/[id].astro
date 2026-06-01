@@ -408,7 +408,9 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
                           </p>
                           <a
                             class="text-text-500 text-primary-500 text-xs font-semibold underline"
-                            href={reference.disseminationUrl ? reference.disseminationUrl : '#'}>
+                            href={reference.disseminationUrl ? reference.disseminationUrl : '#'}
+                            target="_blank"
+                            rel="noopener noreferrer">
                             {reference.disseminationUrl ? reference.disseminationUrl : texts.innovation.evidence.reference.link}
                           </a>
                         </li>
@@ -417,7 +419,11 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
                           <p class="text-sm font-normal">
                             {reference.reference ? reference.reference : texts.innovation.evidence.reference.reference}
                           </p>
-                          <a class="text-text-500 text-primary-500 text-xs font-semibold underline" href={reference.link ? reference.link : '#'}>
+                          <a
+                            class="text-text-500 text-primary-500 text-xs font-semibold underline"
+                            href={reference.link ? reference.link : '#'}
+                            target="_blank"
+                            rel="noopener noreferrer">
                             {reference.link ? reference.link : texts.innovation.evidence.reference.link}
                           </a>
                         </li>
