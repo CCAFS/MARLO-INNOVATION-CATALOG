@@ -13,7 +13,7 @@ import BasicButton from '~/components/shared/button/BasicButton/BasicButton.comp
 import SocialShareMenu from '~/components/vue/SocialShareMenu.vue';
 import Input from '~/components/shared/input/Input.astro';
 import DownloadImage from '~/components/shared/DownloadImage/DownloadImage.component.astro';
-import PDFLink from '~/components/shared/PDFLink/PDFLink.component.astro';
+import PDFLink from '~/components/vue/PDFLink.vue';
 import type { Innovation as InnovationComplete } from '~/interfaces/search-complete.interface';
 import { getCountryTextStructured } from '~/utils/country-normalize-text/getCountryNormalizeText';
 import getReadinessScaleText from '~/utils/readiness-scale/getReadinessScaleText';
@@ -193,7 +193,7 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
           </h1>
           <div class="mt-4 flex flex-wrap items-end gap-4">
             <div class="flex flex-col items-center gap-1">
-              <PDFLink id={innovation.projectInnovationId.toString()} isJustIcon className={heroIconButtonClass} />
+              <PDFLink client:load id={innovation.projectInnovationId.toString()} isJustIcon className={heroIconButtonClass} />
               <span class="text-xs text-white/90">{texts.innovation.heroActions.pdf}</span>
             </div>
 
@@ -476,7 +476,8 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
               <!-- Submit Button with CAPTCHA - Mobile: vertical stack | Desktop (sm+): horizontal -->
               <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
                 <!-- Cloudflare Turnstile CAPTCHA -->
-                <div class="cf-turnstile overflow-hidden rounded-sm" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-theme="light"></div>
+                <div class="cf-turnstile overflow-hidden rounded-sm" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-theme="light">
+                </div>
                 <BasicButton
                   text={texts.innovation.communitySolutionStories.form.send}
                   type="submit"
@@ -490,6 +491,7 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
 
       <aside class="order-1 col-span-1 lg:sticky lg:top-24 lg:order-2 lg:self-start">
         <PDFLink
+          client:load
           id={innovation.projectInnovationId.toString()}
           buttonText={texts.innovation.downloadSummaryPdf}
           className="border-primary-300! bg-primary-300! hover:!bg-primary-400! hover:!text-white! mb-4 w-full text-white! lg:mb-4"
