@@ -99,7 +99,7 @@ export function useApi() {
         params: {
           innovationId: id,
           cycle: 'Reporting',
-          year: 2025
+          year: 2026
         }
       }),
 
