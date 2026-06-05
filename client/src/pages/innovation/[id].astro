@@ -255,8 +255,8 @@ const truncatedNarrative = isNarrativeTruncated ? `${fullNarrative.slice(0, NARR
                 countryText.hasMore ? (
                   <>
                     {countryText.text}
-                    <em class="tooltip" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
-                      {countryText.additionalText}
+                    <em class="tooltip ml-1" tabindex="0" role="tooltip" aria-label={countryText.additionalInfo}>
+                      <span class="text-primary-300 font-semibold">{countryText.additionalText}</span>
                       <span class="tooltiptext">{countryText.additionalInfo}</span>
                     </em>
                   </>
