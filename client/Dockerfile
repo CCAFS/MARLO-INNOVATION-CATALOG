@@ -35,8 +35,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy the compiled Astro site into Nginx's served directory
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 
-# Uncomment the next line and provide your own config if you need custom Nginx settings
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Ensure the correct permissions for static assets
 RUN chmod -R 755 /usr/share/nginx/html
