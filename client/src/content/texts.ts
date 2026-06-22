@@ -13,10 +13,10 @@ export const texts = {
       responsibleScalingTitle: 'AICCRA Scaling Framework',
       responsibleScalingDescription:
         '<ol class="list-decimal pl-4"><li>Technical excellence - Innovations must perform reliably and add value in real-world conditions.</li><li>Demand and investment - Scaling requires demonstrated interest from users and financial or institutional support to enable adoption.</li><li>Sustained use - Innovations need to be embedded into systems (policy, markets, institutions) to last beyond projects.</li></ol>',
-      readinessExplorerTitle: 'Scaling Readiness',
-      readinessExplorerSubtitle: 'Scaling Readiness:',
+      readinessExplorerTitle: 'Innovation Readiness',
+      readinessExplorerSubtitle: 'Innovation Readiness:',
       readinessExplorerDescription:
-        'Scaling Readiness is a framework that helps individuals and organizations effectively scale innovations to achieve meaningful impact.',
+        'Innovation Readiness is a framework that helps individuals and organizations effectively scale innovations to achieve meaningful impact.',
       seeInnovations: 'See the relevant innovations'
     },
     innovationFilters: {
